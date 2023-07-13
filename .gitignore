@@ -4,5 +4,4 @@ node_modules
 .history/
 .DS_Store
 *.vsix
-*.arb
-l10n/app_zh.json
+
