@@ -131,7 +131,9 @@ export class IJEData {
     }
 
     save() {
-        //clean jsons
+        var f = null;
+        var saved = true;
+        var msg = 'Translation files saved';
         let existingFolders = [];
         if (this._manager.folderPath) {
             existingFolders.push(this._manager.folderPath);
@@ -140,11 +142,11 @@ export class IJEData {
         }
 
         let existingExtensions = IJEConfiguration.SUPPORTED_EXTENSIONS;
-
+        /*
+        This code seems to only write {} to a file and can cause issues no idea why it is here.
         existingFolders.forEach(d => {
             this._languages.forEach(language => {
                 const json = JSON.stringify({}, null, IJEConfiguration.JSON_SPACE);
-                var f = null;
                 existingExtensions.forEach((ext: string) => {
                     var s = vscode.Uri.file(_path.join(d, language + '.' + ext)).fsPath;
                     if (fs.existsSync(s)) {
@@ -155,10 +157,20 @@ export class IJEData {
                 if (f === null) {
                     f = vscode.Uri.file(_path.join(d, language + '.' + existingExtensions[0])).fsPath;
                 }
-                fs.writeFileSync(f, json);
+                fs.writeFileSync(f + '.tmp1', json + '\n');
+                const stats = fs.statSync(f + '.tmp1');
+                if (stats.size > 20) {
+                    fs.copyFileSync(f + '.tmp', f);
+                    fs.unlinkSync(f + '.tmp');
+                    vscode.window.showInformationMessage(msg);
+                    saved = true;
+                } else {
+                    vscode.window.showErrorMessage('Error saving translation "' + f + '". Temporary files kept.');
+                    saved = false;
+                }
             });
         });
-
+        */
         //
         let folders: { [key: string]: IJEDataTranslation[] } = this._translations.reduce((r, a) => {
             r[a.folder] = r[a.folder] || [];
@@ -183,7 +195,6 @@ export class IJEData {
 
                     var json = JSON.stringify(o, null, IJEConfiguration.JSON_SPACE);
                     json = json.replace(/\n/g, IJEConfiguration.LINE_ENDING);
-                    var f = null;
                     existingExtensions.forEach((ext: string) => {
                         var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
                         if (fs.existsSync(s)) {
@@ -194,7 +205,17 @@ export class IJEData {
                     if (f === null) {
                         f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
                     }
-                    fs.writeFileSync(f, json);
+                    fs.writeFileSync(f + '.tmp', json);
+                    const stats = fs.statSync(f + '.tmp');
+                    if (stats.size > 10) {
+                        fs.copyFileSync(f + '.tmp', f);
+                        fs.unlinkSync(f + '.tmp');
+                        vscode.window.showInformationMessage(msg);
+                        saved = true;
+                    } else {
+                        vscode.window.showErrorMessage('Error saving translation "' + f + '". Temporary files kept..');
+                        saved = false;
+                    }
                 });
             });
         } else {
@@ -232,7 +253,6 @@ export class IJEData {
 
                     var json = JSON.stringify(o, null, IJEConfiguration.JSON_SPACE);
                     json = json.replace(/\n/g, IJEConfiguration.LINE_ENDING);
-                    var f = null;
                     existingExtensions.forEach((ext: string) => {
                         var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
                         if (fs.existsSync(s)) {
@@ -243,11 +263,23 @@ export class IJEData {
                     if (f === null) {
                         f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
                     }
-                    fs.writeFileSync(f, json);
+                    fs.writeFileSync(f + '.tmp', json + '\n');
+                    const stats = fs.statSync(f + '.tmp');
+                    if (stats.size > 20) {
+                        fs.copyFileSync(f + '.tmp', f);
+                        fs.unlinkSync(f + '.tmp');
+                        vscode.window.showInformationMessage(msg);
+                        saved = true;
+                    } else {
+                        vscode.window.showErrorMessage('Error saving translation "' + f + '". Temporary files kept...');
+                        saved = false;
+                    }
                 });
             });
         }
-        vscode.window.showInformationMessage('i18n files saved');
+        if (saved) {
+            vscode.window.showInformationMessage(msg);
+        }
     }
 
     search(value: string) {
@@ -312,7 +344,7 @@ export class IJEData {
     }
 
     /**
-     * Create the hierachy based on the key
+     * Create the hierarchy based on the key
      */
     private _transformKeysValues(key: string, value: string, o = {}) {
         let separator = IJEConfiguration.KEY_SEPARATOR ? key.indexOf(IJEConfiguration.KEY_SEPARATOR) : -1;
@@ -361,8 +393,8 @@ export class IJEData {
                     }
 
                     try {
-                        let rawdata = fs.readFileSync(_path.join(folderPath, file));
-                        let jsonData = this._stripBOM(rawdata.toString());
+                        let rawData = fs.readFileSync(_path.join(folderPath, file));
+                        let jsonData = this._stripBOM(rawData.toString());
                         let content = JSON.parse(jsonData);
 
                         let keysValues = this._getKeysValues(content);
@@ -395,7 +427,7 @@ export class IJEData {
     }
 
     /**
-     * For each values get the unique key with hierachy separate by a separator
+     * For each values get the unique key with hierarchy separate by a separator
      */
     private _getKeysValues(obj: any, _key = '') {
         let kv: any = {};
