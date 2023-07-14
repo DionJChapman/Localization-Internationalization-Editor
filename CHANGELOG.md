@@ -2,6 +2,14 @@
 
 All notable changes to the "i18n-json-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [2.1.4]
+
+- Added a linefeed at end of files.
+- Added the use of temporary .tmp files when saving.
+- Added check on .tmp files for minimum size of 10 characters. An i18n format would be 12 and an l10n format would be 20.
+- Temporary files kept when translation is not saved.
+- Removed code that could result in files of '{}'.
+
 ## [2.1.3]
 
 - Added file content sorting to keep key and @key pairs together.
