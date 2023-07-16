@@ -1,46 +1,46 @@
 {
-    "name": "i18n-json-editor",
-    "displayName": "i18n json editor",
+    "name": "i18n-l10n-editor",
+    "displayName": "Localization/Internationalization Editor",
     "author": {
-        "name": "Thibault Vanderseypen",
+        "name": "Dion Chapman",
         "url": "https://vanderseypen.dev"
     },
-    "publisher": "thibault-vanderseypen",
+    "publisher": "dion-chapman",
     "repository": {
-        "url": "https://github.com/thibault-vanderseypen/vsce-i18n-json-editor.git"
+        "url": "https://github.com/DionJChapman/Localization-Internationalization-Editor"
     },
     "description": "Easily edit your i18n/l10n json files",
     "icon": "media/logo.png",
-    "version": "2.1.4",
+    "version": "3.0.0",
     "engines": {
         "vscode": "^1.30.0"
     },
     "categories": [
-        "Other"
+        "Editor"
     ],
     "activationEvents": [
         "*",
-        "onCommand:i18n-json-editor"
+        "onCommand:i18n-l10n-editor"
     ],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
             {
-                "command": "i18n-json-editor",
-                "title": "i18n json editor"
+                "command": "i18n-l10n-editor",
+                "title": "Open In i18n/l10n Editor"
             }
         ],
         "menus": {
             "explorer/context": [
                 {
-                    "command": "i18n-json-editor",
-                    "group": "2_workspace",
+                    "command": "i18n-l10n-editor",
+                    "group": "navigation",
                     "when": "explorerResourceIsFolder && resourceFilename in ext:supportedFolders"
                 }
             ]
         },
         "configuration": {
-            "title": "i18n json editor",
+            "title": "Localization Internationalization Editor",
             "properties": {
                 "i18nJsonEditor.forceKeyUPPERCASE": {
                     "default": false,
