@@ -1,46 +1,46 @@
 {
-    "name": "i18n-json-editor",
-    "displayName": "i18n json editor",
+    "name": "i18n-l10n-editor",
+    "displayName": "Localization/Internationalization Editor",
     "author": {
-        "name": "Thibault Vanderseypen",
+        "name": "Dion Chapman",
         "url": "https://vanderseypen.dev"
     },
-    "publisher": "thibault-vanderseypen",
+    "publisher": "dion-chapman",
     "repository": {
-        "url": "https://github.com/thibault-vanderseypen/vsce-i18n-json-editor.git"
+        "url": "https://github.com/DionJChapman/Localization-Internationalization-Editor"
     },
     "description": "Easily edit your i18n/l10n json files",
     "icon": "media/logo.png",
-    "version": "2.1.4",
+    "version": "3.0.2",
     "engines": {
-        "vscode": "^1.30.0"
+        "vscode": "^1.80.0"
     },
     "categories": [
-        "Other"
+        "Editor"
     ],
     "activationEvents": [
         "*",
-        "onCommand:i18n-json-editor"
+        "onCommand:i18n-l10n-editor"
     ],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
             {
-                "command": "i18n-json-editor",
-                "title": "i18n json editor"
+                "command": "i18n-l10n-editor",
+                "title": "Open In i18n/l10n Editor"
             }
         ],
         "menus": {
             "explorer/context": [
                 {
-                    "command": "i18n-json-editor",
-                    "group": "2_workspace",
+                    "command": "i18n-l10n-editor",
+                    "group": "navigation",
                     "when": "explorerResourceIsFolder && resourceFilename in ext:supportedFolders"
                 }
             ]
         },
         "configuration": {
-            "title": "i18n json editor",
+            "title": "Localization Internationalization Editor",
             "properties": {
                 "i18nJsonEditor.forceKeyUPPERCASE": {
                     "default": false,
@@ -118,17 +118,18 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-		"@types/vscode": "^1.30.0",
+		"@types/vscode": "^1.80.0",
 		"@types/glob": "^7.2.0",
-		"@types/mocha": "^9.1.1",
-		"@types/node": "16.x",
-		"@typescript-eslint/eslint-plugin": "^5.30.0",
-		"@typescript-eslint/parser": "^5.30.0",
-		"eslint": "^8.18.0",
+		"@types/mocha": "^10.0.1",
+		"@types/node": "20.4.1",
+		"@typescript-eslint/eslint-plugin": "^6.0.0",
+		"@typescript-eslint/parser": "^6.0.0",
+		"eslint": "^8.44.0",
 		"glob": "^8.0.3",
-		"mocha": "^10.0.0",
+		"mocha": "^10.2.0",
 		"typescript": "^4.7.4",
-		"@vscode/test-electron": "^2.1.5"
+		"@vscode/test-electron": "^2.1.5",
+        "yaml": "^2.3.1"
     },
     "dependencies": {
         "axios": "^0.27.2"

@@ -1,16 +1,21 @@
 import * as vscode from 'vscode';
 import * as _path from 'path';
 
-import { IJEEditorProvider } from './i18n-json-editor/providers/ije-editor-provider';
-import { IJEConfiguration } from './i18n-json-editor/ije-configuration';
+import { IJEEditorProvider } from './i18n-l10n-editor/providers/ije-editor-provider';
+import { IJEConfiguration } from './i18n-l10n-editor/ije-configuration';
+import { IJEFolder } from './i18n-l10n-editor/models/ije-folder';
+import { findYAML } from './i18n-l10n-editor/services/find_yaml';
 
-export function activate(context: vscode.ExtensionContext) {
-    if (IJEConfiguration.WORKSPACE_FOLDERS) {
-        let myStatusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-        myStatusBarItem.command = 'i18n-json-editor';
-        myStatusBarItem.text = `$(symbol-string) i18n editor`;
-        myStatusBarItem.show();
-    }
+export async function activate(context: vscode.ExtensionContext) {
+    const { activeTextEditor } = vscode.window;
 
-    context.subscriptions.push(IJEEditorProvider.register(context));
+    let myStatusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    myStatusBarItem.command = 'i18n-l10n-editor';
+    myStatusBarItem.text = `$(globe) i18n/l10n Editor`;
+    myStatusBarItem.show();
+
+    context.subscriptions.push(await IJEEditorProvider.register(context));
+
+    IJEConfiguration.arbFolders = await findYAML(vscode.workspace.workspaceFolders[0].uri.fsPath);
 }
+

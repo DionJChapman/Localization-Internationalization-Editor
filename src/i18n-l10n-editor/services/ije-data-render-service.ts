@@ -23,7 +23,7 @@ export class IJEDataRenderService {
         render += '<div class="form-inline">';
         if (withPageSizeSelector) {
             render += '<select class="form-control form-control-sm mr-4" style="height: 32px;" onchange="pageSize(this)">';
-            [10, 20, 50, 100].forEach(i => {
+            [10, 20, 50, 100, 200, 500, 1000].forEach(i => {
                 render += `<option value="${i}" ${i === page.pageSize ? 'selected="selected"' : ''}>${i}</option>`;
             });
             render += ' </select>';
@@ -73,12 +73,14 @@ export class IJEDataRenderService {
             render += '<tr>';
             render += `<td><button type="button" class="btn" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
 
-            if (showFolder) {
+            const folders = IJEConfiguration.WORKSPACE_FOLDERS;
+            if (showFolder && folders.length > 1) {
                 render += `<td><select id="select-folder-${t.id}" class="form-control" onchange="updateFolder(this,${t.id})">`;
-                const folders = IJEConfiguration.WORKSPACE_FOLDERS;
+
                 folders.forEach(d => {
                     render += `<option value='${d.path.replace(/"/g, '&quot;')}' ${d.path === t.folder ? 'selected' : ''}>${d.name}</option>`;
                 });
+
                 render += ' </select></td>';
             }
 
@@ -145,15 +147,15 @@ export class IJEDataRenderService {
         render += '<div class="col-7">';
 
         if (selectTranslation) {
-            if (showFolder) {
+            const folders = IJEConfiguration.WORKSPACE_FOLDERS;
+            if (showFolder && folders.length > 1) {
                 render += ` 
                   <div class="form-group">
                     <label>Directory</label>
                     <div class="row">
                       <div class="col-12">
                         <select id="select-folder-${selectTranslation.id}" class="form-control" onchange="updateFolder(this,${selectTranslation.id})">`;
-
-                const folders = IJEConfiguration.WORKSPACE_FOLDERS;
+                
                 folders.forEach(d => {
                     render += `<option value='${d.path}' ${d.path === selectTranslation.folder ? 'selected' : ''}>${d.name}</option>`;
                 });
@@ -208,3 +210,4 @@ export class IJEDataRenderService {
         return render;
     }
 }
+

@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {{LINKS}}
     {{SCRIPTS}}
-    <title>i18n-json-editor</title>
+    <title>i18n-l10n-editor</title>
 </head>
 
 <body>
     <nav class="navbar navbar-light ">
         <form class="form-inline  mr-auto" onsubmit="return false;">
             <select id="select-folder" class="form-control mr-2" style="display: none;" onchange="filterFolder(this)">
-                <option value='*'>*</option>
            </select>            
             <input class="form-control" style="width:400px" oninput="search(this)" type="text" placeholder="Search..." aria-label="Search...">
 

@@ -13,6 +13,14 @@ var vscode;
         const folders = message.folders;
         if (folders) {
           var select = document.getElementById("select-folder");
+          
+          if (folders.length > 1) {
+          var option = document.createElement("option");
+            option.text = '*';
+            option.value = '*';
+            select.add(option);
+          }
+          
           for (const d of folders) {
             var option = document.createElement("option");
             option.text = d.name;

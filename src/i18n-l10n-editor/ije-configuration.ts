@@ -33,11 +33,11 @@ export class IJEConfiguration {
 
     static get SUPPORTED_FOLDERS(): string[] {
         const value = vscode.workspace.getConfiguration().get<string[]>('i18nJsonEditor.supportedFolders');
-        return value !== undefined ? value : ['i18n','l10n'];
+        return value !== undefined ? value : ['l10n', 'i18n'];
     }
     static get SUPPORTED_EXTENSIONS(): string[] {
         const value = vscode.workspace.getConfiguration().get<string[]>('i18nJsonEditor.supportedExtensions');
-        return value !== undefined ? value : ['arb','json'];
+        return value !== undefined ? value : ['arb', 'json'];
     }
     static get TRANSLATION_SERVICE(): TranslationServiceEnum {
         const value = vscode.workspace.getConfiguration().get<TranslationServiceEnum>('i18nJsonEditor.translationService');
@@ -49,18 +49,34 @@ export class IJEConfiguration {
         return value !== undefined ? value : null;
     }
 
-    static get WORKSPACE_FOLDERS(): IJEFolder[] {
-        const folders = vscode.workspace.getConfiguration().get<IJEFolder[]>('i18nJsonEditor.workspaceFolders');
-        let workspaceFolder: vscode.WorkspaceFolder | undefined = vscode.workspace.workspaceFolders[0];
+    static arbFolders: IJEFolder[] = [];
 
+    static get WORKSPACE_FOLDERS(): IJEFolder[] {
         const _folders: IJEFolder[] = [];
-        folders.forEach(d => {
-            var path = vscode.Uri.file(_path.join(workspaceFolder.uri.fsPath, d.path)).fsPath;
-            if (fs.existsSync(path)) {
-                _folders.push({ name: d.name, path: path });
-            }
-        });
+
+        let folders;
+        if (this.arbFolders.length !== 0) {
+            folders = this.arbFolders;
+
+            folders.forEach(d => {
+                var path = vscode.Uri.file(d.path).fsPath;
+                if (fs.existsSync(path)) {
+                    _folders.push({ name: d.name, path: path, arb: d.arb });
+                }
+            });
+        } else {
+            folders = vscode.workspace.getConfiguration().get<IJEFolder[]>('i18nJsonEditor.workspaceFolders');
+            let workspaceFolder: vscode.WorkspaceFolder | undefined = vscode.workspace.workspaceFolders[0];
+
+            folders.forEach(d => {
+                var path = vscode.Uri.file(_path.join(workspaceFolder.uri.fsPath, d.path)).fsPath;
+                if (fs.existsSync(path)) {
+                    _folders.push({ name: d.name, path: path, arb: d.arb });
+                }
+            });
+        }
 
         return _folders !== undefined ? _folders : [];
     }
 }
+
