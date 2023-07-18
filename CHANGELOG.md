@@ -2,6 +2,11 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.0.3]
+
+- Added sorting for key and @key pairs
+- Added indenting for @keys
+  
 ## [3.0.2]
 
 - Fixed issues with finding Workspace l10n folders

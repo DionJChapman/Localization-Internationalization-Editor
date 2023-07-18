@@ -79,15 +79,25 @@ export class IJEDataRenderService {
                 render += `<td><select id="select-folder-${t.id}" class="form-control" onchange="updateFolder(this,${t.id})">`;
 
                 folders.forEach(d => {
-                    render += `<option value='${d.path.replace(/"/g, '&quot;')}' ${d.path === t.folder ? 'selected' : ''}>${d.name}</option>`;
+                    render += `<option value='${d.path.replace(/"/g, '&quot;')}' ${d.path === t.folder ? 'selected' : ''}>${d.folder}</option>`;
                 });
 
                 render += ' </select></td>';
             }
 
+            let indent = 0;;
+            let width = 400;
+            if (sort.column === "KEY" && !t.key.startsWith("@@") && t.key.startsWith("@")) {
+                let i = t.key.length - t.key.replace(/\./g, "").length;
+                for (let j = 0; j < i; ++j) {
+                    indent += 10;
+                    width -= 10;
+                }
+            }
+
             render += `
-                <td>
-                    <input id="input-key-${t.id}" class="form-control ${t.valid ? '' : 'is-invalid'}" type="text" placeholder="Key..." value="${t.key.replace(
+                <td style="white-space: nowrap;">
+                    <input id="input-key-${t.id}" class="form-control ${t.valid ? '' : 'is-invalid'}" style="width: ${width}px; margin-left: ${indent}px" type="text" placeholder="Key..." value="${t.key.replace(
                 /"/g,
                 '&quot;'
             )}" onfocus="mark(${t.id})" onchange="updateInput(this,${t.id});" />
@@ -134,7 +144,7 @@ export class IJEDataRenderService {
     ) {
         let render = '<div class="container-fluid">';
         render += '<div class="row">';
-        render += '<div class="col-5">';
+        render += '<div class="col-4">';
         render += '<div style="word-wrap: break-word;" class="list-group">';
         translations.forEach(t => {
             render += `<a href="#" id="select-key-${t.id}" onclick="select(${t.id})" class="btn-vscode-secondary list-group-item list-group-item-action ${
