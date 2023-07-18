@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import * as yaml from 'yaml';
 import * as fs from 'fs';
 
-import { IJEConfigARB } from '../models/ije-config-arb';
 import { capalize } from '../shared/capalize';
 import { promises } from 'dns';
 import { IJEFolder } from '../models/ije-folder';
