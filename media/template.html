@@ -14,12 +14,13 @@
         <form class="form-inline  mr-auto" onsubmit="return false;">
             <select id="select-folder" class="form-control mr-2" style="display: none;" onchange="filterFolder(this)">
            </select>            
-            <input class="form-control" style="width:400px" oninput="search(this)" type="text" placeholder="Search..." aria-label="Search...">
+            <input class="form-control" oninput="search(this)" style="width: 350px" type="text" placeholder="Search..." aria-label="Search...">
 
         </form>
         <form class="form-inline">
+            <button type="button" class="btn btn-vscode mr-2" onclick="language()"><i class="icon-language"></i> New</button>
             <button type="button" class="btn btn-vscode mr-2" onclick="save()"><i class="icon-floppy"></i> Save</button>
-            <button type="button" class="btn btn btn-vscode mr-2" onclick="add()"><i class="icon-plus-squared"></i> Add</button>
+            <button type="button" class="btn btn-vscode mr-2" onclick="add()"><i class="icon-plus-squared"></i> Add</button>
             <button type="button" class="btn btn-vscode" onclick="switchView()"><i id="icon-switch-view" class="icon-list-bullet"></i></button>
         </form>
     </nav>

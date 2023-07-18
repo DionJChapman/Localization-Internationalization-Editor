@@ -25,6 +25,9 @@ export class IJEManager {
                 case 'add':
                     this._data.add();
                     return;
+                case 'language':
+                    this._data.lang();
+                    return;
                 case 'mark':
                     this._data.mark(message.id);
                     return;
@@ -113,3 +116,4 @@ export class IJEManager {
             );
     }
 }
+
