@@ -8,9 +8,11 @@ import { IJEDataTranslation } from './models/ije-data-translation';
 import { IJEDataTranslationError } from './models/ije-data-translation';
 import { IJETranslationService } from './services/ije-translation-service';
 import { IJEManager } from './ije-manager';
+import { IJEFolder } from './models/ije-folder';
 import { IJEPage } from './models/ije-page';
 import { IJESort } from './models/ije-sort';
 import { IJEView, IJEViewType } from './models/ije-view';
+import { showInputBox } from './services/inputBox/showInputBox';
 
 export class IJEData {
     private _currentID = 1;
@@ -125,6 +127,35 @@ export class IJEData {
         if (index > -1) {
             this._validateImpacted(this._get(id));
             this._translations.splice(index, 1);
+
+            this._manager.refreshDataTable();
+        }
+    }
+
+    async lang() {
+        const existingFolders = IJEConfiguration.WORKSPACE_FOLDERS;
+
+        let lang: string = await showInputBox('Language Code', 'en_US');
+
+        if (lang.length > 0) {
+            existingFolders.forEach(f => {
+                let _src = `${f.path}/${f.arb}`;
+                let _dest = `${f.path}/app_${lang}.arb`;
+                let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
+                let split = s.split('\n');
+                for (let p = 0; p < split.length; ++p) {
+                    if (split[p].indexOf('@@local') !== -1) {
+                        split[p] = `    "@@local": "${lang}",`;
+                        break;
+                    }
+                }
+                fs.writeFileSync(vscode.Uri.file(_dest).fsPath, split.join('\n'));
+            });
+
+            this._languages = [];
+            this._translations = [];
+
+            this._loadFiles();
 
             this._manager.refreshDataTable();
         }

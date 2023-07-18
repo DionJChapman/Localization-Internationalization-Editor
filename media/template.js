@@ -51,7 +51,7 @@ var vscode;
   setTimeout(() => this.refresh(), 200);
 })();
 
-
+language = () => vscode.postMessage({ command: "language" });
 add = () => vscode.postMessage({ command: "add" });
 filterFolder = (el) => vscode.postMessage({ command: "filterFolder", value: el.value });
 mark = (id) => vscode.postMessage({ command: "mark", id: id });

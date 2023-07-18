@@ -137,7 +137,16 @@ export class IJEDataRenderService {
         render += '<div class="col-5">';
         render += '<div style="word-wrap: break-word;" class="list-group">';
         translations.forEach(t => {
-            render += `<a href="#" id="select-key-${t.id}" onclick="select(${t.id})" class="btn-vscode-secondary list-group-item list-group-item-action ${
+            let indent = 10;;
+            //let width = 400;
+            if (sort.column === "KEY" && !t.key.startsWith("@@") && t.key.startsWith("@")) {
+                let i = t.key.length - t.key.replace(/\./g, "").length;
+                for (let j = 0; j < i; ++j) {
+                    indent += 10;
+                    //width -= 10;
+                }
+            }
+                render += `<a href="#" id="select-key-${t.id}" onclick="select(${t.id})" style="padding-left: ${indent}px" class="btn-vscode-secondary list-group-item list-group-item-action ${
                 selectTranslation && selectTranslation.id === t.id ? 'active' : ''
             }">${t.key === '' ? '&nbsp;' : t.key}</a>`;
         });
