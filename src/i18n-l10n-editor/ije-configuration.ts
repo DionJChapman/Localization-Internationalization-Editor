@@ -61,7 +61,7 @@ export class IJEConfiguration {
             folders.forEach(d => {
                 var path = vscode.Uri.file(d.path).fsPath;
                 if (fs.existsSync(path)) {
-                    _folders.push({ name: d.name, path: path, arb: d.arb });
+                    _folders.push({ name: d.name, path: path, arb: d.arb, folder: d.folder });
                 }
             });
         } else {
@@ -71,7 +71,7 @@ export class IJEConfiguration {
             folders.forEach(d => {
                 var path = vscode.Uri.file(_path.join(workspaceFolder.uri.fsPath, d.path)).fsPath;
                 if (fs.existsSync(path)) {
-                    _folders.push({ name: d.name, path: path, arb: d.arb });
+                    _folders.push({ name: d.name, path: path, arb: d.arb, folder: d.folder});
                 }
             });
         }
