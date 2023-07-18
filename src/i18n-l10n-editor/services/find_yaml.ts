@@ -36,6 +36,7 @@ export async function findYAML(path): Promise<IJEFolder[]> {
     for (let y in yamlFiles) {
         let _name: string;
         let _path: string;
+        let _folder: string;
         let _arb: string;
 
         const yamlFile = yamlFiles[y];
@@ -47,10 +48,8 @@ export async function findYAML(path): Promise<IJEFolder[]> {
             yamlPath = `${split[split.length - 2]}`;
 
             _name = `${capalize(split[split.length - 3]).trim()}/${capalize(split[split.length - 2]).trim()}`;
+            _folder = split[split.length - 2];
         }
-        //     // if (yamlPath.lastIndexOf('/') > 0) {
-        //     //   yamlPath = yamlPath.substring(yamlPath.lastIndexOf('/') + 1);
-        //     // }
 
         let s = yamlFile.toString();
         if (s.startsWith('file://')) {
@@ -61,23 +60,16 @@ export async function findYAML(path): Promise<IJEFolder[]> {
         let lines = f.toString().split("\n");
         for (let l in lines) {
             let c = lines[l].split(":");
-            if (c[0] == 'arb-dir') {
+            if (c[0] === 'arb-dir') {
                 _path = c[1].trim();
-            } else if (c[0] == 'template-arb-file') {
+            } else if (c[0] === 'template-arb-file') {
                 _arb = c[1].trim();
             }
         }
         if (_arb === '') {
             _arb = "app_en.arb";
         }
-
-        // const parsedConfiguration = yaml.parseDocument(f.toString());
-        // const arbDir = parsedConfiguration.get('arb-dir') as string;
-        // const templateArbFileName = (parsedConfiguration.get('template-arb-file') as string | undefined) ?? 'app_en.arb';
-
-        // _path = arbDir;
-        // _arb = templateArbFileName;
-
+        
         let _arbPath: string = '';
 
         for (let e in existingExtensions) {
@@ -105,7 +97,7 @@ export async function findYAML(path): Promise<IJEFolder[]> {
             }
         }
 
-        folders.push({ name: _name, path: _path, arb: _arb });
+        folders.push({ name: _name, path: _path, arb: _arb, folder: _folder });
     }
 
     return folders;

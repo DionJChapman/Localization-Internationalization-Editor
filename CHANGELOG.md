@@ -5,6 +5,11 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 ## [3.0.4]
 
 - Added the ability to add new language files from the editor
+
+## [3.0.3]
+
+- Added sorting for key and @key pairs
+- Added indenting for @keys
   
 ## [3.0.2]
 

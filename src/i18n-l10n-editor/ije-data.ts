@@ -94,7 +94,6 @@ export class IJEData {
     render() {
         let render = '';
         let translations = this._getDisplayedTranslations();
-
         switch (this._view.type) {
             case IJEViewType.LIST:
                 render += IJEDataRenderService.renderList(
@@ -501,6 +500,58 @@ export class IJEData {
                 if (this._view.type === IJEViewType.LIST || this._sort.column === 'KEY') {
                     _a = a.key.toLowerCase();
                     _b = b.key.toLowerCase();
+                    if (this._sort.column === 'KEY') {
+                        if (IJEConfiguration.SORT_KEY_TOGETHER) {
+                            if (this._sort.ascending) {
+                                if (_a === '@@locale') {
+                                    return -1;
+                                }
+                                if (_b === '@@locale') {
+                                    return 1;
+                                }
+                                const compared = String(_a.replace('@', '')).localeCompare(_b.replace('@', ''));
+                                if (compared === 0) {
+                                    if (_a.startsWith('@')) {
+                                        return 1;
+                                    }
+                                    if (_b.startsWith('@')) {
+                                        return -1;
+                                    }
+                                }
+
+                                return compared;
+                            } else {
+                                if (_b === '@@locale') {
+                                    return -1;
+                                }
+                                if (_a === '@@locale') {
+                                    return 1;
+                                }
+                                if (_a.indexOf('.') !== -1) {
+                                    _a = _a.substring(0, _a.indexOf('.'));
+                                }
+                                if (_b.indexOf('.') !== -1) {
+                                    _b = _b.substring(0, _b.indexOf('.'));
+                                }
+                                let compared = String(_b.replace('@', '')).localeCompare(_a.replace('@', ''));
+                                if (compared === 0) {
+                                    _a = a.key.toLowerCase();
+                                    _b = b.key.toLowerCase();
+                                    compared = String(_a.replace('@', '')).localeCompare(_b.replace('@', ''));
+                                    if (compared === 0) {
+                                        if (_a.startsWith('@')) {
+                                            return 1;
+                                        }
+                                        if (_a.startsWith('@')) {
+                                            return -1;
+                                        }
+                                    }
+                                }
+
+                                return compared;
+                            }
+                        }
+                    }
                 } else if (this._sort.column === 'FOLDER') {
                     _a = a.folder + a.key.toLowerCase();
                     _b = b.folder + b.key.toLowerCase();
