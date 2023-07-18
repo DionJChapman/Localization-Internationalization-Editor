@@ -59,7 +59,8 @@ export class IJEDataRenderService {
         let render = '<table class="table table-borderless">';
         render += '<tr>';
         render += '<th></th>';
-        if (showFolder) {
+        const folders = IJEConfiguration.WORKSPACE_FOLDERS;
+        if (showFolder && folders.length > 1) {
             render += this._getTableHeader('FOLDER', sort);
         }
         render += this._getTableHeader('KEY', sort);
