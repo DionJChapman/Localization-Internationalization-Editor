@@ -74,19 +74,25 @@ export class IJEDataRenderService {
             render += '<tr>';
             render += `<td><button type="button" class="btn" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
 
+            let _defaultARB = "app_en";
             const folders = IJEConfiguration.WORKSPACE_FOLDERS;
             if (showFolder && folders.length > 1) {
                 render += `<td><select id="select-folder-${t.id}" class="form-control" onchange="updateFolder(this,${t.id})">`;
 
                 folders.forEach(d => {
+                    _defaultARB = d.arb;
                     render += `<option value='${d.path.replace(/"/g, '&quot;')}' ${d.path === t.folder ? 'selected' : ''}>${d.folder}</option>`;
                 });
+
+                if (_defaultARB.indexOf(".") !== -1) {
+                    _defaultARB = _defaultARB.substring(0, _defaultARB.indexOf("."));
+                }
 
                 render += ' </select></td>';
             }
 
             let indent = 0;;
-            let width = 400;
+            let width = 300;
             if (sort.column === "KEY" && !t.key.startsWith("@@") && t.key.startsWith("@")) {
                 let i = t.key.length - t.key.replace(/\./g, "").length;
                 for (let j = 0; j < i; ++j) {
@@ -108,16 +114,17 @@ export class IJEDataRenderService {
             languages.forEach((language: string) => {
                 render += '<td>';
                 if (hasTranslateService) {
-                    render += `<div class="input-group">`;
+                    render += `<div class="input-group" style="minWith: 330px; width: 330px; white-space: nowrap;">`;
                 }
-                render += `<input class="form-control" type="text" placeholder="Translation..." onfocus="mark(${t.id})" onchange="updateInput(this,${t.id},'${language}');" `;
+                render += `<input class="form-control" style="minWith: 270px; width: 270px; white-space: nowrap;" type="text" placeholder="Translation..." onfocus="mark(${t.id})" onchange="updateInput(this,${t.id},'${language}');" `;
                 if (t.languages[language]) {
                     render += `value="${t.languages[language].replace(/\n/g, '\\n').replace(/"/g, '&quot;')}" `;
                 }
                 render += '/>';
                 if (hasTranslateService) {
-                    render += `<div class="input-group-append">
-                               <button type="button" class="btn btn-vscode" onclick="translateInput(this,${t.id}, '${language}');"><i class="icon-language"></i></button>
+                    const style = language === _defaultARB? 'style="background: green; white-space: nowrap;"':'style="white-space: nowrap;"';
+                    render += `<div class="input-group-append" ${style}>` +
+                               `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${_defaultARB}', '${_defaultARB === language? languages.join(",") : language}');"><i class="icon-language"></i></button>
                            </div>`;
                     render += '</div>';
                 }

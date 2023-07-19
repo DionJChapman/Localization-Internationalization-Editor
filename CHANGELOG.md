@@ -2,6 +2,14 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.0.5]
+
+- Fixed issues with translation service due to changes in the Microsoft Translation APIs
+  - Now only does a single translation at a time
+- Change the default translation button to green to indicate that it will be translated to all languages
+- Increased the width of the text fields, now scrolls horizontally
+- Updated changelog documentation
+
 ## [3.0.4]
 
 - Added the ability to add new language files from the editor
@@ -46,6 +54,8 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 
 ## [2.1.0] (i18n json editor)
 
+Release Date 26/07/2022
+
 - Last know release by Thibault Vanderseypen
 - Added setting i18nJsonEditor.keySeparator
 - Added translation service feature
@@ -55,19 +65,27 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 
 ## [2.0.4]
 
+Release Date 5/10/2021
+
 - Release by Thibault Vanderseypen
 - Fixed Escape quotes in html value="" attributes
 - Remove BOM if necessary
 
 ## [2.0.3]
 
+Release Date 29/06/2021
+
 - Release by Thibault Vanderseypen
 
 ## [2.0.2]
 
+Release Date 16/06/2021
+
 - Release by Thibault Vanderseypen
 
 ## [2.0.1]
+
+Release Date 16/06/2021
 
 - Release by Thibault Vanderseypen
 
@@ -88,22 +106,35 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 
 ## [1.3.0] (i18n arb editor)
 
+Release Date 23/02/2023
+
 - Last know release by Innwin
 
 ## [1.2.0]
 
+Release Date 2/12/2021
+
 - Release by Innwin
+- Removed checking for i18n and l10n when checking resource folder
 
 ## [1.1.0]
 
+Release Date 19/11/2021
+
 - Release by Innwin
+- Added intl_zh_HK.arb and intl_zh_TW to demo folder
 
 ## [1.0.1]
 
+Release Date 14/01/2021
+
 - Release by Innwin
-- Added description file settings (*depreciated*)
+- Added code for a description.json file for i18n translations (*depreciated*)
+- Update readme documentation
 
 ## [1.0.0]
+
+Release Date 13/01/2021
 
 - Release by Innwin
 

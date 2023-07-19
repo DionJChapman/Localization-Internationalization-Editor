@@ -1,239 +1,239 @@
 {
-    "@@locale": "zh_CN",
-    "account": "帐户",
+    "@@locale": "de_CH",
+    "account": "Konto",
     "@account": {
-        "description": "Account screen delete button"
+        "description": "Account screen"
     },
-    "accountDelete": "删除帐户",
+    "accountDelete": "Delete Account",
     "@accountDelete": {
         "description": "Account screen Delete button"
     },
-    "accountTeam": "团队通知",
+    "accountTeam": "Team Notifications",
     "@accountTeam": {
         "description": "Account menu and screen name"
     },
-    "accountToDo": "团队通知",
+    "accountToDo": "ToDo Notifications",
     "@accountToDo": {
         "description": "Account menu and screen name"
     },
     "appName": "Platform ToDo",
-    "cancel": "取消",
+    "cancel": "Cancel",
     "@cancel": {
         "description": "Used in Alerts to cancel action"
     },
-    "colorSelectTitle1": "背景颜色选择",
+    "colorSelectTitle1": "Background Selection",
     "@colorSelectTitle1": {
-        "description": "Title for selecting background color"
+        "description": "Title for selecting background colour"
     },
-    "colorSelectTitle2": "自定义背景颜色",
+    "colorSelectTitle2": "Custom Background",
     "@colorSelectTitle2": {
-        "description": "Title for creating a custom background color"
+        "description": "Title for creating a custom background colour"
     },
-    "confirm": "确认密码",
+    "confirm": "Confirm Password",
     "@confirm": {
         "description": "Used on login and create account screens"
     },
-    "createAccount": "立即注册",
+    "createAccount": "Sign Up",
     "@createAccount": {
         "description": "Used on login and create account screens"
     },
-    "description": "描述",
+    "description": "Description",
     "@description": {
         "description": "Used on login and create account screens"
     },
-    "doNotShow": "不再显示",
+    "doNotShow": "Do Not Show Again",
     "@doNotShow": {
         "description": "Alert Dialog to stop showing multiple times"
     },
-    "email": "电子邮件",
+    "email": "Email",
     "@email": {
         "description": "Used on the login and create account screens"
     },
-    "endDate": "结束日期",
+    "endDate": "End Date",
     "@endDate": {
         "description": "Used on login and create account screens"
     },
-    "homeAddMsg": "免费版只能有 5 个待办事项列表. 你想升级吗?",
+    "homeAddMsg": "The free version can only have 5 ToDo lists. Do you want to upgrade?",
     "@homeAddMsg": {
         "description": "Alert Dialog for when you need to upgrade for teams"
     },
-    "homeAddTitle": "需要升级",
+    "homeAddTitle": "Upgrade Required",
     "@homeAddTitle": {
         "description": "Alert Dialog for when you need to upgrade for teams"
     },
-    "homeAddToDo": "添加新的待办事项列表",
+    "homeAddToDo": "Add new ToDo list",
     "@homeAddToDo": {
         "description": "Add button on home screen"
     },
-    "homeFilter": "过滤器列表",
+    "homeFilter": "Filter List",
     "@homeFilter": {
         "description": "Filter button on home screen"
     },
-    "homeTeamMsg": "免费版不能使用团队. 你想升级吗?",
+    "homeTeamMsg": "The free version can not use Teams. Do you want to upgrade?",
     "@homeTeamMsg": {
         "description": "Alert Dialog for when you need to upgrade for teams"
     },
-    "homeTeamTitle": "需要升级",
+    "homeTeamTitle": "Upgrade Required",
     "@homeTeamTitle": {
         "description": "Alert Dialog for when you need to upgrade for teams"
     },
-    "loading": "Platform ToDo 加载中...",
+    "loading": "Platform ToDo Loading...",
     "@loading": {
         "description": "Used on the loading screen"
     },
-    "loadingStages1": "你的帐户",
-    "loadingStages2": "你的团队",
-    "loadingStages3": "你的任务",
-    "loadingStages4": "团队任务",
-    "loadingStages5": "完毕...",
-    "login": "登录到您的帐户",
+    "loadingStages1": "Your Account",
+    "loadingStages2": "Your Teams",
+    "loadingStages3": "Your Tasks",
+    "loadingStages4": "Team Tasks",
+    "loadingStages5": "Done...",
+    "login": "Sign In",
     "@login": {
         "description": "Login screen Button"
     },
-    "logout": "登出",
+    "logout": "Sign Out",
     "@logout": {
         "description": "Login screen Button"
     },
-    "mobile": "手机",
+    "mobile": "Mobile",
     "@mobile": {
         "description": "Used on create account screens"
     },
-    "mobileOptional": "手机 (选修的)",
+    "mobileOptional": "Mobile (optional)",
     "@mobileOptional": {
         "description": "Used on create account screens"
     },
-    "name": "姓名",
+    "name": "Name",
     "@name": {
         "description": "Used on login and create account screens"
     },
-    "nameOptional": "姓名 (选修的)",
+    "nameOptional": "Name (optional)",
     "@nameOptional": {
         "description": "Used on create account screens"
     },
-    "networkMsg1": "您的设备存在网络问题.",
+    "networkMsg1": "Your device is having network issues.",
     "@networkMsg1": {
         "description": "Alert Dialog for Network Issues"
     },
-    "networkMsg2": "请检查您的网络，然后重新启动应用程序.",
+    "networkMsg2": "Please check your network and then restart the app.",
     "@networkMsg2": {
         "description": "Alert Dialog for Network Issues"
     },
-    "networkTitle": "网络问题 Issues",
+    "networkTitle": "Network Issues",
     "@networkTitle": {
         "description": "Alert Dialog for Network Issues"
     },
-    "ok": "可以",
+    "ok": "OK",
     "@ok": {
         "description": "Used in Alerts to approve action"
     },
-    "password": "密码",
+    "password": "Password",
     "@password": {
         "description": "Used on login and create account screens"
     },
     "profile": "Profile",
-    "signInMsg": "电子邮件和/或密码不正确. 请再试一次.",
+    "signInMsg": "Incorrect Email and/or Password. Please try again.",
     "@signInMsg": {
         "description": "Alert Dialog for Sign In"
     },
-    "signInNetwork": "网络问题. 请检查您的网络，然后重试..",
+    "signInNetwork": "Network issues. Please check your network and then try again.",
     "@signInNetwork": {
         "description": "Alert Dialog for Network Issues"
     },
-    "signInTitle": "登录错误",
+    "signInTitle": "Sign In Error",
     "@signInTitle": {
         "description": "Alert Dialog for Sign In"
     },
-    "signInVerifiedMsg1": "您的电子邮件尚未经过验证. 您想再次发送验证邮件吗?",
+    "signInVerifiedMsg1": "Your email has not yet been verified. Do you want to send verification email again?",
     "@signInVerifiedMsg1": {
-        "description": "Alert Dialog for Signin Account"
+        "description": "Alert Dialog for Create Account"
     },
-    "signInVerifiedTitle": "需要验证电子邮件",
+    "signInVerifiedTitle": "Email Verification Required",
     "@signInVerifiedTitle": {
         "description": "Alert Dialog for Signin Account"
     },
-    "signUpMsgBad": "电子邮件地址格式错误.",
+    "signUpMsgBad": "The email address is badly formatted.",
     "@signUpMsgBad": {
         "description": "Alert Dialog for Sign In"
     },
-    "signUpMsgEmail": "提供的密码太弱。 它必须至少为 8 个字符.",
+    "signUpMsgEmail": "The password provided is too weak. It must be at least 8 characters.",
     "@signUpMsgEmail": {
         "description": "Alert Dialog for Sign In"
     },
-    "signUpMsgUsed": "该电子邮件的帐户已存在. 请尝试使用不同的电子邮件地址，或登录.",
+    "signUpMsgUsed": "The account already exists for that email. Please try a different email, or Sign In.",
     "@signUpMsgUsed": {
         "description": "Alert Dialog for Sign In"
     },
-    "signUpNetwork": "网络问题。 请检查您的网络，然后重试。",
+    "signUpNetwork": "Network issues. Please check your network and then try again.",
     "@signUpNetwork": {
         "description": "Alert Dialog for Network Issues"
     },
-    "signUpOTP": "输入您的一次性密码",
+    "signUpOTP": "Enter Your OTP",
     "@signUpOTP": {
         "description": "Alert Dialog for Create Account"
     },
-    "signUpPasswordMsg1": "您的密码不匹配. 请再试一次.",
+    "signUpPasswordMsg1": "Your passwords didn't match. Please try again.",
     "@signUpPasswordMsg1": {
         "description": "Alert Dialog for Create Account"
     },
-    "signUpPasswordTitle": "密码不匹配",
+    "signUpPasswordTitle": "Password Mismatch",
     "@signUpPasswordTitle": {
         "description": "Alert Dialog for Create Account"
     },
-    "signUpPhoneMsg1": "目前无法验证您的手机. 请稍后编辑您的个人资料以添加手机号码.",
+    "signUpPhoneMsg1": "Your Mobile couldn't be verified at this time. Please edit your profile later to add a mobile number.",
     "@signUpPhoneMsg1": {
         "description": "Alert Dialog for Create Account"
     },
-    "signUpPhoneTitle": "手机验证失败",
+    "signUpPhoneTitle": "Mobile Verification Failed",
     "@signUpPhoneTitle": {
         "description": "Alert Dialog for Create Account"
     },
-    "signUpTitle": "注册错误",
+    "signUpTitle": "Sign Up Error",
     "@signUpTitle": {
         "description": "Alert Dialog for Sign In"
     },
-    "signUpVerify": "校验",
+    "signUpVerify": "Verify",
     "@signUpVerify": {
         "description": "Alert Dialog for Create Account"
     },
-    "startDate": "开始日期",
+    "startDate": "Start Date",
     "@startDate": {
         "description": "Used on login and create account screens"
     },
-    "taskAdd": "添加新的子任务",
+    "taskAdd": "Add a new subtask",
     "@taskAdd": {
         "description": "Add button on task screen"
     },
-    "taskAddMsg": "免费版不能有子任务. 你想升级吗?",
+    "taskAddMsg": "The free version can't have sub-tasks. Do you want to upgrade?",
     "@taskAddMsg": {
         "description": "Alert Dialog for when you need to upgrade for teams"
     },
-    "taskAddTitle": "需要升级",
+    "taskAddTitle": "Upgrade Required",
     "@taskAddTitle": {
         "description": "Alert Dialog for when you need to upgrade for teams"
     },
-    "taskCompleted": "完全的: {completedDate}",
+    "taskCompleted": "Completed: {completedDate}",
     "@taskCompleted": {
         "description": "Used when a task is completed",
         "placeholders": {
             "completedDate": {
-                "example": "毫无",
+                "example": "none",
                 "type": "String"
             }
         }
     },
-    "taskDelete": "D删除这个任务",
+    "taskDelete": "Delete this task",
     "@taskDelete": {
         "description": "Delete button on task screen"
     },
-    "taskDeleteMsg": "您确定要删除此任务及其所有子任务吗?",
+    "taskDeleteMsg": "Are you sure you want to delete this task and all its subtasks?",
     "@taskDeleteMsg": {
         "description": "Alert Dialog for Deleting Task"
     },
-    "taskDeleteTitle": "删除此任务",
+    "taskDeleteTitle": "Delete this Task",
     "@taskDeleteTitle": {
         "description": "Alert Dialog for Deleting Task"
     },
-    "taskNone": "毫无",
+    "taskNone": "none",
     "@taskNone": {
         "description": "Used when dates are NULL"
     },
@@ -247,126 +247,126 @@
             }
         }
     },
-    "taskStartEnd": "开始 {startDate} - 结尾 {endDate}",
+    "taskStartEnd": "Start {startDate} - End {endDate}",
     "@taskStartEnd": {
         "description": "Used when a task has a start and/or end date",
         "placeholders": {
             "endDate": {
-                "example": "毫无",
+                "example": "none",
                 "type": "String"
             },
             "startDate": {
-                "example": "毫无",
+                "example": "none",
                 "type": "String"
             }
         }
     },
-    "teamAddMsg": "输入您要邀请的团队成员的电子邮件地址",
+    "teamAddMsg": "Enter the email address of the team member you wish to invite",
     "@teamAddMsg": {
-        "description": "for the dialog box to add a team member"
+        "description": "Column heading in Teams List"
     },
-    "teamAddTitle": "邀请会员",
+    "teamAddTitle": "Invite Member",
     "@teamAddTitle": {
-        "description": "for the dialog box to add a team member"
+        "description": "Column heading in Teams List"
     },
-    "teamDeleteMsg": "您确定要删除该团队吗? 任何未分配的任务都将分配给您.",
+    "teamDeleteMsg": "Are you sure you want to delete this team? Any unassigned tasks will be assigned to you.",
     "@teamDeleteMsg": {
-        "description": "Alert Dialog for Deleting Team"
+        "description": "Alert Dialog for Deleting Task"
     },
-    "teamDeleteTitle": "删除这个团队",
+    "teamDeleteTitle": "Delete this Team",
     "@teamDeleteTitle": {
-        "description": "Alert Dialog for Deleting Team"
+        "description": "Alert Dialog for Deleting Task"
     },
-    "teamlistMembers": "成员",
+    "teamlistMembers": "Members",
     "@teamlistMembers": {
         "description": "Column heading in Teams List"
     },
-    "teamlistOwner": "所有者",
+    "teamlistOwner": "Owner",
     "@teamlistOwner": {
         "description": "Column heading in Teams List"
     },
-    "teamlistTeam": "团队",
+    "teamlistTeam": "Team",
     "@teamlistTeam": {
         "description": "Column heading in Teams List"
     },
-    "teamlistTeams": "团队",
+    "teamlistTeams": "Teams",
     "@teamlistTeams": {
         "description": "Title of Teams List"
     },
-    "teamMembersMsg": "此版本一个团队中只能有五个成员. 如果您需要有更多的成员和团队，请升级.",
+    "teamMembersMsg": "This version can only have five members in a team. Please upgrade if you require to have more members and teams.",
     "@teamMembersMsg": {
         "description": "Column heading in Teams List"
     },
-    "teamMembersTitle": "需要升级",
+    "teamMembersTitle": "Upgrade Required",
     "@teamMembersTitle": {
         "description": "Column heading in Teams List"
     },
-    "teamOwnerMsg": "只有团队的所有者可以删除它.",
+    "teamOwnerMsg": "Only the owner of a team can delete it.",
     "@teamOwnerMsg": {
         "description": "Alert Dialog for Deleting Task"
     },
-    "teamOwnerRemoveMsg": "只有团队所有者可以删除团队成员.",
+    "teamOwnerRemoveMsg": "Only the team owner can remove team members.",
     "@teamOwnerRemoveMsg": {
         "description": "Alert Dialog for Deleting Task"
     },
-    "teamOwnerRemoveTitle": "无法删除团队成员",
+    "teamOwnerRemoveTitle": "Can Not Remove Team Member",
     "@teamOwnerRemoveTitle": {
         "description": "Alert Dialog for Deleting Task"
     },
-    "teamOwnerTitle": "无法删除",
+    "teamOwnerTitle": "Can Not Delete",
     "@teamOwnerTitle": {
         "description": "Alert Dialog for Deleting Task"
     },
-    "teamRemoveMsg": "您确定要删除该团队成员吗? 所有分配的任务都将分配给您.",
+    "teamRemoveMsg": "Are you sure you want to remove this team member? All assigned tasks will be assigned to you.",
     "@teamRemoveMsg": {
         "description": "Alert Dialog for Deleting Task"
     },
-    "teamRemoveTitle": "删除团队成员",
+    "teamRemoveTitle": "Remove Team Member",
     "@teamRemoveTitle": {
         "description": "Alert Dialog for Deleting Task"
     },
-    "teamTeamMsg": "这个版本只能有一个团队. 如果您需要拥有更多团队，请升级.",
+    "teamTeamMsg": "This version can only have one team. Please upgrade if you require to have more teams.",
     "@teamTeamMsg": {
         "description": "Column heading in Teams List"
     },
-    "teamTeamTitle": "需要升级",
+    "teamTeamTitle": "Upgrade Required",
     "@teamTeamTitle": {
         "description": "Column heading in Teams List"
     },
-    "todoAdd": "添加新任务",
+    "todoAdd": "Add a new task",
     "@todoAdd": {
         "description": "Add button on todo screen"
     },
-    "todoBackground": "更改此待办事项的颜色",
+    "todoBackground": "Change colour of this ToDo",
     "@todoBackground": {
         "description": "Colour button on todo screen"
     },
-    "todoDelete": "删除这个待办事项",
+    "todoDelete": "Delete this ToDo",
     "@todoDelete": {
         "description": "Delete button on todo screen"
     },
-    "toDoDeleteMsg": "您确定要删除此待办事项列表及其所有任务吗?",
+    "toDoDeleteMsg": "Are you sure you want to delete this ToDo List and all its tasks?",
     "@toDoDeleteMsg": {
         "description": "Alert Dialog for Deleting ToDo"
     },
-    "toDoDeleteTitle": "删除待办事项列表",
+    "toDoDeleteTitle": "Delete ToDo List",
     "@toDoDeleteTitle": {
         "description": "Alert Dialog for Deleting ToDo"
     },
-    "upgradeButton": "升级",
+    "upgradeButton": "Upgrade",
     "@upgradeButton": {
         "description": "Title of Upgrade Screen"
     },
-    "upgradeProTeamUserMsg": "* 一次性付款\n* 团队可以包含子团队\n* 所有团队成员升级到团队版",
-    "upgradeProTeamUserTitle": "专业团队版",
-    "upgradeProUserMsg": "* 一次性付款\n* 无限待办事项列表\n* 一个团队最多五名成员\n* 无限子任务\n* 无广告",
-    "upgradeProUserTitle": "专业版",
-    "upgradeTeamUserMsg": "* 一次性付款\n* 无限团队，无限成员",
-    "upgradeTeamUserTitle": "团队版",
-    "upgradeTitle": "升级平台待办事项",
+    "upgradeProTeamUserMsg": "* One off payment\n* Teams can contain sub-teams\n* All team members upgraded to Team Version",
+    "upgradeProTeamUserTitle": "Pro Team Version",
+    "upgradeProUserMsg": "* One off payment\n* Unlimited ToDo Lists\n* One Teams up to five members\n* Unlimited Subtasks\n* No Ads",
+    "upgradeProUserTitle": "Pro Version",
+    "upgradeTeamUserMsg": "* One off payment\n* Unlimited teams with unlimited members",
+    "upgradeTeamUserTitle": "Team Version",
+    "upgradeTitle": "Upgrade Platform ToDo",
     "@upgradeTitle": {
         "description": "Title of Upgrade Screen"
     },
-    "upgradeUserMsg": "* 仅限于五个待办事项列表\n* 每个待办事项的任务数量不受限制\n* 无团队\n* 无子任务\n* 广告",
-    "upgradeUserTitle": "免费版"
+    "upgradeUserMsg": "* Limited to five ToDo Lists\n* Unlimited Task Per ToDo\n* No Teams\n* No Subtasks\n* Ads",
+    "upgradeUserTitle": "Free Version"
 }
