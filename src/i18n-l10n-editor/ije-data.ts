@@ -134,7 +134,9 @@ export class IJEData {
     async lang() {
         const existingFolders = IJEConfiguration.WORKSPACE_FOLDERS;
 
-        let lang: string = await showInputBox('Language Code - Make sure you have saved your work', 'en_US');
+        this.save();
+
+        let lang: string = await showInputBox('Language Code', 'en_US');
 
         if (lang.length > 0) {
             existingFolders.forEach(f => {

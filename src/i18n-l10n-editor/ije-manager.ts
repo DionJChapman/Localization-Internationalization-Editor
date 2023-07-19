@@ -81,7 +81,7 @@ export class IJEManager {
     }
 
     refreshDataTable() {
-        this._panel.webview.postMessage({ command: 'content', render: this._data.render() });
+        this._panel.webview.postMessage({ command: 'content', render: this._data.render().trim() });
     }
 
     updateTranslation(translation: IJEDataTranslation) {

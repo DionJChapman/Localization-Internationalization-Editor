@@ -8,6 +8,8 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
   - Now only does a single translation at a time
 - Change the default translation button to green to indicate that it will be translated to all languages
 - Increased the width of the text fields, now scrolls horizontally
+- Moved the default language to the start
+- Added auto save when adding a new language
 - Updated changelog documentation
 
 ## [3.0.4]
