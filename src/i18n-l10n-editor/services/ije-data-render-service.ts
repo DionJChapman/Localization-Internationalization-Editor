@@ -8,7 +8,7 @@ export class IJEDataRenderService {
         let render = '<div class="container-fluid" style="margin: 0px; padding: 0px;">';
         render += '<div class="row" style="margin: 0px; padding: 0px;">';
         render += '<div class="col-4">';
-        render += '<div class="mt-3">';
+        render += '<div class="mt-3" style="position: sticky; left: 20px; z-index: 1100;">';
         if (page.count === 0) {
             render += '0 ';
         } else {
@@ -66,7 +66,6 @@ export class IJEDataRenderService {
         }
         render += this._getTableHeader('KEY', 100, sort);
 
-        let offset = 0;
         let _defaultARB = 'app_en';
         folders.forEach(d => {
             _defaultARB = d.arb;
@@ -96,13 +95,12 @@ export class IJEDataRenderService {
         render += '</tr>';
 
         translations.forEach(t => {
-            render += '<tr style="background: #CC21D2; padding: 0px; margin: 0px; left: 0px">';
+            render += '<tr style="padding: 0px; margin: 0px; left: 0px">';
             render +=
                 `<td style="background: #1f1f1f; width: 100px; maxWidth: 100px; white-space: nowrap; position: sticky; left: 0px; z-index: 1000; margin: 0px; padding: 0px;">` +
                 `<button type="button" class="btn" style="width: 100px; maxWidth: 100px;" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
 
             if (showFolder && folders.length > 1) {
-                offset = 300;
                 render += `<td style="background: #1f1f1f; width: 300px;"><select id="select-folder-${t.id}" class="form-control" style="width: 300px;" onchange="updateFolder(this,${t.id})">`;
 
                 folders.forEach(d => {
@@ -173,9 +171,19 @@ export class IJEDataRenderService {
         showFolder: boolean = true,
         hasTranslateService = false
     ) {
+        const folders = IJEConfiguration.WORKSPACE_FOLDERS;
+        let _defaultARB = 'app_en';
+        folders.forEach(d => {
+            _defaultARB = d.arb;
+        });
+
+        if (_defaultARB.indexOf('.') !== -1) {
+            _defaultARB = _defaultARB.substring(0, _defaultARB.indexOf('.'));
+        }
+
         let render = '<div class="container-fluid">';
         render += '<div class="row">';
-        render += '<div class="col-4">';
+        render += '<div class="col-4" style="position: fixed; top: 95px; z-index: 1000;">';
         render += '<div style="word-wrap: break-word;" class="list-group">';
         translations.forEach(t => {
             let indent = 10;
@@ -189,7 +197,7 @@ export class IJEDataRenderService {
             }
             render += `<a href="#" id="select-key-${t.id}" onclick="select(${
                 t.id
-            })" style="padding-left: ${indent}px" class="btn-vscode-secondary list-group-item list-group-item-action ${
+            })" style="padding-left: ${indent}px; height: 35px" class="btn-vscode-secondary list-group-item list-group-item-action ${
                 selectTranslation && selectTranslation.id === t.id ? 'active' : ''
             }">${t.key === '' ? '&nbsp;' : t.key}</a>`;
         });
@@ -197,10 +205,9 @@ export class IJEDataRenderService {
         render += this.renderPagination(translations, page, false);
         render += '</div>';
 
-        render += '<div class="col-7">';
+        render += '<div class="col-7" style="left: 500px">';
 
         if (selectTranslation) {
-            const folders = IJEConfiguration.WORKSPACE_FOLDERS;
             if (showFolder && folders.length > 1) {
                 render += ` 
                   <div class="form-group">
@@ -247,9 +254,12 @@ export class IJEDataRenderService {
                 }
                 render += '</textarea>';
                 if (hasTranslateService) {
+                    const style = language === _defaultARB ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
                     render += `</div>
                                     <div class="col-2">
-                                        <button type="button" class="btn btn-vscode" onclick="translateInput(this,${selectTranslation.id}, '${language}');"><i class="icon-language"></i></button>
+                                        <button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this, ${selectTranslation.id},'${_defaultARB}', '${
+                        _defaultARB === language ? languages.join(',') : language
+                    }');"><i class="icon-language"></i></button>
                                     </div>
                                 </div>
                             `;

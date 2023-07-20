@@ -2,6 +2,11 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.0.6]
+
+- Updated tree view to lock keys in position
+- Updated tranlation as per table view
+  
 ## [3.0.5]
 
 - Fixed issues with translation service due to changes in the Microsoft Translation APIs
