@@ -66,6 +66,7 @@ export class IJEDataRenderService {
         }
         render += this._getTableHeader('KEY', 100, sort);
 
+        let offset = 0;
         let _defaultARB = 'app_en';
         folders.forEach(d => {
             _defaultARB = d.arb;
@@ -101,7 +102,8 @@ export class IJEDataRenderService {
                 `<button type="button" class="btn" style="width: 100px; maxWidth: 100px;" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
 
             if (showFolder && folders.length > 1) {
-                render += `<td style="background: #1f1f1f;"><select id="select-folder-${t.id}" class="form-control" onchange="updateFolder(this,${t.id})">`;
+                offset = 300;
+                render += `<td style="background: #1f1f1f; width: 300px;"><select id="select-folder-${t.id}" class="form-control" style="width: 300px;" onchange="updateFolder(this,${t.id})">`;
 
                 folders.forEach(d => {
                     render += `<option value='${d.path.replace(/"/g, '&quot;')}' ${d.path === t.folder ? 'selected' : ''}>${d.folder}</option>`;
@@ -110,7 +112,7 @@ export class IJEDataRenderService {
                 render += ' </select></td>';
             }
 
-            let indent = 0;
+            let indent = 10;
             let width = 301;
             if (sort.column === 'KEY' && !t.key.startsWith('@@') && t.key.startsWith('@')) {
                 let i = t.key.length - t.key.replace(/\./g, '').length;
@@ -131,7 +133,7 @@ export class IJEDataRenderService {
             `;
 
             languages.forEach((language: string) => {
-                render += `<td style="background: #1f1f1f; ${language === _defaultARB ? 'position: sticky; left: 425px; z-index: 1000;' : ''}">`;
+                render += `<td style="background: #1f1f1f; ${language === _defaultARB ? `position: sticky; left: 425px; z-index: 1000;` : ''}">`;
                 if (hasTranslateService) {
                     render += `<div class="input-group" style="minWith: 330px; width: 330px; white-space: nowrap;">`;
                 }
