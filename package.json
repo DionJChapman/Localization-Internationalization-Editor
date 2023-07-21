@@ -11,7 +11,7 @@
     },
     "description": "Easily edit your i18n/l10n json files",
     "icon": "media/logo.png",
-    "version": "3.0.7",
+    "version": "3.0.8",
     "engines": {
         "vscode": "^1.80.0"
     },
@@ -47,23 +47,23 @@
                 "i18n-l10n-editor.forceKeyUPPERCASE": {
                     "default": false,
                     "type": "boolean",
-                    "description": "Force the keys to uppercase (deprecated)"
+                    "description": "Force the keys to uppercase (deprecated)."
                 },
                 "i18n-l10n-editor.keyCaseStyle": {
                     "default": "camelCase",
                     "type": "string",
                     "enum":  ["no change", "camelCase", "lowercase", "UPPERCASE"],
-                    "description": "how to write keys to the files valid methods are [no change, camelCase, lowercase, UPPERCASE]"
+                    "description": "how to write keys to the files valid methods are [no change, camelCase, lowercase, UPPERCASE].\ncamelCase requires spaces when typing key."
                 },
                 "i18n-l10n-editor.sortKeyTogether": {
                     "default": false,
                     "type": "boolean",
-                    "description": "Sort files so that key and @key will be kept together"
+                    "description": "Sort files so that key and @key will be kept together."
                 },
                 "i18n-l10n-editor.autoTranslateNewLanguage": {
                     "default": false,
                     "type": "boolean",
-                    "description": "Will auto translate all new key translation when adding a new language"
+                    "description": "Will auto translate all new key translation when adding a new language."
                 },
                 "i18n-l10n-editor.jsonSpace": {
                     "default": 4,
@@ -71,7 +71,7 @@
                         "string",
                         "number"
                     ],
-                    "description": "A String or Number that's used to insert white space into the output JSON"
+                    "description": "A String or Number that's used to insert white space into the output JSON."
                 },
                 "i18n-l10n-editor.keySeparator": {
                     "default": ".",
@@ -79,14 +79,14 @@
                         "string",
                         "boolean"
                     ],
-                    "description": "String to separate keys, or false if no separator is preferred"
+                    "description": "String to separate keys, or false if no separator is preferred."
                 },
                 "i18n-l10n-editor.lineEnding": {
                     "default": "\n",
                     "type": [
                         "string"
                     ],
-                    "description": "String used to signify the end of a line "
+                    "description": "String used to signify the end of a line."
                 },
                 "i18n-l10n-editor.supportedFolders": {
                     "default": [
@@ -94,7 +94,7 @@
                         "l10n"
                     ],
                     "type": "array",
-                    "description": "An array of folder names that's used to open the extension through the right click (restart required after changing the value)"
+                    "description": "An array of folder names that's used to open the extension through the right click (restart required after changing the value)."
                 },
                 "i18n-l10n-editor.supportedExtensions": {
                     "default": [
@@ -102,22 +102,26 @@
                         "json"
                     ],
                     "type": "array",
-                    "description": "An array of file extension to check when loading the editor. if no file exists then the first one is used by default (restart required after changing the value)"
+                    "description": "An array of file extension to check when loading the editor. if no file exists then the first one is used by default (restart required after changing the value)."
                 },
                 "i18n-l10n-editor.translationService": {
                     "type": "string",
-                    "description": "Specified wich translation service to use (Only Microsoft translator is currently available)",
+                    "description": "Specified wich translation service to use (Only Microsoft translator is currently available).",
                     "enum": [
                         "MicrosoftTranslator"
                     ]
                 },
                 "i18n-l10n-editor.translationServiceApiKey": {
                     "type": "string",
-                    "description": " Api key used by the translation service"
+                    "description": " Api key used by the translation service. Copy this from the Key Generation page."
+                },
+                "i18n-l10n-editor.translationServiceApiRegion": {
+                    "type": "string",
+                    "description": " Api region used by the translation service. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.workspaceFolders": {
                     "type": "array",
-                    "description": "An array of objects to specify which folders are used to manage your translations"
+                    "description": "An array of objects to specify which folders are used to manage your translations."
                 }
             }
         }

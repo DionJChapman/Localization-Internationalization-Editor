@@ -1,5 +1,5 @@
 arb-dir: demo/l10n
 template-arb-file: app_en.arb
-output-localization-file: app_localizations.dart
+output-localeization-file: app_localeizations.dart
 untranslated-messages-file: missing.log
 nullable-getter: true

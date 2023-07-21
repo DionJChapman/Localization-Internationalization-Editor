@@ -138,6 +138,7 @@ export class IJEData {
         this.save();
 
         let lang: string = await showInputBox('Language Code', 'en_US');
+        let oldLang = '';
 
         if (lang.length > 0) {
             existingFolders.forEach(f => {
@@ -146,7 +147,11 @@ export class IJEData {
                 let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
                 let split = s.split('\n');
                 for (let p = 0; p < split.length; ++p) {
-                    if (split[p].indexOf('@@locale') !== -1) {
+                    if (split[p].indexOf('@@locale') !== -1 || split[p].indexOf('@@local') !== -1) {
+                        const l = split[p].split(':');
+                        if (l.length === 2 && l[1].lastIndexOf('"') > l[1].indexOf('"')) {
+                            oldLang = l[1].substring(l[1].indexOf('"') + 1, l[1].lastIndexOf('"'));
+                        }
                         split[p] = `    "@@locale": "${lang}",`;
                         break;
                     }
@@ -160,6 +165,51 @@ export class IJEData {
             this._loadFiles();
 
             this._manager.refreshDataTable();
+
+            if (IJEConfiguration.KEY_AUTO_TRANSLATE) {
+                this.autoTranslate(`app_${oldLang}`, `app_${lang}`);
+            }
+        }
+    }
+
+    async autoTranslate(oldLang: string, lang: string) {
+        const existingFolders = IJEConfiguration.WORKSPACE_FOLDERS;
+
+        const values: string[] = [];
+
+        if (oldLang.lastIndexOf("_") > oldLang.indexOf("_") && oldLang.indexOf("_") !== -1) {
+            oldLang = oldLang.substring(0, oldLang.lastIndexOf("_"));
+        }
+
+        if (lang.length > 0) {
+            existingFolders.forEach(f => {
+                let _src = `${f.path}/${lang}.arb`;
+                let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
+                let split = s.split('\n');
+                for (let p = 0; p < split.length; ++p) {
+                    if (!split[p].trim().startsWith('"@') && !split[p].trim().startsWith('{') && !split[p].trim().startsWith('}')) {
+                        const l = split[p].split(':');
+                        if (l.length === 2 && l[0].lastIndexOf('"') > l[0].indexOf('"')) {
+                            const key = l[0].substring(l[0].indexOf('"') + 1, l[0].lastIndexOf('"'));
+                            if (key.toLocaleLowerCase() !== 'description' && key.toLocaleLowerCase() !== 'type') {
+                                const translate = this._getKey(key);
+                                if (translate && oldLang !== '') {
+                                    this.translate(translate.id, oldLang, lang);
+                                    //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+                                    //sleep(250);
+                                                        }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // this._languages = [];
+            // this._translations = [];
+
+            // this._loadFiles();
+
+            // this._manager.refreshDataTable();
         }
     }
 
@@ -260,10 +310,10 @@ export class IJEData {
                     value
                         .filter(translation => translation.valid)
                         .sort((a, b) => {
-                            if (a.key === '@@locale') {
+                            if (a.key === '@@locale' || a.key === '@@local') {
                                 return -1;
                             }
-                            if (b.key === '@@locale') {
+                            if (b.key === '@@locale' || b.key === '@@locale') {
                                 return 1;
                             }
                             const compared = String(a.key.replace('@', '')).localeCompare(b.key.replace('@', ''));
@@ -349,7 +399,7 @@ export class IJEData {
         if (translation && from) {
             const service = IJETranslationService;
             service._manager = this._manager;
-            await service.translate(translation, from, to.split(","));
+            await service.translate(translation, from, to.split(','));
             this._manager.refreshDataTable();
         }
     }
@@ -684,6 +734,10 @@ export class IJEData {
 
     private _getIndex(id: number): number {
         return this._translations.findIndex(t => t.id === id);
+    }
+
+    private _getKey(key: string): IJEDataTranslation {
+        return this._translations.find(t => t.key === key);
     }
 
     private _insert(translation: IJEDataTranslation) {

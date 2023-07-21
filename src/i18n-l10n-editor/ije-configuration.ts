@@ -59,6 +59,11 @@ export class IJEConfiguration {
         return value !== undefined ? value : null;
     }
 
+    static get TRANSLATION_SERVICE_API_REGION(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceApiRegion');
+        return value !== undefined ? value : null;
+    }
+
     static arbFolders: IJEFolder[] = [];
 
     static get WORKSPACE_FOLDERS(): IJEFolder[] {

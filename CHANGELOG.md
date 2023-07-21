@@ -2,10 +2,19 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.0.8]
+
+- Added new setting i18n-l10n-editor.keyCaseStyle, this will replace i18n-l10n-editor.forceKeyUPPERCASE
+- Added new setting i18n-l10n-editor.autoTranslateNewLanguage to Auto Translate when adding new languages
+  - Auto Translate may not work with text that contains {value}, but you can use manual translation for these.
+- Added new setting i18n-l10n-editor.translationServiceApiRegion for the Micrsoft Translation API
+  - Copy this from the same page you your API Key
+- Code refactoring and clean upp
+
 ## [3.0.6]
 
 - Updated tree view to lock keys in position
-- Updated tranlation as per table view
+- Updated translation as per table view
   
 ## [3.0.5]
 
@@ -55,7 +64,7 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 ## [2.1.1]
 
 - Added the ability to load files with different file extensions as per documentation at:
-  - <https://docs.flutter.dev/accessibility-and-localization/internationalization>
+  - <https://docs.flutter.dev/accessibility-and-localeization/internationalization>
 - Added setting i18n-l10n-editor.supportedExtensions to specify the file extensions to use.
 - Updated default values for setting i18n-l10n-editor.supportedFolders as per documentation above.
 

@@ -7,9 +7,9 @@ import { IJETranslation } from './translations/ije-translation';
 export abstract class IJETranslationService {
     static _manager: IJEManager;
     public static async translate(translation: IJEDataTranslation, language: string, languages: string[]) {
-        const tranlsationService = IJEConfiguration.TRANSLATION_SERVICE;
+        const translationService = IJEConfiguration.TRANSLATION_SERVICE;
 
-        if (!tranlsationService || !IJEConfiguration.TRANSLATION_SERVICE_API_KEY) {
+        if (!translationService || !IJEConfiguration.TRANSLATION_SERVICE_API_KEY) {
             return;
         }
         let service: IJETranslation;
@@ -21,20 +21,6 @@ export abstract class IJETranslationService {
             return;
         }
         let data = await service.translate(translation.languages[language], translation, language, languages);
-        if (!data) {
-            const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-            sleep(1000);
-            data = service.results;
-        }
-        if (data) {
-            languages
-                .filter(l => l !== language)
-                .forEach(l => {
-                    if (data[l]) {
-                        translation.languages[l] = data[l];
-                    }
-                });
-        }
     }
 }
 
