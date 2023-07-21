@@ -45,12 +45,23 @@
                 "i18nJsonEditor.forceKeyUPPERCASE": {
                     "default": false,
                     "type": "boolean",
-                    "description": "Force the keys to uppercase"
+                    "description": "Force the keys to uppercase (deprecated)"
+                },
+                "i18nJsonEditor.keyCaseStyle": {
+                    "default": "camelCase",
+                    "type": "string",
+                    "enum":  ["no change", "camelCase", "lowercase", "UPPERCASE"],
+                    "description": "how to write keys to the files valid methods are [no change, camelCase, lowercase, UPPERCASE]"
                 },
                 "i18nJsonEditor.sortKeyTogether": {
                     "default": false,
                     "type": "boolean",
                     "description": "Sort files so that key and @key will be kept together"
+                },
+                "i18nJsonEditor.autoTranslateNewLanguage": {
+                    "default": false,
+                    "type": "boolean",
+                    "description": "Will auto translate all new key translation when adding a new language"
                 },
                 "i18nJsonEditor.jsonSpace": {
                     "default": 4,
