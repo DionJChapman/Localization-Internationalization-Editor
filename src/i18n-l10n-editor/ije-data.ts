@@ -135,6 +135,8 @@ export class IJEData {
     async lang() {
         const existingFolders = IJEConfiguration.WORKSPACE_FOLDERS;
 
+        this.save();
+
         let lang: string = await showInputBox('Language Code', 'en_US');
 
         if (lang.length > 0) {
@@ -144,8 +146,8 @@ export class IJEData {
                 let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
                 let split = s.split('\n');
                 for (let p = 0; p < split.length; ++p) {
-                    if (split[p].indexOf('@@local') !== -1) {
-                        split[p] = `    "@@local": "${lang}",`;
+                    if (split[p].indexOf('@@locale') !== -1) {
+                        split[p] = `    "@@locale": "${lang}",`;
                         break;
                     }
                 }
@@ -342,10 +344,12 @@ export class IJEData {
         this._manager.refreshDataTable();
     }
 
-    async translate(id: number, language: string = '') {
+    async translate(id: number, from: string = '', to: string = '') {
         const translation = this._get(id);
-        if (translation && language) {
-            await IJETranslationService.translate(translation, language, this._languages);
+        if (translation && from) {
+            const service = IJETranslationService;
+            service._manager = this._manager;
+            await service.translate(translation, from, to.split(","));
             this._manager.refreshDataTable();
         }
     }
