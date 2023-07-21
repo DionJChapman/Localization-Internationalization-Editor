@@ -1,18 +1,18 @@
 {
-  "i18nJsonEditor.forceKeyUPPERCASE": false,
-  "i18nJsonEditor.sortKeyTogether": true,
-  "i18nJsonEditor.jsonSpace": 4,
-  "i18nJsonEditor.lineEnding": "\r\n",
-  "i18nJsonEditor.supportedFolders": [
+  "i18n-l10n-editor.forceKeyUPPERCASE": false,
+  "i18n-l10n-editor.sortKeyTogether": true,
+  "i18n-l10n-editor.jsonSpace": 4,
+  "i18n-l10n-editor.lineEnding": "\r\n",
+  "i18n-l10n-editor.supportedFolders": [
     "i18n",
     "l10n",
     "locales"
   ],
-  "i18nJsonEditor.supportedExtensions": [
+  "i18n-l10n-editor.supportedExtensions": [
     "arb",
     "json"
   ],
-  "i18nJsonEditor.workspaceFolders": [
+  "i18n-l10n-editor.workspaceFolders": [
     { "name": "Common", "path": "./i18n" },
     { "name": "International", "path": "./l10n" },
     { "name": "Common Lib", "path": "./lib/i18n" },
