@@ -13,6 +13,7 @@ import { IJEPage } from './models/ije-page';
 import { IJESort } from './models/ije-sort';
 import { IJEView, IJEViewType } from './models/ije-view';
 import { showInputBox } from './services/inputBox/showInputBox';
+import { camelize } from './shared/camelize';
 
 export class IJEData {
     private _currentID = 1;
@@ -357,7 +358,25 @@ export class IJEData {
                 translation.languages[language] = value.replace(/\\n/g, '\n');
                 this._validate(translation);
             } else {
-                const newKey = IJEConfiguration.FORCE_KEY_UPPERCASE ? value.toUpperCase() : value;
+                let newKey = value;
+                if (IJEConfiguration.FORCE_KEY_UPPERCASE) {
+                    newKey = value.toLocaleUpperCase();
+                } else if (IJEConfiguration.KEY_CASE_STYLE) {
+                    switch (IJEConfiguration.KEY_CASE_STYLE) {
+                        case 'no change':
+                            break;
+                        case 'camelCase':
+                            newKey = camelize(value);
+                            break;
+                        case 'lowercase':
+                            newKey = value.toLocaleLowerCase();
+                            break;
+                        case 'UPPERCASE':
+                            newKey = value.toLocaleUpperCase();
+                            break;
+                    }
+                }
+
                 const oldKey = translation.key;
 
                 translation.key = newKey;

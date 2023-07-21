@@ -34,20 +34,20 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 ## [2.1.3]
 
 - Added file content sorting to keep key and @key pairs together.
-- Added setting i18nJsonEditor.sortKeyTogether to control file content sorting.
+- Added setting i18n-l10n-editor.sortKeyTogether to control file content sorting.
 - Updated documentation.
 
 ## [2.1.1]
 
 - Added the ability to load files with different file extensions as per documentation at:
   - <https://docs.flutter.dev/accessibility-and-localization/internationalization>
-- Added setting i18nJsonEditor.supportedExtensions to specify the file extensions to use.
-- Updated default values for setting i18nJsonEditor.supportedFolders as per documentation above.
+- Added setting i18n-l10n-editor.supportedExtensions to specify the file extensions to use.
+- Updated default values for setting i18n-l10n-editor.supportedFolders as per documentation above.
 
 ## [2.1.0] (i18n json editor)
 
 - Last know release by Thibault Vanderseypen
-- Added setting i18nJsonEditor.keySeparator
+- Added setting i18n-l10n-editor.keySeparator
 - Added translation service feature
 - Refactored code
 - Update font
@@ -75,7 +75,7 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 
 - Release by Thibault Vanderseypen
 - Added force key to UPPERCASE
-- Added setting i18nJsonEditor.forceKeyUPPERCASE
+- Added setting i18n-l10n-editor.forceKeyUPPERCASE
 - i18n arb editor branched from here
 
 ## [1.1.1]
