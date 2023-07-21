@@ -11,7 +11,7 @@
     },
     "description": "Easily edit your i18n/l10n json files",
     "icon": "media/logo.png",
-    "version": "3.0.4",
+    "version": "3.0.6",
     "engines": {
         "vscode": "^1.80.0"
     },
@@ -20,6 +20,8 @@
     ],
     "activationEvents": [
         "*",
+        "onLanguage:dart",
+        "workspaceContains:**/*.dart",
         "onCommand:i18n-l10n-editor"
     ],
     "main": "./out/extension.js",

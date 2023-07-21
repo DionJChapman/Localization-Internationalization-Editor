@@ -65,7 +65,7 @@ export class IJEManager {
                     this._data.update(message.id, message.value, message.language);
                     return;
                 case 'translate':
-                    this._data.translate(message.id, message.language);
+                    this._data.translate(message.id, message.from, message.to);
                     return;
                 case 'folder':
                     this._data.changeFolder(message.id, message.value);
@@ -81,7 +81,7 @@ export class IJEManager {
     }
 
     refreshDataTable() {
-        this._panel.webview.postMessage({ command: 'content', render: this._data.render() });
+        this._panel.webview.postMessage({ command: 'content', render: this._data.render().trim() });
     }
 
     updateTranslation(translation: IJEDataTranslation) {

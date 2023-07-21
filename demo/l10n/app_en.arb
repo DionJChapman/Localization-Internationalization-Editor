@@ -1,5 +1,5 @@
 {
-    "@@local": "en_AU",
+    "@@locale": "en_AU",
     "account": "Account",
     "@account": {
         "description": "Account screen"
