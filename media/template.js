@@ -32,7 +32,16 @@ var vscode;
 
         break;
 
-      case "update":
+        case "search-text":
+          const search = message.search;
+          if (search) {
+            var select = document.getElementById("search-text");
+
+            select.value = search;
+          }
+  
+          break;
+        case "update":
         const t = message.translation;
         if (t) {
           const el = document.getElementById(`input-key-${t.id}`);
