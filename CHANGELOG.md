@@ -14,7 +14,7 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 - Added new setting i18n-l10n-editor.keyCaseStyle, this will replace i18n-l10n-editor.forceKeyUPPERCASE
 - Added new setting i18n-l10n-editor.autoTranslateNewLanguage to Auto Translate when adding new languages
   - Auto Translate may not work with text that contains {value}, but you can use manual translation for these.
-- Added new setting i18n-l10n-editor.translationServiceApiRegion for the Micrsoft Translation API
+- Added new setting i18n-l10n-editor.translationServiceApiRegion for the Microsoft Translation API
   - Copy this from the same page you your API Key
 - Code refactoring and clean upp
 

@@ -12,12 +12,13 @@ export async function showDateFormatQuickPick(
       quickPick.title = `Choose the number format for the variable ${variable}`;
       quickPick.items = validDateFormats.map((s) => new LionizationPickItem(s));
       quickPick.onDidChangeValue(() => {
-        if (notInclude(quickPick.value))
+        if (notInclude(quickPick.value)) {
           quickPick.items = [quickPick.value, ...validDateFormats].map(
             (label) => ({
               label
             })
           );
+        }
       });
       disposables.push(
         quickPick.onDidChangeSelection((selected) => {
