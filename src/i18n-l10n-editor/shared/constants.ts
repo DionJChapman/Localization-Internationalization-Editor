@@ -1,8 +1,8 @@
-export const extensionIdentifier = 'lsaudon.l10nization';
+export const extensionIdentifier = 'dion-chapman.i18n-l10n-editor';
 
 export const empty = '';
 
-export const parentSection = 'l10nization';
+export const parentSection = 'i18n-l10n-editor';
 
 export const appLocalizationsVariableSection = 'appLocalizationsVariable';
 export const defaultVariable = 'l10n';

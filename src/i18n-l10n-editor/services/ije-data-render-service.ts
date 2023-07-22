@@ -47,8 +47,8 @@ export class IJEDataRenderService {
         return render;
     }
 
-    private static _getTableHeader(column: string, position, sort: IJESort) {
-        let style = position >= 0 ? `position: sticky; left: ${position}px; z-index: 1000;` : '';
+    private static _getTableHeader(column: string, position, width, sort: IJESort) {
+        let style = position >= 0 ? `position: sticky; left: ${position}px; z-index: 1000; width: ${width}px; maxWidth: ${width}px; background: #1f1f1f;` : width >= 0 ? 'width: ${width}px; maxWidth: ${width}px; background: #1f1f1f;' : '';
         return `<th class="text-center" style="background: #1f1f1f; cursor: pointer; ${style}" onclick="sort('${column}',${sort.column === column ? !sort.ascending : true})">
            ${column}             
            ${sort.column === column ? (sort.ascending ? '<i class="icon-up-open"></i>' : '<i class="icon-down-open"></i>') : ''}
@@ -59,12 +59,12 @@ export class IJEDataRenderService {
     static renderTable(translations: IJEDataTranslation[], languages: string[], page: IJEPage, sort: IJESort, showFolder: boolean = true, hasTranslateService = false) {
         let render = '<table class="table table-borderless" style="margin-left: -10px; margin-top: 80px;" >';
         render += '<tr>';
-        render += '<th style="background: #1f1f1f; position: sticky; left: 0px; z-index: 1000; width: 100px; maxWidth: 100px; margin: 0px; padding: 0px;"> </th>';
+        render += '<th style="background: #1f1f1f; position: sticky; left: 0px; z-index: 1000; width: 40px; maxWidth: 30px; margin: 0px; padding: 0px;"> </th>';
         const folders = IJEConfiguration.WORKSPACE_FOLDERS;
         if (showFolder && folders.length > 1) {
-            render += this._getTableHeader('FOLDER', -1, sort);
+            render += this._getTableHeader('FOLDER', -1, 300, sort);
         }
-        render += this._getTableHeader('KEY', 100, sort);
+        render += this._getTableHeader('KEY', 40, 418, sort);
 
         let _defaultARB = 'app_en';
         folders.forEach(d => {
@@ -87,9 +87,9 @@ export class IJEDataRenderService {
 
         languages.forEach((language: string) => {
             if (language === _defaultARB) {
-                render += `${this._getTableHeader(language, 425, sort)}`;
+                render += `${this._getTableHeader(language, 490, 430, sort)}`;
             } else {
-                render += `${this._getTableHeader(language, -1, sort)}`;
+                render += `${this._getTableHeader(language, -1, 430, sort)}`;
             }
         });
         render += '</tr>';
@@ -97,8 +97,8 @@ export class IJEDataRenderService {
         translations.forEach(t => {
             render += '<tr style="padding: 0px; margin: 0px; left: 0px">';
             render +=
-                `<td style="background: #1f1f1f; width: 100px; maxWidth: 100px; white-space: nowrap; position: sticky; left: 0px; z-index: 1000; margin: 0px; padding: 0px;">` +
-                `<button type="button" class="btn" style="width: 100px; maxWidth: 100px;" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
+                `<td style="background: #1f1f1f; width: 40px; maxWidth: 40px; white-space: nowrap; position: sticky; left: 0px; z-index: 1000; margin: 0px; padding: 0px;">` +
+                `<button type="button" class="btn" style="width: 40px; maxWidth: 40px; padding-top: 20px;" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
 
             if (showFolder && folders.length > 1) {
                 render += `<td style="background: #1f1f1f; width: 300px;"><select id="select-folder-${t.id}" class="form-control" style="width: 300px;" onchange="updateFolder(this,${t.id})">`;
@@ -110,30 +110,34 @@ export class IJEDataRenderService {
                 render += ' </select></td>';
             }
 
-            let indent = 10;
-            let width = 301;
+            let indent = 0;
+            let width = 418;
             if (sort.column === 'KEY' && !t.key.startsWith('@@') && t.key.startsWith('@')) {
                 let i = t.key.length - t.key.replace(/\./g, '').length;
                 for (let j = 0; j < i; ++j) {
+                    if (indent === 0 ) {
+                        indent += 10;
+                    }
                     indent += 10;
                     width -= 10;
                 }
             }
 
-            render += `<td style="background: #1f1f1f; white-space: nowrap; position: sticky; left: 100px; z-index: 1000;">
-                    <input id="input-key-${t.id}" class="form-control ${
-                t.valid ? '' : 'is-invalid'
-            }" style="width: ${width}px; margin-left: ${indent}px" type="text" placeholder="Key..." value="${t.key.replace(/"/g, '&quot;')}" onfocus="mark(${
-                t.id
-            })" onchange="updateInput(this,${t.id});" />
-                    <div id="input-key-${t.id}-feedback" class="invalid-feedback error-vscode">${t.error}</div>
-                </td>
+            render +=
+                `<td style="background: #1f1f1f; white-space: nowrap; position: sticky; left: 40px; z-index: 1000; maxWidth: ${width}px;">` +
+                `<input id="input-key-${t.id}" class="form-control ${
+                    t.valid ? '' : 'is-invalid'
+                }" style="width: ${width}px; maxWidth: ${width}px;  margin-left: ${indent}px" type="text" placeholder="Key..." value="${t.key.replace(/"/g, '&quot;')}" onfocus="mark(${
+                    t.id
+                })" onchange="updateInput(this,${t.id});" />` +
+                `<div id="input-key-${t.id}-feedback" class="invalid-feedback error-vscode">${t.error}</div>` +
+                `</td>
             `;
 
             languages.forEach((language: string) => {
-                render += `<td style="background: #1f1f1f; ${language === _defaultARB ? `position: sticky; left: 425px; z-index: 1000;` : ''}">`;
+                render += `<td style="background: #1f1f1f; ${language === _defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 430px; width: 430px;` : ' maxWidth: 430px; width: 430px;'}">`;
                 if (hasTranslateService) {
-                    render += `<div class="input-group" style="minWith: 330px; width: 330px; white-space: nowrap;">`;
+                    render += `<div class="input-group" style="minWith: 430px; width: 430px; white-space: nowrap;">`;
                 }
                 render += `<input class="form-control" style="minWith: 270px; width: 270px; white-space: nowrap;" type="text" placeholder="Translation..." onfocus="mark(${t.id})" onchange="updateInput(this,${t.id},'${language}');" `;
                 if (t.languages[language]) {

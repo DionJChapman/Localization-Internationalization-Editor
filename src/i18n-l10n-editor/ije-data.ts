@@ -60,6 +60,45 @@ export class IJEData {
         this._manager.refreshDataTable();
     }
 
+    addKey(key: string, text: string) {
+        const folders = IJEConfiguration.WORKSPACE_FOLDERS;
+        folders.forEach(f => {
+            const translation = this._createFactoryIJEDataTranslation();
+            let arb = f.arb;
+            if (arb.lastIndexOf('.') !== -1) {
+                arb = arb.substring(0, arb.lastIndexOf('.'));
+            }
+            translation.key = key;
+            // translation.languages = { [arb]: text };
+            if (key.startsWith('@') && !key.startsWith('@@')) {
+                //const t = this._get(translation.id);
+                this._languages.forEach(l => {
+                    // if (l !== arb) {
+                        translation.languages[l] = text;
+                        
+                    // }
+                });
+                this._insert(translation);
+            } else {
+                let lang: string = '';
+                translation.languages[arb] = text;
+                this._insert(translation);
+                this._languages.forEach(l => {
+                    if (l !== arb) {
+                        lang += `,${l}`;
+                    }
+                });
+                if (lang !== '') {
+                    lang = lang.substring(1);
+                }
+                this.translate(translation.id, arb, lang);
+            }
+
+            //this._view.selectionId = translation.id;
+            this._manager.refreshDataTable();
+        });
+    }
+
     changeFolder(id: number, value: string) {
         const translation = this._get(id);
         translation.folder = value;
@@ -177,8 +216,8 @@ export class IJEData {
 
         const values: string[] = [];
 
-        if (oldLang.lastIndexOf("_") > oldLang.indexOf("_") && oldLang.indexOf("_") !== -1) {
-            oldLang = oldLang.substring(0, oldLang.lastIndexOf("_"));
+        if (oldLang.lastIndexOf('_') > oldLang.indexOf('_') && oldLang.indexOf('_') !== -1) {
+            oldLang = oldLang.substring(0, oldLang.lastIndexOf('_'));
         }
 
         if (lang.length > 0) {
@@ -197,7 +236,7 @@ export class IJEData {
                                     this.translate(translate.id, oldLang, lang);
                                     //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
                                     //sleep(250);
-                                                        }
+                                }
                             }
                         }
                     }
@@ -225,36 +264,7 @@ export class IJEData {
         }
 
         let existingExtensions = IJEConfiguration.SUPPORTED_EXTENSIONS;
-        /*
-        This code seems to only write {} to a file and can cause issues no idea why it is here.
-        existingFolders.forEach(d => {
-            this._languages.forEach(language => {
-                const json = JSON.stringify({}, null, IJEConfiguration.JSON_SPACE);
-                existingExtensions.forEach((ext: string) => {
-                    var s = vscode.Uri.file(_path.join(d, language + '.' + ext)).fsPath;
-                    if (fs.existsSync(s)) {
-                        f = s;
-                        return;
-                    }
-                });
-                if (f === null) {
-                    f = vscode.Uri.file(_path.join(d, language + '.' + existingExtensions[0])).fsPath;
-                }
-                fs.writeFileSync(f + '.tmp1', json + '\n');
-                const stats = fs.statSync(f + '.tmp1');
-                if (stats.size > 20) {
-                    fs.copyFileSync(f + '.tmp', f);
-                    fs.unlinkSync(f + '.tmp');
-                    vscode.window.showInformationMessage(msg);
-                    saved = true;
-                } else {
-                    vscode.window.showErrorMessage('Error saving translation "' + f + '". Temporary files kept.');
-                    saved = false;
-                }
-            });
-        });
-        */
-        //
+        
         let folders: { [key: string]: IJEDataTranslation[] } = this._translations.reduce((r, a) => {
             r[a.folder] = r[a.folder] || [];
             r[a.folder].push(a);

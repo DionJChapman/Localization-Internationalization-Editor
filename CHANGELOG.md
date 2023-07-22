@@ -2,6 +2,13 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.0.10]
+
+- Added the ability to select text (must include quotes) in .dart file to add to translations
+  - You will need to open the i18n/l10n Editor first and then click on the tab after you add the text
+  - Use the context globe to select 'Add text to i18n/l10n Editor'
+  - It will auto translate of enabled and follows the case style setting
+  
 ## [3.0.8]
 
 - Added new setting i18n-l10n-editor.keyCaseStyle, this will replace i18n-l10n-editor.forceKeyUPPERCASE

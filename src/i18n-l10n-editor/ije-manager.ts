@@ -7,6 +7,9 @@ import { IJEData } from './ije-data';
 import { IJEDataTranslation } from './models/ije-data-translation';
 
 export class IJEManager {
+    static manager: IJEManager;
+    static editor = vscode.window.activeTextEditor;
+
     get isWorkspace() {
         return this.folderPath === null;
     }
@@ -17,6 +20,9 @@ export class IJEManager {
         this._initEvents();
         this._initTemplate();
         _panel.webview.html = this.getTemplate();
+
+        IJEManager.manager = this;
+        IJEManager.editor = vscode.window.activeTextEditor;
     }
 
     _initEvents() {
@@ -77,6 +83,20 @@ export class IJEManager {
     _initTemplate() {
         if (this.isWorkspace) {
             this._panel.webview.postMessage({ command: 'folders', folders: IJEConfiguration.WORKSPACE_FOLDERS });
+        }
+    }
+
+    addKey(key: string, text: string) {
+        this._data.addKey(key, text);
+    }
+
+    search(key: string) {
+        this._panel.webview.postMessage({ command: 'search-text', search: key });
+
+        this._data.search(key);
+        if (IJEManager.editor) {
+            //vscode.workspace.textDocuments;
+            IJEManager.editor.show(IJEManager.editor.viewColumn);
         }
     }
 
