@@ -2,6 +2,11 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.0.11]
+
+- Fixed issues when entering keys by hand
+  - camelCase and Capalize will only work when you use spaces in the key, otherwise it reverts to no change
+  
 ## [3.0.10]
 
 - Added the ability to select text (must include quotes) in .dart file to add to translations

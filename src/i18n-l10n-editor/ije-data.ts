@@ -14,6 +14,8 @@ import { IJESort } from './models/ije-sort';
 import { IJEView, IJEViewType } from './models/ije-view';
 import { showInputBox } from './services/inputBox/showInputBox';
 import { camelize } from './shared/camelize';
+import { capalize } from './shared/capalize';
+import { nochange } from './shared/nochange';
 
 export class IJEData {
     private _currentID = 1;
@@ -74,8 +76,8 @@ export class IJEData {
                 //const t = this._get(translation.id);
                 this._languages.forEach(l => {
                     // if (l !== arb) {
-                        translation.languages[l] = text;
-                        
+                    translation.languages[l] = text;
+
                     // }
                 });
                 this._insert(translation);
@@ -264,7 +266,7 @@ export class IJEData {
         }
 
         let existingExtensions = IJEConfiguration.SUPPORTED_EXTENSIONS;
-        
+
         let folders: { [key: string]: IJEDataTranslation[] } = this._translations.reduce((r, a) => {
             r[a.folder] = r[a.folder] || [];
             r[a.folder].push(a);
@@ -428,9 +430,21 @@ export class IJEData {
                 } else if (IJEConfiguration.KEY_CASE_STYLE) {
                     switch (IJEConfiguration.KEY_CASE_STYLE) {
                         case 'no change':
+                            newKey = nochange(value);
                             break;
                         case 'camelCase':
-                            newKey = camelize(value);
+                            if (newKey.indexOf(' ') !== -1) {
+                                newKey = camelize(value);
+                            } else {
+                                newKey = nochange(value);
+                            }
+                            break;
+                        case 'Capalize':
+                            if (newKey.indexOf(' ') !== -1) {
+                                newKey = capalize(value).replace(/[ ]/g, '');
+                            } else {
+                                newKey = nochange(value);
+                            }
                             break;
                         case 'lowercase':
                             newKey = value.toLocaleLowerCase();
@@ -438,6 +452,16 @@ export class IJEData {
                         case 'UPPERCASE':
                             newKey = value.toLocaleUpperCase();
                             break;
+                    }
+                    if (newKey.startsWith('@') && !newKey.startsWith('@@')) {
+                        let temp = newKey;
+                        if (temp.indexOf('.') !== -1) {
+                            temp = temp.substring(1, temp.indexOf('.'));
+                            let translation = this._getKey(temp);
+                            if (translation && translation.key.toLocaleLowerCase() == temp.toLocaleLowerCase()) {
+                                newKey = newKey.replace(temp, translation.key);
+                            }
+                        }
                     }
                 }
 
@@ -747,7 +771,7 @@ export class IJEData {
     }
 
     private _getKey(key: string): IJEDataTranslation {
-        return this._translations.find(t => t.key === key);
+        return this._translations.find(t => t.key.toLocaleLowerCase() === key.toLocaleLowerCase());
     }
 
     private _insert(translation: IJEDataTranslation) {
