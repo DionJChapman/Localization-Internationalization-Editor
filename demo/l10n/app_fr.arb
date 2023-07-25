@@ -1,7 +1,5 @@
 {
-    "@@locale": "fr",
-    "helloWorld": "Salut tout le monde",
     "@helloWorld": {
-        "description": "Just a test"
+        "description": "Gewoon een test"
     }
 }

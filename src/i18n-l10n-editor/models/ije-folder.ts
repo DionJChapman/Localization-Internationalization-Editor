@@ -3,4 +3,5 @@ export interface IJEFolder {
     path: string;
     folder: string;
     arb: string;
+    languages: string[];
 }

@@ -159,7 +159,6 @@ export class IJEMicrosoftTranslator implements IJETranslation {
             } catch (e) {
                 let err = e as AxiosError;
                 let r = err.response as AxiosResponse;
-                console.log(`${e.toString()}\n${r.data}\nlangage ${lang} - ${text}`);
                 vscode.window.showErrorMessage(`${e.toString()}\n${r.data}\nlangage ${lang} - ${text}`);
             }
         });

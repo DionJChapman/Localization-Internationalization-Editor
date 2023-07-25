@@ -31,13 +31,14 @@ export async function findYAML(path): Promise<IJEFolder[]> {
         return folders;
     }
 
-    let existingExtensions = IJEConfiguration.SUPPORTED_EXTENSIONS;
+    const existingExtensions = IJEConfiguration.SUPPORTED_EXTENSIONS;
 
     for (let y in yamlFiles) {
         let _name: string;
         let _path: string;
         let _folder: string;
         let _arb: string;
+        let _files: string[] = [];
 
         const yamlFile = yamlFiles[y];
 
@@ -70,7 +71,13 @@ export async function findYAML(path): Promise<IJEFolder[]> {
             _arb = "app_en.arb";
         }
         
+        if (_path.startsWith(_folder)) {
+            _path = _path.substring(_folder.length + 1);
+        }
+        _name = `${_name} (${_path})`;
+
         let _arbPath: string = '';
+        _files = [];
 
         for (let e in existingExtensions) {
             let ext = existingExtensions[e];
@@ -84,10 +91,11 @@ export async function findYAML(path): Promise<IJEFolder[]> {
                 if (arbFiles.length > 0) {
                     for (let a in arbFiles) {
                         let _file = arbFiles[a].toString();
-                        if (_file.indexOf('.history') === -1) {
+                        if (_file.indexOf('.history') === -1 && _files.indexOf('node_modules') === -1) {
                             if (_file.lastIndexOf('/') !== -1) {
                                 _arbPath = _file.substring(7, _file.lastIndexOf('/'));
-                                break;
+                                let _n = _file.substring(_file.lastIndexOf('/') + 1);
+                                _files.push(_n.replace(`.${ext}`, ""));
                             }
                         }
                     }
@@ -97,8 +105,73 @@ export async function findYAML(path): Promise<IJEFolder[]> {
             }
         }
 
-        folders.push({ name: _name, path: _path, arb: _arb, folder: _folder });
+        let add = true;
+        folders.forEach(f => {
+            if (f.path === _path) {
+                add = false;
+            }
+        });
+        if (add) {
+            folders.push({ name: _name, path: _path, arb: _arb, folder: _folder, languages: _files});
+        }
+
     }
+
+    /* filter(f => {
+            f.path === _path;
+        }).*/
+
+    // lets see if we can find any other translations
+    const supportedFolders = IJEConfiguration.SUPPORTED_FOLDERS;
+    const defaultLanguage = IJEConfiguration.DEFAULT_LANGUAGE;
+
+    for (let f in supportedFolders) {
+        let folder = supportedFolders[f];
+        let _name = "", _path = "", _arb = "", _folder = "", _files = [];
+        for (let e in existingExtensions) {
+            let ext = existingExtensions[e];
+            let arbFiles = await vscode.workspace.findFiles(`**/${folder}/*.${ext}`);
+
+            if (arbFiles.length > 0) {
+                for (let a in arbFiles) {
+                    let _file = arbFiles[a].toString();
+                    if (_file.indexOf('.history') === -1 && _file.indexOf('node_modules') === -1) {
+                        if (_file.lastIndexOf('/') !== -1) {
+                            _path = _file.substring(7, _file.lastIndexOf('/'));
+                            _name = _file.substring(_file.lastIndexOf('/') + 1);
+                            if (_arb === "") {
+                                _arb = _name;
+                            }
+                            if (_name.indexOf(defaultLanguage) !== -1) {
+                                _arb = _name;
+                            }
+                            _files.push(_name.replace(`.${ext}`, ""));                            
+                        }
+                    }
+                }
+                let split = _path.split("/");
+                let i = split.length - 1;
+                if (split[i].toLocaleLowerCase() === "lib" || split[i].toLocaleLowerCase() === "src") {
+                    --i;
+                }
+                if (split[i].toLocaleLowerCase() === folder) {
+                    --i;
+                }
+                _name = `${capalize(split[i - 1]).trim()}/${capalize(split[i]).trim()} (${folder})`;
+                _folder = split[split.length - 2];    
+            }
+        }
+        let add = true;
+        folders.forEach(f => {
+            if (f.path === _path) {
+                add = false;
+            }
+        });
+        if (add) {
+            folders.push({ name: _name, path: _path, arb: _arb, folder: _folder, languages: _files });
+        }
+    }
+
 
     return folders;
 }

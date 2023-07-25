@@ -24,7 +24,7 @@ export class IJEData {
     private _translations: IJEDataTranslation[] = [];
 
     private _searchPattern: string = '';
-    private _filteredFolder: string = '*';
+    static _filteredFolder: string = '*';
 
     private _view: IJEView;
     private _page: IJEPage;
@@ -110,7 +110,7 @@ export class IJEData {
     }
 
     filterFolder(value: string) {
-        this._filteredFolder = value;
+        IJEData._filteredFolder = value;
         this._manager.refreshDataTable();
     }
 
@@ -325,7 +325,7 @@ export class IJEData {
                             if (a.key === '@@locale' || a.key === '@@local') {
                                 return -1;
                             }
-                            if (b.key === '@@locale' || b.key === '@@locale') {
+                            if (b.key === '@@locale' || b.key === '@@local') {
                                 return 1;
                             }
                             const compared = String(a.key.replace('@', '')).localeCompare(b.key.replace('@', ''));
@@ -551,8 +551,10 @@ export class IJEData {
         keys.forEach((key: string) => {
             const languages: any = {};
             this._languages.forEach((language: string) => {
-                const value = translate[language][key];
-                languages[language] = value ? value : '';
+                if (translate[language] !== undefined) {
+                    const value = translate[language][key];
+                    languages[language] = value ? value : '';
+                }
             });
 
             const t = this._createFactoryIJEDataTranslation();
@@ -583,8 +585,8 @@ export class IJEData {
      */
     private _getDisplayedTranslations(): IJEDataTranslation[] {
         var o = this._translations;
-        if (this._filteredFolder !== '*') {
-            o = o.filter(t => t.folder === this._filteredFolder);
+        if (IJEData._filteredFolder !== '*') {
+            o = o.filter(t => t.folder === IJEData._filteredFolder);
         }
 
         o = o
@@ -610,10 +612,10 @@ export class IJEData {
                     if (this._sort.column === 'KEY') {
                         if (IJEConfiguration.SORT_KEY_TOGETHER) {
                             if (this._sort.ascending) {
-                                if (_a === '@@locale') {
+                                if (_a === '@@locale' || _a === '@@local') {
                                     return -1;
                                 }
-                                if (_b === '@@locale') {
+                                if (_b === '@@locale' || _b === '@@local') {
                                     return 1;
                                 }
                                 const compared = String(_a.replace('@', '')).localeCompare(_b.replace('@', ''));
@@ -628,10 +630,10 @@ export class IJEData {
 
                                 return compared;
                             } else {
-                                if (_b === '@@locale') {
+                                if (_b === '@@locale' || _b === '@@local') {
                                     return -1;
                                 }
-                                if (_a === '@@locale') {
+                                if (_a === '@@locale' || _a === '@@local') {
                                     return 1;
                                 }
                                 if (_a.indexOf('.') !== -1) {
@@ -747,7 +749,7 @@ export class IJEData {
     private _createFactoryIJEDataTranslation(): IJEDataTranslation {
         return {
             id: this._currentID++,
-            folder: !this._manager.isWorkspace ? this._manager.folderPath : this._filteredFolder !== '*' ? this._filteredFolder : IJEConfiguration.WORKSPACE_FOLDERS[0].path,
+            folder: !this._manager.isWorkspace ? this._manager.folderPath : IJEData._filteredFolder !== '*' ? IJEData._filteredFolder : IJEConfiguration.WORKSPACE_FOLDERS[0].path,
             valid: true,
             error: '',
             key: '',

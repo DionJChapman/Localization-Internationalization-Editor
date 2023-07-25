@@ -11,7 +11,7 @@
     },
     "description": "Easily edit your i18n/l10n json files",
     "icon": "media/logo.png",
-    "version": "3.0.11",
+    "version": "3.0.12",
     "engines": {
         "vscode": "^1.80.0"
     },
@@ -64,7 +64,13 @@
                     "default": false,
                     "type": "boolean",
                     "description": "Will auto translate all new key translation when adding a new language."
+                }, 
+                "i18n-l10n-editor.defaultLanguage": {
+                    "default": "en",
+                    "type": "string",
+                    "description": "Used when no default language is specified in translation files otherwise the first file found is used."
                 },
+                
                 "i18n-l10n-editor.jsonSpace": {
                     "default": 4,
                     "type": [
