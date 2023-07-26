@@ -16,6 +16,8 @@ import { showInputBox } from './services/inputBox/showInputBox';
 import { camelize } from './shared/camelize';
 import { capalize } from './shared/capalize';
 import { nochange } from './shared/nochange';
+import { findYAML } from './services/find_yaml';
+import { IJELangs } from './models/ije-langs';
 
 export class IJEData {
     private _currentID = 1;
@@ -178,27 +180,57 @@ export class IJEData {
 
         this.save();
 
-        let lang: string = await showInputBox('Language Code', 'en_US');
+        let _lang: string = await showInputBox('Language Code', 'en_US');
         let oldLang = '';
 
-        if (lang.length > 0) {
-            existingFolders.forEach(f => {
-                let _src = `${f.path}/${f.arb}`;
-                let _dest = `${f.path}/app_${lang}.arb`;
-                let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
-                let split = s.split('\n');
-                for (let p = 0; p < split.length; ++p) {
-                    if (split[p].indexOf('@@locale') !== -1 || split[p].indexOf('@@local') !== -1) {
-                        const l = split[p].split(':');
-                        if (l.length === 2 && l[1].lastIndexOf('"') > l[1].indexOf('"')) {
-                            oldLang = l[1].substring(l[1].indexOf('"') + 1, l[1].lastIndexOf('"'));
+        const langs: IJELangs[] = [];
+
+        if (_lang.length > 0) {
+            let lang = _lang;
+            existingFolders.forEach(async f => {
+                if (IJEData._filteredFolder === '*' || f.path === IJEData._filteredFolder) {
+                    let _src = `${f.path}/${f.arb}`;
+                    oldLang = f.arb.split('.')[0];
+
+                    let _dest = '';
+                    if (f.arb.split('_').length === 1) {
+                        lang = _lang;
+                        _dest = `${f.path}/${_lang}.${f.arb.split('.')[f.arb.split('.').length - 1]}`;
+                    } else {
+                        lang = `${f.arb.split('_')[0]}_${_lang}`;
+                        _dest = `${f.path}/${f.arb.split('_')[0]}_${_lang}.${f.arb.split('.')[f.arb.split('.').length - 1]}`;
+                    }
+
+                    if (_src !== '//' && f.arb !== '') {
+                        let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
+                        let split = s.split('\n');
+                        for (let p = 0; p < split.length; ++p) {
+                            if (split[p].indexOf('@@locale') !== -1 || split[p].indexOf('@@local') !== -1) {
+                                const l = split[p].split(':');
+                                if (oldLang === '' && l.length === 2 && l[1].lastIndexOf('"') > l[1].indexOf('"')) {
+                                    oldLang = l[1].substring(l[1].indexOf('"') + 1, l[1].lastIndexOf('"'));
+                                }
+                                split[p] = `    "@@locale": "${_lang}",`;
+                                break;
+                            }
                         }
-                        split[p] = `    "@@locale": "${lang}",`;
-                        break;
+                        fs.writeFileSync(vscode.Uri.file(_dest).fsPath, split.join('\n'));
+
+                        let add =  true;
+                        langs.forEach(l => {
+                            if (oldLang === l.from && lang === l.to) {
+                                add = false;
+                                return;
+                            }
+                        });
+                        if (add) {
+                            langs.push({ from: oldLang, to: lang });
+                        }
                     }
                 }
-                fs.writeFileSync(vscode.Uri.file(_dest).fsPath, split.join('\n'));
             });
+
+            IJEConfiguration.arbFolders = await findYAML(vscode.workspace.workspaceFolders[0].uri.fsPath);
 
             this._languages = [];
             this._translations = [];
@@ -208,7 +240,9 @@ export class IJEData {
             this._manager.refreshDataTable();
 
             if (IJEConfiguration.KEY_AUTO_TRANSLATE) {
-                this.autoTranslate(`app_${oldLang}`, `app_${lang}`);
+                langs.forEach(l => {
+                    this.autoTranslate(l.from, l.to);
+                });
             }
         }
     }
@@ -224,33 +258,27 @@ export class IJEData {
 
         if (lang.length > 0) {
             existingFolders.forEach(f => {
-                let _src = `${f.path}/${lang}.arb`;
-                let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
-                let split = s.split('\n');
-                for (let p = 0; p < split.length; ++p) {
-                    if (!split[p].trim().startsWith('"@') && !split[p].trim().startsWith('{') && !split[p].trim().startsWith('}')) {
-                        const l = split[p].split(':');
-                        if (l.length === 2 && l[0].lastIndexOf('"') > l[0].indexOf('"')) {
-                            const key = l[0].substring(l[0].indexOf('"') + 1, l[0].lastIndexOf('"'));
-                            if (key.toLocaleLowerCase() !== 'description' && key.toLocaleLowerCase() !== 'type') {
-                                const translate = this._getKey(key);
-                                if (translate && oldLang !== '') {
-                                    this.translate(translate.id, oldLang, lang);
-                                    //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-                                    //sleep(250);
+                let ext = f.arb.split('.')[f.arb.split('.').length - 1];
+                let _src = `${f.path}/${lang}.${ext}`;
+                if (fs.existsSync(vscode.Uri.file(_src).fsPath)) {
+                    let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
+                    let split = s.split('\n');
+                    for (let p = 0; p < split.length; ++p) {
+                        if (!split[p].trim().startsWith('"@') && !split[p].trim().startsWith('{') && !split[p].trim().startsWith('}')) {
+                            const l = split[p].split(':');
+                            if (l.length === 2 && l[0].lastIndexOf('"') > l[0].indexOf('"')) {
+                                const key = l[0].substring(l[0].indexOf('"') + 1, l[0].lastIndexOf('"'));
+                                if (key.toLocaleLowerCase() !== 'description' && key.toLocaleLowerCase() !== 'type') {
+                                    const translate = this._getKey(key);
+                                    if (translate && oldLang !== '') {
+                                        this.translate(translate.id, oldLang, lang);
+                                    }
                                 }
                             }
                         }
                     }
                 }
             });
-
-            // this._languages = [];
-            // this._translations = [];
-
-            // this._loadFiles();
-
-            // this._manager.refreshDataTable();
         }
     }
 
@@ -308,7 +336,9 @@ export class IJEData {
                             fs.unlinkSync(f + '.tmp');
                             saved = true;
                         } else {
-                            vscode.window.showErrorMessage('Error saving translation "' + f + ' file ' + stats.size + ' is less than ' +  (json + '\n').length + '. Temporary files kept..');
+                            vscode.window.showErrorMessage(
+                                'Error saving translation "' + f + ' file ' + stats.size + ' is less than ' + (json + '\n').length + '. Temporary files kept..'
+                            );
                             saved = false;
                         }
                     }
@@ -367,7 +397,9 @@ export class IJEData {
                             fs.unlinkSync(f + '.tmp');
                             saved = true;
                         } else {
-                            vscode.window.showErrorMessage('Error saving translation "' + f + ' file ' + stats.size + ' is less than ' +  (json + '\n').length + '. Temporary files kept..');
+                            vscode.window.showErrorMessage(
+                                'Error saving translation "' + f + ' file ' + stats.size + ' is less than ' + (json + '\n').length + '. Temporary files kept..'
+                            );
                             saved = false;
                         }
                     }
@@ -377,6 +409,13 @@ export class IJEData {
         if (saved) {
             vscode.window.showInformationMessage(msg);
         }
+
+        this._languages = [];
+        this._translations = [];
+
+        this._loadFiles();
+
+        this._manager.refreshDataTable();
     }
 
     search(value: string) {

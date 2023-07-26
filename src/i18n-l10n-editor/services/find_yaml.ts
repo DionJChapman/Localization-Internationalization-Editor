@@ -111,7 +111,7 @@ export async function findYAML(path): Promise<IJEFolder[]> {
                 add = false;
             }
         });
-        if (add) {
+        if (add && _arb !== "") {
             folders.push({ name: _name, path: _path, arb: _arb, folder: _folder, languages: _files});
         }
 
@@ -157,7 +157,11 @@ export async function findYAML(path): Promise<IJEFolder[]> {
                 if (split[i].toLocaleLowerCase() === folder) {
                     --i;
                 }
-                _name = `${capalize(split[i - 1]).trim()}/${capalize(split[i]).trim()} (${folder})`;
+                if (i === 0) {
+                    _name = `${capalize(split[i]).trim()} (${folder})`;
+                } else {
+                    _name = `${capalize(split[i - 1]).trim()}/${capalize(split[i]).trim()} (${folder})`;    
+                }
                 _folder = split[split.length - 2];    
             }
         }
@@ -167,7 +171,7 @@ export async function findYAML(path): Promise<IJEFolder[]> {
                 add = false;
             }
         });
-        if (add) {
+        if (add && _arb !== "") {
             folders.push({ name: _name, path: _path, arb: _arb, folder: _folder, languages: _files });
         }
     }

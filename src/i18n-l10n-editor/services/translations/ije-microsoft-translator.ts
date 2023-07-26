@@ -47,9 +47,9 @@ export class IJEMicrosoftTranslator implements IJETranslation {
         const _substitutes: string[] = [];
         let place = 0;
         while (true) {
-            if (text.indexOf("}", place) > text.indexOf("{", place)) {
-                _substitutes.push(text.substring(text.indexOf("{", place), text.indexOf("}", place) + 1));
-                place = text.indexOf("}", place) + 1;
+            if (text.indexOf('}', place) > text.indexOf('{', place)) {
+                _substitutes.push(text.substring(text.indexOf('{', place), text.indexOf('}', place) + 1));
+                place = text.indexOf('}', place) + 1;
             } else {
                 break;
             }
@@ -76,7 +76,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                     //url: '/translate?api-version=3.0&from=en&to=fr',
                     method: 'post',
                     headers: {
-                        'Ocp-Apim-Subscription-Key': '4ee49f8bbe114a9aa255ceb16ba4c4fa',
+                        'Ocp-Apim-Subscription-Key': apiKey,
                         'Ocp-Apim-Subscription-Region': apiRegion,
                         'Content-type': 'application/json'
                     },
@@ -99,7 +99,6 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                     return { [language]: text };
                 }
 
- 
                 const results = Object.assign(
                     {},
                     ...languages
@@ -129,13 +128,12 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                                 let _text = r['text'];
                                 place = 0;
                                 _substitutes.forEach(s => {
-                                    if (_text.indexOf("}", place) > _text.indexOf("{", place)) {
-                                        _text =  _text.substring(0, _text.indexOf("{", place) - 1) + s + _text.substring(_text.indexOf("}", place) + 1);
-                                        place = _text.indexOf("}", place) + 1;
+                                    if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
+                                        _text = _text.substring(0, _text.indexOf('{', place) - 1) + s + _text.substring(_text.indexOf('}', place) + 1);
+                                        place = _text.indexOf('}', place) + 1;
                                     }
-                
                                 });
-                                                translation.languages[l] = _text;
+                                translation.languages[l] = _text;
                                 this._manager.refreshDataTable();
                                 //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
                                 //sleep(250);
@@ -147,7 +145,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
             } catch (e) {
                 let err = e as AxiosError;
                 let r = err.response as AxiosResponse;
-                vscode.window.showErrorMessage(`${e.toString()}\n${r.data}\nlangage ${lang} - ${text}`);
+                vscode.window.showErrorMessage(`${e.toString()}\n${r !== undefined ? r.data : ''}\nlangage ${lang} - ${text}`);
             }
         });
     }
