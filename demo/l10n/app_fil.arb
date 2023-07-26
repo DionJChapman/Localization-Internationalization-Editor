@@ -1,4 +1,6 @@
 {
+    "@@locale": "fil",
+    "helloWorld": "Hello World",
     "@helloWorld": {
         "description": "Just a test"
     }

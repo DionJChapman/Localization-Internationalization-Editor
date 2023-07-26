@@ -22,16 +22,10 @@ export class IJEMicrosoftTranslator implements IJETranslation {
         let split = language.split('_');
         if (split.length === 2 && split[0].length === 2) {
             language = split[0];
-            // if (split[1].length === 2) {
-            //     language += `_${split[1].toLocaleLowerCase()}`;
-            // }
         } else if (split.length === 2) {
             language = split[1];
         } else if (split.length === 3) {
             language = split[1];
-            // if (split[2].length === 2) {
-            //     language += `_${split[2].toLocaleLowerCase()}`;
-            // }
         }
 
         for (let l = 0; l < languages.length; ++l) {
@@ -39,16 +33,10 @@ export class IJEMicrosoftTranslator implements IJETranslation {
             let split = lang.split('_');
             if (split.length === 2 && split[0].length === 2) {
                 lang = split[0];
-                // if (split[1].length === 2) {
-                //     lang += `_${split[1].toLocaleUpperCase()}`;
-                // }
             } else if (split.length === 2) {
                 lang = split[1];
             } else if (split.length === 3) {
                 lang = split[1];
-                // if (split[2].length === 2) {
-                //     lang += `_${split[2].toLocaleUpperCase()}`;
-                // }
             }
             if (language !== languages[l]) {
                 _languages.push(lang);
@@ -59,9 +47,9 @@ export class IJEMicrosoftTranslator implements IJETranslation {
         const _substitutes: string[] = [];
         let place = 0;
         while (true) {
-            if (text.indexOf("}", place) > text.indexOf("{", place)) {
-                _substitutes.push(text.substring(text.indexOf("{", place), text.indexOf("}", place) + 1));
-                place = text.indexOf("}", place) + 1;
+            if (text.indexOf('}', place) > text.indexOf('{', place)) {
+                _substitutes.push(text.substring(text.indexOf('{', place), text.indexOf('}', place) + 1));
+                place = text.indexOf('}', place) + 1;
             } else {
                 break;
             }
@@ -88,7 +76,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                     //url: '/translate?api-version=3.0&from=en&to=fr',
                     method: 'post',
                     headers: {
-                        'Ocp-Apim-Subscription-Key': '4ee49f8bbe114a9aa255ceb16ba4c4fa',
+                        'Ocp-Apim-Subscription-Key': apiKey,
                         'Ocp-Apim-Subscription-Region': apiRegion,
                         'Content-type': 'application/json'
                     },
@@ -111,7 +99,6 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                     return { [language]: text };
                 }
 
- 
                 const results = Object.assign(
                     {},
                     ...languages
@@ -140,14 +127,13 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                             if (r) {
                                 let _text = r['text'];
                                 place = 0;
-                                _substitutes.flatMap(s => {
-                                    if (_text.indexOf("}", place) > _text.indexOf("{", place)) {
-                                        _text =  _text.substring(0, _text.indexOf("{", place) - 1) + s + _text.substring(_text.indexOf("}", place) + 1);
-                                        place = _text.indexOf("}", place) + 1;
+                                _substitutes.forEach(s => {
+                                    if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
+                                        _text = _text.substring(0, _text.indexOf('{', place) - 1) + s + _text.substring(_text.indexOf('}', place) + 1);
+                                        place = _text.indexOf('}', place) + 1;
                                     }
-                
                                 });
-                                                translation.languages[l] = _text;
+                                translation.languages[l] = _text;
                                 this._manager.refreshDataTable();
                                 //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
                                 //sleep(250);
@@ -159,8 +145,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
             } catch (e) {
                 let err = e as AxiosError;
                 let r = err.response as AxiosResponse;
-                console.log(`${e.toString()}\n${r.data}\nlangage ${lang} - ${text}`);
-                vscode.window.showErrorMessage(`${e.toString()}\n${r.data}\nlangage ${lang} - ${text}`);
+                vscode.window.showErrorMessage(`${e.toString()}\n${r !== undefined ? r.data : ''}\nlangage ${lang} - ${text}`);
             }
         });
     }

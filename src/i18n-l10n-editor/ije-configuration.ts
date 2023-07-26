@@ -64,6 +64,11 @@ export class IJEConfiguration {
         return value !== undefined ? value : null;
     }
 
+    static get DEFAULT_LANGUAGE(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.defaultLanguage');
+        return value !== undefined ? value : "en";
+    }
+
     static arbFolders: IJEFolder[] = [];
 
     static get WORKSPACE_FOLDERS(): IJEFolder[] {
@@ -76,7 +81,7 @@ export class IJEConfiguration {
             folders.forEach(d => {
                 var path = vscode.Uri.file(d.path).fsPath;
                 if (fs.existsSync(path)) {
-                    _folders.push({ name: d.name, path: path, arb: d.arb, folder: d.folder });
+                    _folders.push({ name: d.name, path: path, arb: d.arb, folder: d.folder, languages: d.languages});
                 }
             });
         } else {
@@ -86,7 +91,7 @@ export class IJEConfiguration {
             folders.forEach(d => {
                 var path = vscode.Uri.file(_path.join(workspaceFolder.uri.fsPath, d.path)).fsPath;
                 if (fs.existsSync(path)) {
-                    _folders.push({ name: d.name, path: path, arb: d.arb, folder: d.folder});
+                    _folders.push({ name: d.name, path: path, arb: d.arb, folder: d.folder, languages: d.languages});
                 }
             });
         }

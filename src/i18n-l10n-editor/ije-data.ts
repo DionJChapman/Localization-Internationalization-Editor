@@ -16,6 +16,8 @@ import { showInputBox } from './services/inputBox/showInputBox';
 import { camelize } from './shared/camelize';
 import { capalize } from './shared/capalize';
 import { nochange } from './shared/nochange';
+import { findYAML } from './services/find_yaml';
+import { IJELangs } from './models/ije-langs';
 
 export class IJEData {
     private _currentID = 1;
@@ -24,7 +26,7 @@ export class IJEData {
     private _translations: IJEDataTranslation[] = [];
 
     private _searchPattern: string = '';
-    private _filteredFolder: string = '*';
+    static _filteredFolder: string = '*';
 
     private _view: IJEView;
     private _page: IJEPage;
@@ -110,7 +112,7 @@ export class IJEData {
     }
 
     filterFolder(value: string) {
-        this._filteredFolder = value;
+        IJEData._filteredFolder = value;
         this._manager.refreshDataTable();
     }
 
@@ -178,27 +180,57 @@ export class IJEData {
 
         this.save();
 
-        let lang: string = await showInputBox('Language Code', 'en_US');
+        let _lang: string = await showInputBox('Language Code', 'en_US');
         let oldLang = '';
 
-        if (lang.length > 0) {
-            existingFolders.forEach(f => {
-                let _src = `${f.path}/${f.arb}`;
-                let _dest = `${f.path}/app_${lang}.arb`;
-                let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
-                let split = s.split('\n');
-                for (let p = 0; p < split.length; ++p) {
-                    if (split[p].indexOf('@@locale') !== -1 || split[p].indexOf('@@local') !== -1) {
-                        const l = split[p].split(':');
-                        if (l.length === 2 && l[1].lastIndexOf('"') > l[1].indexOf('"')) {
-                            oldLang = l[1].substring(l[1].indexOf('"') + 1, l[1].lastIndexOf('"'));
+        const langs: IJELangs[] = [];
+
+        if (_lang.length > 0) {
+            let lang = _lang;
+            existingFolders.forEach(async f => {
+                if (IJEData._filteredFolder === '*' || f.path === IJEData._filteredFolder) {
+                    let _src = `${f.path}/${f.arb}`;
+                    oldLang = f.arb.split('.')[0];
+
+                    let _dest = '';
+                    if (f.arb.split('_').length === 1) {
+                        lang = _lang;
+                        _dest = `${f.path}/${_lang}.${f.arb.split('.')[f.arb.split('.').length - 1]}`;
+                    } else {
+                        lang = `${f.arb.split('_')[0]}_${_lang}`;
+                        _dest = `${f.path}/${f.arb.split('_')[0]}_${_lang}.${f.arb.split('.')[f.arb.split('.').length - 1]}`;
+                    }
+
+                    if (_src !== '//' && f.arb !== '') {
+                        let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
+                        let split = s.split('\n');
+                        for (let p = 0; p < split.length; ++p) {
+                            if (split[p].indexOf('@@locale') !== -1 || split[p].indexOf('@@local') !== -1) {
+                                const l = split[p].split(':');
+                                if (oldLang === '' && l.length === 2 && l[1].lastIndexOf('"') > l[1].indexOf('"')) {
+                                    oldLang = l[1].substring(l[1].indexOf('"') + 1, l[1].lastIndexOf('"'));
+                                }
+                                split[p] = `    "@@locale": "${_lang}",`;
+                                break;
+                            }
                         }
-                        split[p] = `    "@@locale": "${lang}",`;
-                        break;
+                        fs.writeFileSync(vscode.Uri.file(_dest).fsPath, split.join('\n'));
+
+                        let add =  true;
+                        langs.forEach(l => {
+                            if (oldLang === l.from && lang === l.to) {
+                                add = false;
+                                return;
+                            }
+                        });
+                        if (add) {
+                            langs.push({ from: oldLang, to: lang });
+                        }
                     }
                 }
-                fs.writeFileSync(vscode.Uri.file(_dest).fsPath, split.join('\n'));
             });
+
+            IJEConfiguration.arbFolders = await findYAML(vscode.workspace.workspaceFolders[0].uri.fsPath);
 
             this._languages = [];
             this._translations = [];
@@ -208,7 +240,9 @@ export class IJEData {
             this._manager.refreshDataTable();
 
             if (IJEConfiguration.KEY_AUTO_TRANSLATE) {
-                this.autoTranslate(`app_${oldLang}`, `app_${lang}`);
+                langs.forEach(l => {
+                    this.autoTranslate(l.from, l.to);
+                });
             }
         }
     }
@@ -224,33 +258,27 @@ export class IJEData {
 
         if (lang.length > 0) {
             existingFolders.forEach(f => {
-                let _src = `${f.path}/${lang}.arb`;
-                let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
-                let split = s.split('\n');
-                for (let p = 0; p < split.length; ++p) {
-                    if (!split[p].trim().startsWith('"@') && !split[p].trim().startsWith('{') && !split[p].trim().startsWith('}')) {
-                        const l = split[p].split(':');
-                        if (l.length === 2 && l[0].lastIndexOf('"') > l[0].indexOf('"')) {
-                            const key = l[0].substring(l[0].indexOf('"') + 1, l[0].lastIndexOf('"'));
-                            if (key.toLocaleLowerCase() !== 'description' && key.toLocaleLowerCase() !== 'type') {
-                                const translate = this._getKey(key);
-                                if (translate && oldLang !== '') {
-                                    this.translate(translate.id, oldLang, lang);
-                                    //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-                                    //sleep(250);
+                let ext = f.arb.split('.')[f.arb.split('.').length - 1];
+                let _src = `${f.path}/${lang}.${ext}`;
+                if (fs.existsSync(vscode.Uri.file(_src).fsPath)) {
+                    let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
+                    let split = s.split('\n');
+                    for (let p = 0; p < split.length; ++p) {
+                        if (!split[p].trim().startsWith('"@') && !split[p].trim().startsWith('{') && !split[p].trim().startsWith('}')) {
+                            const l = split[p].split(':');
+                            if (l.length === 2 && l[0].lastIndexOf('"') > l[0].indexOf('"')) {
+                                const key = l[0].substring(l[0].indexOf('"') + 1, l[0].lastIndexOf('"'));
+                                if (key.toLocaleLowerCase() !== 'description' && key.toLocaleLowerCase() !== 'type') {
+                                    const translate = this._getKey(key);
+                                    if (translate && oldLang !== '') {
+                                        this.translate(translate.id, oldLang, lang);
+                                    }
                                 }
                             }
                         }
                     }
                 }
             });
-
-            // this._languages = [];
-            // this._translations = [];
-
-            // this._loadFiles();
-
-            // this._manager.refreshDataTable();
         }
     }
 
@@ -290,26 +318,29 @@ export class IJEData {
 
                     var json = JSON.stringify(o, null, IJEConfiguration.JSON_SPACE);
                     json = json.replace(/\n/g, IJEConfiguration.LINE_ENDING);
-                    existingExtensions.forEach((ext: string) => {
-                        var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
-                        if (fs.existsSync(s)) {
-                            f = s;
-                            return;
+                    if (json !== '{}') {
+                        existingExtensions.forEach((ext: string) => {
+                            var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
+                            if (fs.existsSync(s)) {
+                                f = s;
+                                return;
+                            }
+                        });
+                        if (f === null) {
+                            f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
                         }
-                    });
-                    if (f === null) {
-                        f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
-                    }
-                    fs.writeFileSync(f + '.tmp', json);
-                    const stats = fs.statSync(f + '.tmp');
-                    if (stats.size > 10) {
-                        fs.copyFileSync(f + '.tmp', f);
-                        fs.unlinkSync(f + '.tmp');
-                        vscode.window.showInformationMessage(msg);
-                        saved = true;
-                    } else {
-                        vscode.window.showErrorMessage('Error saving translation "' + f + '". Temporary files kept..');
-                        saved = false;
+                        fs.writeFileSync(f + '.tmp', json + '\n');
+                        const stats = fs.statSync(f + '.tmp');
+                        if (stats.size >= (json + '\n').length) {
+                            fs.copyFileSync(f + '.tmp', f);
+                            fs.unlinkSync(f + '.tmp');
+                            saved = true;
+                        } else {
+                            vscode.window.showErrorMessage(
+                                'Error saving translation "' + f + ' file ' + stats.size + ' is less than ' + (json + '\n').length + '. Temporary files kept..'
+                            );
+                            saved = false;
+                        }
                     }
                 });
             });
@@ -325,7 +356,7 @@ export class IJEData {
                             if (a.key === '@@locale' || a.key === '@@local') {
                                 return -1;
                             }
-                            if (b.key === '@@locale' || b.key === '@@locale') {
+                            if (b.key === '@@locale' || b.key === '@@local') {
                                 return 1;
                             }
                             const compared = String(a.key.replace('@', '')).localeCompare(b.key.replace('@', ''));
@@ -348,26 +379,29 @@ export class IJEData {
 
                     var json = JSON.stringify(o, null, IJEConfiguration.JSON_SPACE);
                     json = json.replace(/\n/g, IJEConfiguration.LINE_ENDING);
-                    existingExtensions.forEach((ext: string) => {
-                        var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
-                        if (fs.existsSync(s)) {
-                            f = s;
-                            return;
+                    if (json !== '{}') {
+                        existingExtensions.forEach((ext: string) => {
+                            var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
+                            if (fs.existsSync(s)) {
+                                f = s;
+                                return;
+                            }
+                        });
+                        if (f === null) {
+                            f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
                         }
-                    });
-                    if (f === null) {
-                        f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
-                    }
-                    fs.writeFileSync(f + '.tmp', json + '\n');
-                    const stats = fs.statSync(f + '.tmp');
-                    if (stats.size > 20) {
-                        fs.copyFileSync(f + '.tmp', f);
-                        fs.unlinkSync(f + '.tmp');
-                        vscode.window.showInformationMessage(msg);
-                        saved = true;
-                    } else {
-                        vscode.window.showErrorMessage('Error saving translation "' + f + '". Temporary files kept...');
-                        saved = false;
+                        fs.writeFileSync(f + '.tmp', json + '\n');
+                        const stats = fs.statSync(f + '.tmp');
+                        if (stats.size >= (json + '\n').length) {
+                            fs.copyFileSync(f + '.tmp', f);
+                            fs.unlinkSync(f + '.tmp');
+                            saved = true;
+                        } else {
+                            vscode.window.showErrorMessage(
+                                'Error saving translation "' + f + ' file ' + stats.size + ' is less than ' + (json + '\n').length + '. Temporary files kept..'
+                            );
+                            saved = false;
+                        }
                     }
                 });
             });
@@ -375,6 +409,13 @@ export class IJEData {
         if (saved) {
             vscode.window.showInformationMessage(msg);
         }
+
+        this._languages = [];
+        this._translations = [];
+
+        this._loadFiles();
+
+        this._manager.refreshDataTable();
     }
 
     search(value: string) {
@@ -413,6 +454,22 @@ export class IJEData {
             service._manager = this._manager;
             await service.translate(translation, from, to.split(','));
             this._manager.refreshDataTable();
+        }
+    }
+
+    async copy(id: number, from: string = '', to: string = '') {
+        const translation = this._get(id);
+        if (translation && from) {
+            const languages = to.split(',');
+
+            languages
+                .filter(l => l !== from)
+                .forEach(l => {
+                    if (translation.languages[from] && translation.languages[l]) {
+                        translation.languages[l] = translation.languages[from];
+                        this._manager.refreshDataTable();
+                    }
+                });
         }
     }
 
@@ -551,8 +608,10 @@ export class IJEData {
         keys.forEach((key: string) => {
             const languages: any = {};
             this._languages.forEach((language: string) => {
-                const value = translate[language][key];
-                languages[language] = value ? value : '';
+                if (translate[language] !== undefined) {
+                    const value = translate[language][key];
+                    languages[language] = value ? value : '';
+                }
             });
 
             const t = this._createFactoryIJEDataTranslation();
@@ -583,8 +642,8 @@ export class IJEData {
      */
     private _getDisplayedTranslations(): IJEDataTranslation[] {
         var o = this._translations;
-        if (this._filteredFolder !== '*') {
-            o = o.filter(t => t.folder === this._filteredFolder);
+        if (IJEData._filteredFolder !== '*') {
+            o = o.filter(t => t.folder === IJEData._filteredFolder);
         }
 
         o = o
@@ -610,10 +669,10 @@ export class IJEData {
                     if (this._sort.column === 'KEY') {
                         if (IJEConfiguration.SORT_KEY_TOGETHER) {
                             if (this._sort.ascending) {
-                                if (_a === '@@locale') {
+                                if (_a === '@@locale' || _a === '@@local') {
                                     return -1;
                                 }
-                                if (_b === '@@locale') {
+                                if (_b === '@@locale' || _b === '@@local') {
                                     return 1;
                                 }
                                 const compared = String(_a.replace('@', '')).localeCompare(_b.replace('@', ''));
@@ -628,10 +687,10 @@ export class IJEData {
 
                                 return compared;
                             } else {
-                                if (_b === '@@locale') {
+                                if (_b === '@@locale' || _b === '@@local') {
                                     return -1;
                                 }
-                                if (_a === '@@locale') {
+                                if (_a === '@@locale' || _a === '@@local') {
                                     return 1;
                                 }
                                 if (_a.indexOf('.') !== -1) {
@@ -747,7 +806,7 @@ export class IJEData {
     private _createFactoryIJEDataTranslation(): IJEDataTranslation {
         return {
             id: this._currentID++,
-            folder: !this._manager.isWorkspace ? this._manager.folderPath : this._filteredFolder !== '*' ? this._filteredFolder : IJEConfiguration.WORKSPACE_FOLDERS[0].path,
+            folder: !this._manager.isWorkspace ? this._manager.folderPath : IJEData._filteredFolder !== '*' ? IJEData._filteredFolder : IJEConfiguration.WORKSPACE_FOLDERS[0].path,
             valid: true,
             error: '',
             key: '',

@@ -1,5 +1,5 @@
-arb-dir: demo/l10n
-template-arb-file: app_en.arb
+arb-dir: portal/locals
+template-arb-file: en.json
 output-localeization-file: app_localeizations.dart
 untranslated-messages-file: missing.log
 nullable-getter: true

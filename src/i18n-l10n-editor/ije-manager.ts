@@ -73,6 +73,9 @@ export class IJEManager {
                 case 'translate':
                     this._data.translate(message.id, message.from, message.to);
                     return;
+                case 'copy':
+                    this._data.copy(message.id, message.from, message.to);
+                    return;
                 case 'folder':
                     this._data.changeFolder(message.id, message.value);
                     return;
