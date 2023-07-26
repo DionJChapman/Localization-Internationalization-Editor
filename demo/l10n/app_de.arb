@@ -2,6 +2,6 @@
     "@@locale": "de",
     "helloWorld": "Hallo Welt",
     "@helloWorld": {
-        "description": "Nur ein Test"
+        "description": "Just a test"
     }
 }

@@ -290,26 +290,27 @@ export class IJEData {
 
                     var json = JSON.stringify(o, null, IJEConfiguration.JSON_SPACE);
                     json = json.replace(/\n/g, IJEConfiguration.LINE_ENDING);
-                    existingExtensions.forEach((ext: string) => {
-                        var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
-                        if (fs.existsSync(s)) {
-                            f = s;
-                            return;
+                    if (json !== '{}') {
+                        existingExtensions.forEach((ext: string) => {
+                            var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
+                            if (fs.existsSync(s)) {
+                                f = s;
+                                return;
+                            }
+                        });
+                        if (f === null) {
+                            f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
                         }
-                    });
-                    if (f === null) {
-                        f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
-                    }
-                    fs.writeFileSync(f + '.tmp', json);
-                    const stats = fs.statSync(f + '.tmp');
-                    if (stats.size > 10) {
-                        fs.copyFileSync(f + '.tmp', f);
-                        fs.unlinkSync(f + '.tmp');
-                        vscode.window.showInformationMessage(msg);
-                        saved = true;
-                    } else {
-                        vscode.window.showErrorMessage('Error saving translation "' + f + '". Temporary files kept..');
-                        saved = false;
+                        fs.writeFileSync(f + '.tmp', json + '\n');
+                        const stats = fs.statSync(f + '.tmp');
+                        if (stats.size >= (json + '\n').length) {
+                            fs.copyFileSync(f + '.tmp', f);
+                            fs.unlinkSync(f + '.tmp');
+                            saved = true;
+                        } else {
+                            vscode.window.showErrorMessage('Error saving translation "' + f + ' file ' + stats.size + ' is less than ' +  (json + '\n').length + '. Temporary files kept..');
+                            saved = false;
+                        }
                     }
                 });
             });
@@ -348,26 +349,27 @@ export class IJEData {
 
                     var json = JSON.stringify(o, null, IJEConfiguration.JSON_SPACE);
                     json = json.replace(/\n/g, IJEConfiguration.LINE_ENDING);
-                    existingExtensions.forEach((ext: string) => {
-                        var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
-                        if (fs.existsSync(s)) {
-                            f = s;
-                            return;
+                    if (json !== '{}') {
+                        existingExtensions.forEach((ext: string) => {
+                            var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
+                            if (fs.existsSync(s)) {
+                                f = s;
+                                return;
+                            }
+                        });
+                        if (f === null) {
+                            f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
                         }
-                    });
-                    if (f === null) {
-                        f = vscode.Uri.file(_path.join(key, language + '.' + existingExtensions[0])).fsPath;
-                    }
-                    fs.writeFileSync(f + '.tmp', json + '\n');
-                    const stats = fs.statSync(f + '.tmp');
-                    if (stats.size > 20) {
-                        fs.copyFileSync(f + '.tmp', f);
-                        fs.unlinkSync(f + '.tmp');
-                        vscode.window.showInformationMessage(msg);
-                        saved = true;
-                    } else {
-                        vscode.window.showErrorMessage('Error saving translation "' + f + '". Temporary files kept...');
-                        saved = false;
+                        fs.writeFileSync(f + '.tmp', json + '\n');
+                        const stats = fs.statSync(f + '.tmp');
+                        if (stats.size >= (json + '\n').length) {
+                            fs.copyFileSync(f + '.tmp', f);
+                            fs.unlinkSync(f + '.tmp');
+                            saved = true;
+                        } else {
+                            vscode.window.showErrorMessage('Error saving translation "' + f + ' file ' + stats.size + ' is less than ' +  (json + '\n').length + '. Temporary files kept..');
+                            saved = false;
+                        }
                     }
                 });
             });
@@ -413,6 +415,22 @@ export class IJEData {
             service._manager = this._manager;
             await service.translate(translation, from, to.split(','));
             this._manager.refreshDataTable();
+        }
+    }
+
+    async copy(id: number, from: string = '', to: string = '') {
+        const translation = this._get(id);
+        if (translation && from) {
+            const languages = to.split(',');
+
+            languages
+                .filter(l => l !== from)
+                .forEach(l => {
+                    if (translation.languages[from] && translation.languages[l]) {
+                        translation.languages[l] = translation.languages[from];
+                        this._manager.refreshDataTable();
+                    }
+                });
         }
     }
 

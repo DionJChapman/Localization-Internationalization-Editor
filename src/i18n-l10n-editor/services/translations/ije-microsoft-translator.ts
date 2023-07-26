@@ -22,16 +22,10 @@ export class IJEMicrosoftTranslator implements IJETranslation {
         let split = language.split('_');
         if (split.length === 2 && split[0].length === 2) {
             language = split[0];
-            // if (split[1].length === 2) {
-            //     language += `_${split[1].toLocaleLowerCase()}`;
-            // }
         } else if (split.length === 2) {
             language = split[1];
         } else if (split.length === 3) {
             language = split[1];
-            // if (split[2].length === 2) {
-            //     language += `_${split[2].toLocaleLowerCase()}`;
-            // }
         }
 
         for (let l = 0; l < languages.length; ++l) {
@@ -39,16 +33,10 @@ export class IJEMicrosoftTranslator implements IJETranslation {
             let split = lang.split('_');
             if (split.length === 2 && split[0].length === 2) {
                 lang = split[0];
-                // if (split[1].length === 2) {
-                //     lang += `_${split[1].toLocaleUpperCase()}`;
-                // }
             } else if (split.length === 2) {
                 lang = split[1];
             } else if (split.length === 3) {
                 lang = split[1];
-                // if (split[2].length === 2) {
-                //     lang += `_${split[2].toLocaleUpperCase()}`;
-                // }
             }
             if (language !== languages[l]) {
                 _languages.push(lang);
@@ -140,7 +128,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                             if (r) {
                                 let _text = r['text'];
                                 place = 0;
-                                _substitutes.flatMap(s => {
+                                _substitutes.forEach(s => {
                                     if (_text.indexOf("}", place) > _text.indexOf("{", place)) {
                                         _text =  _text.substring(0, _text.indexOf("{", place) - 1) + s + _text.substring(_text.indexOf("}", place) + 1);
                                         place = _text.indexOf("}", place) + 1;

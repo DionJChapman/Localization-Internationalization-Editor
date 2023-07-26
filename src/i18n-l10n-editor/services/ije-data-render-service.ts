@@ -67,7 +67,7 @@ export class IJEDataRenderService {
         render += '<tr>';
         render += '<th style="background: #1f1f1f; position: sticky; left: 0px; top: 80px; z-index: 1200; width: 40px; maxWidth: 40px; margin: 0px; padding: 0px;">&nbsp;</th>';
         const folders = IJEConfiguration.WORKSPACE_FOLDERS;
-        if (showFolder && folders.length > 1 && IJEData._filteredFolder === "*") {
+        if (showFolder && folders.length > 1 && IJEData._filteredFolder === '*') {
             render += this._getTableHeader('FOLDER', -1, 300, sort);
         }
         render += this._getTableHeader('KEY', 40, 438, sort);
@@ -109,18 +109,20 @@ export class IJEDataRenderService {
         render += '</tr>';
 
         translations.forEach(t => {
-            let selected = "";
+            let selected = '';
+            let selectedLanguages: string[] = [];
             render += '<tr style="padding: 0px; margin: 0px; left: 0px">';
             render +=
                 `<td style="background: #1f1f1f; width: 40px; maxWidth: 40px; white-space: nowrap; position: sticky; left: 0px; z-index: 1000; margin: 0px; padding: 0px;">` +
                 `<button type="button" class="btn" style="width: 40px; maxWidth: 40px; padding-top: 20px;" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
 
-            if (showFolder && folders.length > 1 && IJEData._filteredFolder === "*") {
+            if (showFolder && folders.length > 1 && IJEData._filteredFolder === '*') {
                 render += `<td style="background: #1f1f1f; width: 300px;"><select id="select-folder-${t.id}" class="form-control" style="width: 300px;" onchange="updateFolder(this,${t.id})">`;
 
                 folders.forEach(d => {
-                    if (included.length === 0 || included.includes(d.arb.split(".")[0])) {
+                    if (included.length === 0 || included.includes(d.arb.split('.')[0])) {
                         if (d.path === t.folder) {
+                            selectedLanguages = d.languages;
                             selected = `${d.folder}/${d.arb}`;
                         }
                         render += `<option value='${d.path.replace(/"/g, '&quot;')}' ${d.path === t.folder ? 'selected' : ''}>${d.name}</option>`;
@@ -165,13 +167,13 @@ export class IJEDataRenderService {
                 } else if (included.length === 0) {
                     for (let f in folders) {
                         let fol = folders[f];
-                        if (selected === "") {
+                        if (selected === '') {
                             showIt = true;
-                            defaultARB = fol.arb.split(".")[0];
+                            defaultARB = fol.arb.split('.')[0];
                             break;
                         } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
                             showIt = true;
-                            defaultARB = fol.arb.split(".")[0];
+                            defaultARB = fol.arb.split('.')[0];
                             break;
                         } else {
                             showBlank = true;
@@ -192,12 +194,22 @@ export class IJEDataRenderService {
                     render += '/>';
                     if (hasTranslateService) {
                         const style = language === defaultARB ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
-                        render +=
-                            `<div class="input-group-append" ${style}>` +
-                            `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${_defaultARB}', '${
-                                _defaultARB === language ? languages.join(',') : language
-                            }');"><i class="icon-language"></i></button>
-                        </div>`;
+                        if (!t.key.startsWith('@@')) {
+                            render +=
+                                `<div class="input-group-append">` +
+                                `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${_defaultARB}', '${
+                                    _defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages) : language
+                                }');"><i class="icon-language"></i></button></div>`;
+                            if (language === defaultARB) {
+                                render +=
+                                    `<div class="input-group-append">` +
+                                    `<button type="button" class="btn btn-vscode" style="background: #FFFFFF5E; white-space: nowrap;" onclick="copyInput(this,${
+                                        t.id
+                                    }, '${_defaultARB}', '${
+                                        _defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages) : language
+                                    }');"><i class="icon-right-open"></i></button></div>`;
+                            }
+                        }
                         render += '</div>';
                     }
                     render += '</td>';
@@ -205,7 +217,6 @@ export class IJEDataRenderService {
                     render += `<td style="background: #1f1f1f; ${
                         language === defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;` : ' maxWidth: 400px; width: 400px;'
                     }"><div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">&nbsp;</div></td>`;
-
                 }
             });
 
