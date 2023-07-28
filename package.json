@@ -11,7 +11,7 @@
     },
     "description": "Easily edit your i18n/l10n json files",
     "icon": "media/logo.png",
-    "version": "3.0.12",
+    "version": "3.0.14",
     "engines": {
         "vscode": "^1.80.0"
     },
@@ -72,7 +72,7 @@
                 },
                 
                 "i18n-l10n-editor.jsonSpace": {
-                    "default": 4,
+                    "default": 2,
                     "type": [
                         "string",
                         "number"
@@ -112,18 +112,18 @@
                 },
                 "i18n-l10n-editor.translationService": {
                     "type": "string",
-                    "description": "Specified wich translation service to use (Only Microsoft translator is currently available).",
+                    "description": "Specified which translation service to use (Only Microsoft translator is currently available).",
                     "enum": [
                         "MicrosoftTranslator"
                     ]
                 },
                 "i18n-l10n-editor.translationServiceApiKey": {
                     "type": "string",
-                    "description": " Api key used by the translation service. Copy this from the Key Generation page."
+                    "description": "Api key used by the translation service. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.translationServiceApiRegion": {
                     "type": "string",
-                    "description": " Api region used by the translation service. Copy this from the Key Generation page."
+                    "description": "Api region used by the translation service. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.workspaceFolders": {
                     "type": "array",
