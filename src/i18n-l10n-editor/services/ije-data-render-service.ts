@@ -328,11 +328,10 @@ export class IJEDataRenderService {
 
         if (selectTranslation) {
             if (showFolder && folders.length > 1) {
-                render += ` 
-                  <div class="form-group">
+                render += `<div class="form-group">
                     <label>Directory</label>
                     <div class="row">
-                      <div class="col-12">
+                    <div class="col-12">
                         <select id="select-folder-${selectTranslation.id}" class="form-control" onchange="updateFolder(this,${selectTranslation.id})">`;
 
                 folders.forEach(d => {
@@ -345,15 +344,10 @@ export class IJEDataRenderService {
                     }
                     render += `<option value='${d.path}' ${d.path === selectTranslation.folder ? 'selected' : ''}>${d.name}</option>`;
                 });
-                render += `
-                        </select>               
-                      </div>
-                    </div>
-                  </div>`;
+                render += '</select></div></div></div>';
             }
 
-            render += `
-                <div class="form-group">
+            render += `<div class="form-group">
                     <label>Key</label>
                     <div class="row">
                         <div class="col-10">
@@ -361,16 +355,30 @@ export class IJEDataRenderService {
                 selectTranslation.valid ? '' : 'is-invalid'
             }" type="text" placeholder="Key..." value="${selectTranslation.key}" onchange="updateInput(this,${selectTranslation.id});" />
                             <div id="input-key-${selectTranslation.id}-feedback" class="invalid-feedback error-vscode">${selectTranslation.error}</div>
-                        </div>
-                 
+                        </div>                 
                         <div class="col-2">
                             <button type="button" class="btn" onclick="remove(${selectTranslation.id})"><i class=" error-vscode icon-trash-empty"></i></button>
                         </div>
                     </div>
                 </div>`;
             let defaultARB = _defaultARB;
-            languages
-                .sort((a, b) => {
+            languages.forEach((language: string) => {
+                if (included.length === 0) {
+                    for (let f in folders) {
+                        let fol = folders[f];
+                        if (!selectFolder || fol.path === selectFolder) {
+                            if (selected === '') {
+                                defaultARB = fol.arb.split('.')[0];
+                                break;
+                            } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
+                                defaultARB = fol.arb.split('.')[0];
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+            languages.sort((a, b) => {
                     if (a === defaultARB) {
                         return -1;
                     }
@@ -389,11 +397,9 @@ export class IJEDataRenderService {
                             if (!selectFolder || fol.path === selectFolder) {
                                 if (selected === '') {
                                     showIt = true;
-                                    defaultARB = fol.arb.split('.')[0];
                                     break;
                                 } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
                                     showIt = true;
-                                    defaultARB = fol.arb.split('.')[0];
                                     break;
                                 }
                             }
