@@ -57,6 +57,7 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 
 - Fixed issues with translation service due to changes in the Microsoft Translation APIs
   - Now only does a single translation at a time
+  - Available languages <https://learn.microsoft.com/en-us/azure/ai-services/translator/language-support>
 - Change the default translation button to green to indicate that it will be translated to all languages
 - Increased the width of the text fields, now scrolls horizontally
 - Moved the default language to the start

@@ -1,5 +1,8 @@
 {
     "@@locale": "en_AU",
+    "HELLO": "Hello",
+    "HELLO PORTAL": "Hello Portal",
+    "HELLO_WORLD": "Hello World",
     "helloWorld": "Hello World",
     "@helloWorld": {
         "description": "Just a test"

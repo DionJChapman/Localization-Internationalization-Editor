@@ -61,18 +61,25 @@ export class IJEData {
         const translation = this._createFactoryIJEDataTranslation();
         this._insert(translation);
         this._view.selectionId = translation.id;
+        this._view.selectionFolder = translation.folder;
         this._manager.refreshDataTable();
     }
 
     addKey(key: string, text: string) {
         const folders = IJEConfiguration.WORKSPACE_FOLDERS;
         folders.forEach(f => {
-            const translation = this._createFactoryIJEDataTranslation();
+            let translation = this._getKey(key);
+            if (!translation) {
+                translation = this._createFactoryIJEDataTranslation();
+                translation.key = key;
+                this._insert(translation);
+            }
+
             let arb = f.arb;
             if (arb.lastIndexOf('.') !== -1) {
                 arb = arb.substring(0, arb.lastIndexOf('.'));
             }
-            translation.key = key;
+
             // translation.languages = { [arb]: text };
             if (key.startsWith('@') && !key.startsWith('@@')) {
                 //const t = this._get(translation.id);
@@ -82,11 +89,9 @@ export class IJEData {
 
                     // }
                 });
-                this._insert(translation);
             } else {
                 let lang: string = '';
                 translation.languages[arb] = text;
-                this._insert(translation);
                 this._languages.forEach(l => {
                     if (l !== arb) {
                         lang += `,${l}`;
@@ -95,10 +100,11 @@ export class IJEData {
                 if (lang !== '') {
                     lang = lang.substring(1);
                 }
-                this.translate(translation.id, arb, lang);
+                if (IJEConfiguration.KEY_AUTO_TRANSLATE) {
+                    this.translate(translation.id, arb, lang);
+                }
             }
 
-            //this._view.selectionId = translation.id;
             this._manager.refreshDataTable();
         });
     }
@@ -119,7 +125,8 @@ export class IJEData {
     mark(id: number) {
         const translation = this._get(id);
         if (translation) {
-            this._view.selectionId = id;
+            this._view.selectionId = translation.id;
+            this._view.selectionFolder = translation.folder;
         }
     }
 
@@ -143,6 +150,7 @@ export class IJEData {
                 render += IJEDataRenderService.renderList(
                     translations,
                     this._get(this._view.selectionId),
+                    this._view.selectionFolder,
                     this._languages,
                     this._page,
                     this._sort,
@@ -175,12 +183,72 @@ export class IJEData {
         }
     }
 
+    copyFolder(id: number, folderPath: string) {
+        const translation = this._get(id);
+        const folders = IJEConfiguration.WORKSPACE_FOLDERS;
+
+        let defaultARB = '';
+
+        folders
+            .filter(f => f.path === folderPath)
+            .forEach(f => {
+                if (f.path === folderPath) {
+                    defaultARB = f.arb.split('.')[0];
+                    return;
+                }
+            });
+
+        const value = translation.languages[defaultARB];
+
+        if (value !== undefined) {
+            folders.forEach(f => {
+                if (
+                    this._translations.filter(t => {
+                        t.key === translation.key && t.folder === f.path;
+                    }).length === 0
+                ) {
+                    const translate = this._createFactoryIJEDataTranslation();
+                    translate.key = translation.key;
+                    translate.folder = f.path;
+                    f.languages.forEach(l => {
+                        translate.languages[l] = translation.languages[defaultARB];
+                    });
+                    translate.valid = true;
+
+                    this._translations.push(translate);
+                } else {
+                    this._translations
+                        .filter(t => {
+                            t.key = translation.key;
+                        })
+                        .forEach(t => {
+                            Object.entries(t.languages).forEach(l => {
+                                const [language, a] = l;
+                                if (t.languages[language] === undefined) {
+                                    t.languages[language] = value;
+                                }
+                            });
+                        });
+                }
+            });
+        }
+
+        this.save();
+
+        this._languages = [];
+        this._translations = [];
+
+        this._loadFiles();
+
+        this._manager.refreshDataTable();
+    }
+
     async lang() {
         const existingFolders = IJEConfiguration.WORKSPACE_FOLDERS;
 
         this.save();
 
-        let _lang: string = await showInputBox('Language Code', 'en_US');
+        let _lang: string = await showInputBox('Language Code', 'en-us');
         let oldLang = '';
 
         const langs: IJELangs[] = [];
@@ -216,7 +284,7 @@ export class IJEData {
                         }
                         fs.writeFileSync(vscode.Uri.file(_dest).fsPath, split.join('\n'));
 
-                        let add =  true;
+                        let add = true;
                         langs.forEach(l => {
                             if (oldLang === l.from && lang === l.to) {
                                 add = false;
@@ -264,8 +332,9 @@ export class IJEData {
                     let s: string = fs.readFileSync(vscode.Uri.file(_src).fsPath).toString();
                     let split = s.split('\n');
                     for (let p = 0; p < split.length; ++p) {
-                        if (!split[p].trim().startsWith('"@') && !split[p].trim().startsWith('{') && !split[p].trim().startsWith('}')) {
-                            const l = split[p].split(':');
+                        const part = split[p].trim();
+                        if (!part.startsWith('"@') && !part.startsWith('{') && !part.startsWith('}')) {
+                            const l = part.split(':');
                             if (l.length === 2 && l[0].lastIndexOf('"') > l[0].indexOf('"')) {
                                 const key = l[0].substring(l[0].indexOf('"') + 1, l[0].lastIndexOf('"'));
                                 if (key.toLocaleLowerCase() !== 'description' && key.toLocaleLowerCase() !== 'type') {
@@ -427,6 +496,7 @@ export class IJEData {
         const translation = this._get(id);
         if (translation) {
             this._view.selectionId = translation.id;
+            this._view.selectionFolder = translation.folder;
 
             this._manager.refreshDataTable();
         }
@@ -476,7 +546,8 @@ export class IJEData {
     update(id: number, value: string, language: string = ''): IJEDataTranslation {
         const translation = this._get(id);
         if (translation) {
-            this._view.selectionId = id;
+            this._view.selectionId = translation.id;
+            this._view.selectionFolder = translation.folder;
             if (language) {
                 translation.languages[language] = value.replace(/\\n/g, '\n');
                 this._validate(translation);
@@ -515,7 +586,7 @@ export class IJEData {
                         if (temp.indexOf('.') !== -1) {
                             temp = temp.substring(1, temp.indexOf('.'));
                             let translation = this._getKey(temp);
-                            if (translation && translation.key.toLocaleLowerCase() == temp.toLocaleLowerCase()) {
+                            if (translation && translation.key.toLocaleLowerCase() === temp.toLocaleLowerCase()) {
                                 newKey = newKey.replace(temp, translation.key);
                             }
                         }
@@ -850,6 +921,16 @@ export class IJEData {
         }
 
         return content.replace('\uFEFF', '');
+    }
+
+    _sizeOf(array: { [language: string]: String }) {
+        let n = 0;
+
+        Object.entries(array).forEach(a => {
+            ++n;
+        });
+
+        return n;
     }
 }
 
