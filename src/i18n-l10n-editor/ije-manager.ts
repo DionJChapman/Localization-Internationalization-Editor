@@ -49,6 +49,9 @@ export class IJEManager {
                 case 'remove':
                     this._data.remove(message.id);
                     return;
+                case 'copyFolder':
+                    this._data.copyFolder(message.id, message.folderPath);
+                    return;
                 case 'save':
                     this._data.save();
                     return;

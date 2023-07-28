@@ -109,10 +109,10 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                                 if (to.indexOf('_') !== -1) {
                                     to = t.to.substring(0, t.to.indexOf('_'));
                                 }
-                                if (to.indexOf('-') !== -1) {
-                                    to = t.to.substring(0, t.to.indexOf('-'));
-                                }
-                                if (l.indexOf(to) !== -1) {
+                                // if (to.indexOf('-') !== -1) {
+                                //     to = t.to.substring(0, t.to.indexOf('-'));
+                                // }
+                                if (l.indexOf(to) !== -1 || l.indexOf(t.to) !== -1) {
                                     return t.text as string;
                                 }
                             })
@@ -126,6 +126,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                             let r = results[l][0];
                             if (r) {
                                 let _text = r['text'];
+                                //const _l = r['to'];
                                 place = 0;
                                 _substitutes.forEach(s => {
                                     if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
@@ -134,6 +135,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                                     }
                                 });
                                 translation.languages[l] = _text;
+                                //translation.languages[_l] = _text;
                                 this._manager.refreshDataTable();
                                 //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
                                 //sleep(250);

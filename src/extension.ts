@@ -15,45 +15,32 @@ import { applySaveAndRunFlutterPubGet } from './i18n-l10n-editor/applySaveAndRun
 export async function activate(context: vscode.ExtensionContext) {
     const { activeTextEditor } = vscode.window;
 
-    let myStatusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    myStatusBarItem.command = 'i18n-l10n-editor';
-    myStatusBarItem.text = `$(globe) i18n/l10n Editor`;
-    myStatusBarItem.show();
+    if (vscode.workspace.workspaceFolders !== undefined) {
+        let myStatusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+        myStatusBarItem.command = 'i18n-l10n-editor';
+        myStatusBarItem.text = `$(globe) i18n/l10n Editor`;
+        myStatusBarItem.show();
 
-    context.subscriptions.push(await IJEEditorProvider.register(context));
+        context.subscriptions.push(await IJEEditorProvider.register(context));
 
-    context.subscriptions.push(
-        vscode.languages.registerCodeActionsProvider(
-          'dart',
-          new LocalizationActionProvider(),
-          {
-            providedCodeActionKinds:
-              LocalizationActionProvider.providedCodeActionKinds
-          }
-        )
-      );
-    
-      context.subscriptions.push(
-        vscode.commands.registerCommand(
-          InputBoxCommand.commandName,
-          async (...args: CommandParameters[]): Promise<void> => {
-            const editFilesParameters = await setEditFilesParameters(args[0]);
-            await vscode.commands.executeCommand(
-              EditFilesCommand.commandName,
-              editFilesParameters
-            );
-          }
-        )
-      );
+        context.subscriptions.push(
+            vscode.languages.registerCodeActionsProvider('dart', new LocalizationActionProvider(), {
+                providedCodeActionKinds: LocalizationActionProvider.providedCodeActionKinds
+            })
+        );
 
-      context.subscriptions.push(
-        vscode.commands.registerCommand(
-          EditFilesCommand.commandName,
-          async (...args: EditFilesParameters[]): Promise<void> =>
-            applySaveAndRunFlutterPubGet(args[0])
-        )
-      );
+        context.subscriptions.push(
+            vscode.commands.registerCommand(InputBoxCommand.commandName, async (...args: CommandParameters[]): Promise<void> => {
+                const editFilesParameters = await setEditFilesParameters(args[0]);
+                await vscode.commands.executeCommand(EditFilesCommand.commandName, editFilesParameters);
+            })
+        );
 
-      IJEConfiguration.arbFolders = await findYAML(vscode.workspace.workspaceFolders[0].uri.fsPath);
+        context.subscriptions.push(
+            vscode.commands.registerCommand(EditFilesCommand.commandName, async (...args: EditFilesParameters[]): Promise<void> => applySaveAndRunFlutterPubGet(args[0]))
+        );
+
+        IJEConfiguration.arbFolders = await findYAML(vscode.workspace.workspaceFolders[0].uri.fsPath);
+    }
 }
 

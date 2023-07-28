@@ -67,9 +67,9 @@ export async function findYAML(path): Promise<IJEFolder[]> {
                 _arb = c[1].trim();
             }
         }
-        if (_arb === '') {
-            _arb = "app_en.arb";
-        }
+        // if (_arb === '') {
+        //     _arb = "app_en.arb";
+        // }
         
         if (_path.startsWith(_folder)) {
             _path = _path.substring(_folder.length + 1);
@@ -78,6 +78,8 @@ export async function findYAML(path): Promise<IJEFolder[]> {
 
         let _arbPath: string = '';
         _files = [];
+
+        const defaultLanguage = IJEConfiguration.DEFAULT_LANGUAGE;
 
         for (let e in existingExtensions) {
             let ext = existingExtensions[e];
@@ -96,6 +98,9 @@ export async function findYAML(path): Promise<IJEFolder[]> {
                                 _arbPath = _file.substring(7, _file.lastIndexOf('/'));
                                 let _n = _file.substring(_file.lastIndexOf('/') + 1);
                                 _files.push(_n.replace(`.${ext}`, ""));
+                                if (_arb === '' && _n.indexOf(defaultLanguage) !== -1) {
+                                    _arb = _n;
+                                }
                             }
                         }
                     }

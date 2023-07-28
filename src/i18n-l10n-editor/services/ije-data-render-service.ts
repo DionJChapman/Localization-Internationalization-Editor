@@ -72,6 +72,205 @@ export class IJEDataRenderService {
         }
         render += this._getTableHeader('KEY', 40, 438, sort);
 
+        const defaultLanguage = IJEConfiguration.DEFAULT_LANGUAGE;
+        let _defaultARB = '';
+        let included: string[] = [];
+        folders.forEach(d => {
+            if (IJEData._filteredFolder !== '*') {
+                if (d.path === IJEData._filteredFolder) {
+                    _defaultARB = d.arb;
+                    included = d.languages;
+                }
+            } else if (_defaultARB === '' && d.arb.indexOf(defaultLanguage) !== -1) {
+                _defaultARB = d.arb;
+            }
+        });
+
+        if (_defaultARB.lastIndexOf('.') !== -1) {
+            _defaultARB = _defaultARB.substring(0, _defaultARB.lastIndexOf('.'));
+        }
+
+        languages.sort((a, b) => {
+            if (a === _defaultARB) {
+                return -1;
+            }
+            if (b === _defaultARB) {
+                return 0;
+            }
+            return a > b ? 1 : -1;
+        });
+
+        languages
+            .sort((a, b) => {
+                if (a === _defaultARB) {
+                    return -1;
+                }
+                if (b === _defaultARB) {
+                    return 0;
+                }
+                return a > b ? 1 : -1;
+            })
+            .forEach((language: string) => {
+                if (included.length === 0 || included.includes(language)) {
+                    if (language === _defaultARB) {
+                        render += `${this._getTableHeader(language, 490, 400, sort)}`;
+                    } else {
+                        render += `${this._getTableHeader(language, -1, 400, sort)}`;
+                    }
+                }
+            });
+        render += '</tr>';
+
+        translations.forEach(t => {
+            let selected = '';
+            let selectedLanguages: string[] = [];
+            render += '<tr style="padding: 0px; margin: 0px; left: 0px">';
+            render +=
+                `<td style="background: #1f1f1f; width: 40px; maxWidth: 40px; white-space: nowrap; position: sticky; left: 0px; z-index: 1000; margin: 0px; padding: 0px;">` +
+                `<button type="button" class="btn" style="width: 40px; maxWidth: 40px; padding-top: 20px;" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
+
+            if (showFolder && folders.length > 1 && IJEData._filteredFolder === '*') {
+                render += `<td style="background: #1f1f1f; width: 300px; white-space: nowrap;"><div class="input-group-append" style="background: #1f1f1f; width: 300px; white-space: nowrap;"><select id="select-folder-${t.id}" class="form-control" style="width: 300px;" onchange="updateFolder(this,${t.id})">`;
+
+                folders.forEach(d => {
+                    if (included.length === 0 || included.includes(d.arb.split('.')[0])) {
+                        if (d.path === t.folder) {
+                            selectedLanguages = d.languages;
+                            selected = `${d.folder}/${d.arb}`;
+                        }
+                        render += `<option value='${d.path.replace(/"/g, '&quot;')}' ${d.path === t.folder ? 'selected' : ''}>${d.name}</option>`;
+                    }
+                });
+
+                render += '</select>';
+                render += '</div></td>';
+            }
+
+            let indent = 0;
+            let width = 430;
+            if (sort.column === 'KEY' && !t.key.startsWith('@@') && t.key.startsWith('@')) {
+                let i = t.key.length - t.key.replace(/\./g, '').length;
+                for (let j = 0; j < i; ++j) {
+                    if (indent === 0) {
+                        indent += 10;
+                        //width += 10;
+                    }
+                    indent += 10;
+                    //width -= 10;
+                }
+            }
+
+            render +=
+                `<td style="background: #1f1f1f; white-space: nowrap; position: sticky; left: 40px; z-index: 1000; maxWidth: ${width}px;">` +
+                `<div class="input-group-append" style="width: ${width}px; maxWidth: ${width}px; background: #1f1f1f; white-space: nowrap;"><input id="input-key-${
+                    t.id
+                }" class="form-control ${t.valid ? '' : 'is-invalid'}" style="width: ${width - 40}px; maxWidth: ${
+                    width - 40
+                }px;  margin-left: ${indent}px" type="text" placeholder="Key..." value="${t.key.replace(/"/g, '&quot;')}" onfocus="mark(${t.id})" onchange="updateInput(this,${
+                    t.id
+                });" />` +
+                `<div id="input-key-${t.id}-feedback" class="invalid-feedback error-vscode">${t.error}</div>`;
+
+            if (showFolder && folders.length > 1 && IJEData._filteredFolder === '*' && !t.key.startsWith('@@')) {
+                render += `<button type="button" class="btn btn-vscode" style="background: #5C9CFF; width: 40px; maxWidth: 40px; padding-left: 8px; border-radius: 0px 5px 5px 0px;" onclick="copyFolder(${t.id}, '${t.folder}')"><i class="icon-copy-folders"></i></button>`;
+            }
+
+            render += `</div></td>
+            `;
+
+            let defaultARB = _defaultARB;
+            languages
+                .sort((a, b) => {
+                    if (a === defaultARB) {
+                        return -1;
+                    }
+                    if (b === defaultARB) {
+                        return 0;
+                    }
+                    return a > b ? 1 : -1;
+                })
+                .forEach((language: string) => {
+                    let showIt = false;
+                    let showBlank = false;
+                    if (included.includes(language)) {
+                        showIt = true;
+                        showBlank = false;
+                    } else if (included.length === 0) {
+                        for (let f in folders) {
+                            let fol = folders[f];
+                            if (selected === '') {
+                                showIt = true;
+                                defaultARB = fol.arb.split('.')[0];
+                                break;
+                            } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
+                                showIt = true;
+                                defaultARB = fol.arb.split('.')[0];
+                                break;
+                            } else {
+                                showBlank = true;
+                            }
+                        }
+                    }
+                    if (showIt || t.languages[language] !== undefined) {
+                        render += `<td style="background: #1f1f1f; ${
+                            language === defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;` : ' maxWidth: 400px; width: 400px;'
+                        }">`;
+                        if (hasTranslateService) {
+                            render += `<div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">`;
+                        }
+                        render += `<input class="form-control" style="minWith: 240px; width: 240px; white-space: nowrap;" type="text" placeholder="Translation..." onfocus="mark(${t.id})" onchange="updateInput(this,${t.id},'${language}');" `;
+                        if (t.languages[language]) {
+                            render += `value="${t.languages[language].replace(/\n/g, '\\n').replace(/"/g, '&quot;')}" `;
+                        }
+                        render += '/>';
+                        if (hasTranslateService) {
+                            const style = language === defaultARB ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
+                            if (!t.key.startsWith('@@')) {
+                                render +=
+                                    `<div class="input-group-append">` +
+                                    `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${defaultARB}', '${
+                                        defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')) : language
+                                    }');"><i class="icon-language"></i></button></div>`;
+                                if (language === defaultARB) {
+                                    render +=
+                                        `<div class="input-group-append">` +
+                                        `<button type="button" class="btn btn-vscode" style="background: #BBFFBB90; white-space: nowrap;" onclick="copyInput(this,${
+                                            t.id
+                                        }, '${defaultARB}', '${
+                                            defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')) : language
+                                        }');"><i class="icon-right-open"></i></button></div>`;
+                                }
+                            }
+                            render += '</div>';
+                        }
+                        render += '</td>';
+                    } else if (showBlank) {
+                        render += `<td style="background: #1f1f1f; ${
+                            language === defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;` : ' maxWidth: 400px; width: 400px;'
+                        }"><div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">&nbsp;</div></td>`;
+                    }
+                });
+
+            render += '</tr>';
+        });
+        render += '</table>';
+
+        render += this.renderPagination(translations, page);
+
+        return render;
+    }
+
+    static renderList(
+        translations: IJEDataTranslation[],
+        selectTranslation: IJEDataTranslation,
+        selectFolder: string,
+        languages: string[],
+        page: IJEPage,
+        sort: IJESort,
+        showFolder: boolean = true,
+        hasTranslateService = false
+    ) {
+        const folders = IJEConfiguration.WORKSPACE_FOLDERS;
         let _defaultARB = 'app_en';
         let included: string[] = [];
         folders.forEach(d => {
@@ -97,161 +296,13 @@ export class IJEDataRenderService {
             return a > b ? 1 : -1;
         });
 
-        languages.forEach((language: string) => {
-            if (included.length === 0 || included.includes(language)) {
-                if (language === _defaultARB) {
-                    render += `${this._getTableHeader(language, 490, 400, sort)}`;
-                } else {
-                    render += `${this._getTableHeader(language, -1, 400, sort)}`;
-                }
-            }
-        });
-        render += '</tr>';
-
-        translations.forEach(t => {
-            let selected = '';
-            let selectedLanguages: string[] = [];
-            render += '<tr style="padding: 0px; margin: 0px; left: 0px">';
-            render +=
-                `<td style="background: #1f1f1f; width: 40px; maxWidth: 40px; white-space: nowrap; position: sticky; left: 0px; z-index: 1000; margin: 0px; padding: 0px;">` +
-                `<button type="button" class="btn" style="width: 40px; maxWidth: 40px; padding-top: 20px;" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
-
-            if (showFolder && folders.length > 1 && IJEData._filteredFolder === '*') {
-                render += `<td style="background: #1f1f1f; width: 300px;"><select id="select-folder-${t.id}" class="form-control" style="width: 300px;" onchange="updateFolder(this,${t.id})">`;
-
-                folders.forEach(d => {
-                    if (included.length === 0 || included.includes(d.arb.split('.')[0])) {
-                        if (d.path === t.folder) {
-                            selectedLanguages = d.languages;
-                            selected = `${d.folder}/${d.arb}`;
-                        }
-                        render += `<option value='${d.path.replace(/"/g, '&quot;')}' ${d.path === t.folder ? 'selected' : ''}>${d.name}</option>`;
-                    }
-                });
-
-                render += ' </select></td>';
-            }
-
-            let indent = 0;
-            let width = 428;
-            if (sort.column === 'KEY' && !t.key.startsWith('@@') && t.key.startsWith('@')) {
-                let i = t.key.length - t.key.replace(/\./g, '').length;
-                for (let j = 0; j < i; ++j) {
-                    if (indent === 0) {
-                        indent += 10;
-                    }
-                    indent += 10;
-                    width -= 10;
-                }
-            }
-
-            render +=
-                `<td style="background: #1f1f1f; white-space: nowrap; position: sticky; left: 40px; z-index: 1000; maxWidth: ${width}px;">` +
-                `<input id="input-key-${t.id}" class="form-control ${
-                    t.valid ? '' : 'is-invalid'
-                }" style="width: ${width}px; maxWidth: ${width}px;  margin-left: ${indent}px" type="text" placeholder="Key..." value="${t.key.replace(
-                    /"/g,
-                    '&quot;'
-                )}" onfocus="mark(${t.id})" onchange="updateInput(this,${t.id});" />` +
-                `<div id="input-key-${t.id}-feedback" class="invalid-feedback error-vscode">${t.error}</div>` +
-                `</td>
-            `;
-
-            let defaultARB = _defaultARB;
-            languages.forEach((language: string) => {
-                let showIt = false;
-                let showBlank = false;
-                if (included.includes(language)) {
-                    showIt = true;
-                    showBlank = false;
-                } else if (included.length === 0) {
-                    for (let f in folders) {
-                        let fol = folders[f];
-                        if (selected === '') {
-                            showIt = true;
-                            defaultARB = fol.arb.split('.')[0];
-                            break;
-                        } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
-                            showIt = true;
-                            defaultARB = fol.arb.split('.')[0];
-                            break;
-                        } else {
-                            showBlank = true;
-                        }
-                    }
-                }
-                if (showIt) {
-                    render += `<td style="background: #1f1f1f; ${
-                        language === defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;` : ' maxWidth: 400px; width: 400px;'
-                    }">`;
-                    if (hasTranslateService) {
-                        render += `<div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">`;
-                    }
-                    render += `<input class="form-control" style="minWith: 240px; width: 240px; white-space: nowrap;" type="text" placeholder="Translation..." onfocus="mark(${t.id})" onchange="updateInput(this,${t.id},'${language}');" `;
-                    if (t.languages[language]) {
-                        render += `value="${t.languages[language].replace(/\n/g, '\\n').replace(/"/g, '&quot;')}" `;
-                    }
-                    render += '/>';
-                    if (hasTranslateService) {
-                        const style = language === defaultARB ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
-                        if (!t.key.startsWith('@@')) {
-                            render +=
-                                `<div class="input-group-append">` +
-                                `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${_defaultARB}', '${
-                                    _defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages) : language
-                                }');"><i class="icon-language"></i></button></div>`;
-                            if (language === defaultARB) {
-                                render +=
-                                    `<div class="input-group-append">` +
-                                    `<button type="button" class="btn btn-vscode" style="background: #FFFFFF5E; white-space: nowrap;" onclick="copyInput(this,${
-                                        t.id
-                                    }, '${_defaultARB}', '${
-                                        _defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages) : language
-                                    }');"><i class="icon-right-open"></i></button></div>`;
-                            }
-                        }
-                        render += '</div>';
-                    }
-                    render += '</td>';
-                } else if (showBlank) {
-                    render += `<td style="background: #1f1f1f; ${
-                        language === defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;` : ' maxWidth: 400px; width: 400px;'
-                    }"><div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">&nbsp;</div></td>`;
-                }
-            });
-
-            render += '</tr>';
-        });
-        render += '</table>';
-
-        render += this.renderPagination(translations, page);
-
-        return render;
-    }
-
-    static renderList(
-        translations: IJEDataTranslation[],
-        selectTranslation: IJEDataTranslation,
-        languages: string[],
-        page: IJEPage,
-        sort: IJESort,
-        showFolder: boolean = true,
-        hasTranslateService = false
-    ) {
-        const folders = IJEConfiguration.WORKSPACE_FOLDERS;
-        let _defaultARB = 'app_en';
-        folders.forEach(d => {
-            _defaultARB = d.arb;
-        });
-
-        if (_defaultARB.indexOf('.') !== -1) {
-            _defaultARB = _defaultARB.substring(0, _defaultARB.indexOf('.'));
-        }
-
         let render = '<div class="container-fluid">';
         render += '<div class="row">';
         render += '<div class="col-4" style="position: fixed; top: 95px; z-index: 1000;">';
         render += '<div style="word-wrap: break-word;" class="list-group">';
+
+        let selected = '';
+        let selectedLanguages: string[] = [];
         translations.forEach(t => {
             let indent = 10;
             //let width = 400;
@@ -262,6 +313,7 @@ export class IJEDataRenderService {
                     //width -= 10;
                 }
             }
+
             render += `<a href="#" id="select-key-${t.id}" onclick="select(${
                 t.id
             })" style="padding-left: ${indent}px; height: 35px" class="btn-vscode-secondary list-group-item list-group-item-action ${
@@ -284,6 +336,13 @@ export class IJEDataRenderService {
                         <select id="select-folder-${selectTranslation.id}" class="form-control" onchange="updateFolder(this,${selectTranslation.id})">`;
 
                 folders.forEach(d => {
+                    if (included.length === 0 || included.includes(d.arb.split('.')[0])) {
+                        if (d.path === selectFolder) {
+                            selectedLanguages = d.languages;
+                            selected = `${d.folder}/${d.arb}`;
+                            return;
+                        }
+                    }
                     render += `<option value='${d.path}' ${d.path === selectTranslation.folder ? 'selected' : ''}>${d.name}</option>`;
                 });
                 render += `
@@ -309,29 +368,69 @@ export class IJEDataRenderService {
                         </div>
                     </div>
                 </div>`;
-            languages.forEach((language: string) => {
-                render += `<label>${language}</label>`;
-                if (hasTranslateService) {
-                    render += `<div class="row">
+            let defaultARB = _defaultARB;
+            languages
+                .sort((a, b) => {
+                    if (a === defaultARB) {
+                        return -1;
+                    }
+                    if (b === defaultARB) {
+                        return 0;
+                    }
+                    return a > b ? 1 : -1;
+                })
+                .forEach((language: string) => {
+                    let showIt = false;
+                    if (included.includes(language)) {
+                        showIt = true;
+                    } else if (included.length === 0) {
+                        for (let f in folders) {
+                            let fol = folders[f];
+                            if (!selectFolder || fol.path === selectFolder) {
+                                if (selected === '') {
+                                    showIt = true;
+                                    defaultARB = fol.arb.split('.')[0];
+                                    break;
+                                } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
+                                    showIt = true;
+                                    defaultARB = fol.arb.split('.')[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (showIt) {
+                        render += `<label>${language}</label>`;
+                        if (hasTranslateService) {
+                            render += `<div class="row">
                                     <div class="col-10">`;
-                }
-                render += `<textarea class="form-control mb-2" rows="6" placeholder="Translation..." onchange="updateInput(this,${selectTranslation.id},'${language}');">`;
-                if (selectTranslation.languages[language]) {
-                    render += selectTranslation.languages[language];
-                }
-                render += '</textarea>';
-                if (hasTranslateService) {
-                    const style = language === _defaultARB ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
-                    render += `</div>
+                        }
+                        render += `<textarea class="form-control mb-2" rows="6" placeholder="Translation..." onchange="updateInput(this,${selectTranslation.id},'${language}');">`;
+                        if (selectTranslation.languages[language]) {
+                            render += selectTranslation.languages[language];
+                        }
+                        render += '</textarea>';
+                        if (hasTranslateService) {
+                            const style = language === defaultARB ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
+                            render += `</div>
                                     <div class="col-2">
-                                        <button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this, ${selectTranslation.id},'${_defaultARB}', '${
-                        _defaultARB === language ? languages.join(',') : language
-                    }');"><i class="icon-language"></i></button>
-                                    </div>
-                                </div>
-                            `;
-                }
-            });
+                                        <button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this, ${selectTranslation.id},'${defaultARB}', '${
+                                defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')) : language
+                            }');"><i class="icon-language"></i></button>
+                                    `;
+                            if (language === defaultARB) {
+                                render += `<button type="button" class="btn btn-vscode" style="background: #BBFFBB90; white-space: nowrap;" onclick="copyInput(this,
+                                                ${selectTranslation.id}
+                                            , '${defaultARB}', '${
+                                    defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')) : language
+                                }');"><i class="icon-down-open"></i></button>`;
+                            }
+
+                            render += '        </div>';
+                        }
+                        render += '</div>';
+                    }
+                });
         }
 
         render += '</div>';
