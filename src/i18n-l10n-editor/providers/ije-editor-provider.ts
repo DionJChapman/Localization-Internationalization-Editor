@@ -9,13 +9,13 @@ export class IJEEditorProvider {
         vscode.commands.executeCommand('setContext', 'ext:supportedFolders', IJEConfiguration.SUPPORTED_FOLDERS);
 
         return vscode.commands.registerCommand('i18n-l10n-editor', (uri: vscode.Uri) => {
-            const panel = vscode.window.createWebviewPanel('i18n-l10n-editor', 'i18n-l10n-editor', vscode.ViewColumn.One, {
+            const panel = vscode.window.createWebviewPanel('i18n-l10n-editor', 'i18n/l10n Editor', vscode.ViewColumn.One, {
                 retainContextWhenHidden: true,
                 enableScripts: true,
                 localResourceRoots: [vscode.Uri.file(_path.join(context.extensionPath, 'media'))]
             });
 
-            const manager = new IJEManager(context, panel, uri ? uri.fsPath : null);
+            new IJEManager(context, panel, uri ? uri.fsPath : null);
         });
     }
 

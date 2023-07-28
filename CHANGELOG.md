@@ -2,6 +2,27 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.0.14]
+
+- Added copy down to tree view
+- Changed tree view to include changes done to table view
+- Fixed issues with translation to betted handle sub languages
+- Fixed issues with translation to better handle multiple default translations
+- Added the ability to copy any Key to the other folders and translations
+- Fixed issue with tree view not showing correct translation files for a selected key
+
+## [3.0.12]
+
+- Update saving to better deal with possible corrupted translations
+- Fixed issues when dealing with multiple translation folders, different translation file types and different translations per folder
+  - Opening the editor from the project folders list context menu will only show those translations in the folder
+- Fixed issues with auto translation with multiple folders
+- Fixed issues when adding new translations with multiple folders
+  - If a folder is selected in the top left then the new translation will only be added to that, or it will be add to all folders
+- Added a new copy across for default translations, this is good for description fields
+- Updated editor to keep the headings in a vertical position
+- Added i18n-l10n-editor.defaultLanguage to settings for non l10n.yaml based translations
+
 ## [3.0.11]
 
 - Fixed issues when entering keys by hand
@@ -32,6 +53,7 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 
 - Fixed issues with translation service due to changes in the Microsoft Translation APIs
   - Now only does a single translation at a time
+  - Available languages <https://learn.microsoft.com/en-us/azure/ai-services/translator/language-support>
 - Change the default translation button to green to indicate that it will be translated to all languages
 - Increased the width of the text fields, now scrolls horizontally
 - Moved the default language to the start

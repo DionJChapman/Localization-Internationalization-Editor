@@ -1,7 +1,10 @@
 {
     "@@locale": "fil",
+    "HELLO": "Hello po",
+    "HELLO PORTAL": "Kamusta Portal",
+    "HELLO_WORLD": "Hello World",
     "helloWorld": "Hello World",
     "@helloWorld": {
-        "description": "Just a test"
+        "description": "Test lang po"
     }
 }

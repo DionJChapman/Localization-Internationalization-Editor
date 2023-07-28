@@ -5,8 +5,13 @@ import { IJEManager } from './ije-manager';
 //import { runFlutterPubGet } from './runFlutterPubGet';
 
 export async function applySaveAndRunFlutterPubGet(editFilesParameters: EditFilesParameters): Promise<void> {
-    const manager: IJEManager = IJEManager.manager;
     const { workspace } = vscode;
+
+    if (!IJEManager.manager) {
+        vscode.commands.executeCommand('i18n-l10n-editor');
+    }
+
+    const manager: IJEManager = IJEManager.manager;
 
     if (manager) {
         let file = editFilesParameters.uri.path;
@@ -40,8 +45,8 @@ export async function applySaveAndRunFlutterPubGet(editFilesParameters: EditFile
             manager.addKey(editFilesParameters.keyValue.key, editFilesParameters.keyValue.value);
         }
 
-        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-        sleep(250);
+        //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        //sleep(250);
 
         IJEManager.manager.search(editFilesParameters.keyValue.key);
     }

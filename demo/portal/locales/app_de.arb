@@ -1,4 +1,5 @@
 {
-    "HELLO": "Hello",
-    "HELLO PORTAL": "Testen Sie dies immer"
+    "HELLO": "Hallo",
+    "HELLO PORTAL": "Hallo Portal",
+    "HELLO_WORLD": "Hello World"
 }

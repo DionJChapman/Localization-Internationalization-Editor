@@ -1,8 +1,8 @@
 # i18n-l10n-editor
 
-<img src="media/logo-large.png" title="Logo"/>
+<img src="./media/logo-large.png" title="Logo"/>
 
-i18n-l10n-editor is a Visual Studio Code extension to easily edit your i18n and l10n translations files.
+i18n-l10n-editor is a Visual Studio Code extension to easily edit your i18n and l10n translations files. This extensions is built on the work by Thibault Vanderseypen, Innwin and Isaudon.
 
 ## Usage
 

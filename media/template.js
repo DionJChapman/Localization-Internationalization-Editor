@@ -68,6 +68,7 @@ navigate = (page) => vscode.postMessage({ command: "navigate", page: page });
 pageSize = (el) => vscode.postMessage({ command: "pageSize", value: el.value });
 refresh = () => vscode.postMessage({ command: "refresh" });
 remove = (id) => vscode.postMessage({ command: "remove", id: id });
+copyFolder = (id, folderPath) => vscode.postMessage({ command: "copyFolder", id: id, folderPath: folderPath });
 save = () => vscode.postMessage({ command: "save" });
 search = (el) => vscode.postMessage({ command: "search", value: el.value });
 select = (id) => vscode.postMessage({ command: "select", id: id });

@@ -1,5 +1,5 @@
 {
-    "@helloWorld": {
-        "description": "Just a test"
-    }
+    "HELLO": "Hallo",
+    "HELLO PORTAL": "Hello Portal",
+    "HELLO_WORLD": "Hello World"
 }

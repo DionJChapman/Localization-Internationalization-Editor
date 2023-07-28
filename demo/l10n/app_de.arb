@@ -1,7 +1,10 @@
 {
     "@@locale": "de",
+    "HELLO": "Hallo",
+    "HELLO PORTAL": "Hallo Portal",
+    "HELLO_WORLD": "Hallo Welt",
     "helloWorld": "Hallo Welt",
     "@helloWorld": {
-        "description": "Just a test"
+        "description": "Nur ein Test"
     }
 }
