@@ -191,7 +191,3 @@ Release Date 14/01/2021
 Release Date 13/01/2021
 
 - Release by Innwin
-
-## [Unreleased]
-
-- Initial release
