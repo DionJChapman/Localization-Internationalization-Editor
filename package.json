@@ -2,21 +2,25 @@
     "name": "i18n-l10n-editor",
     "displayName": "Localization/Internationalization Editor",
     "author": {
-        "name": "Dion Chapman",
-        "url": "https://vanderseypen.dev"
+        "name": "NativeBit",
+        "url": "https://nativebit.dev/"
     },
-    "publisher": "dion-chapman",
+    "publisher": "NativeBit",
     "repository": {
         "url": "https://github.com/DionJChapman/Localization-Internationalization-Editor"
     },
-    "description": "Easily edit your i18n/l10n json files",
+    "description": "This editor will allow you to edit you Localization (i18n) and Internationalization (i10n) files easly. Using Microsoft Translation, you can translate to a wide range of languages automatically.",
     "icon": "media/logo.png",
-    "version": "3.0.14",
+    "version": "3.1.0",
+    "pricing": "Free",
     "engines": {
         "vscode": "^1.80.0"
     },
+    "sponsor": {
+        "url": "https://www.paypal.com/paypalme/puggsincyberspace?country.x=AU&locale.x=en_AU"
+    },
     "categories": [
-        "Editor"
+        "Other"
     ],
     "activationEvents": [
         "*",
