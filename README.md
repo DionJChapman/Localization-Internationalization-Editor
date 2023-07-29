@@ -16,7 +16,7 @@ i18n-l10n-editor can be used in two ways :
   
   <img alt="Open with Context Menu" src="https://github.com/DionJChapman/Localization-Internationalization-Editor/blob/master/images/context-menu-open.gif?raw=true" width="60%">
 
-- In any **.dart** file select any text including the quotes the from the light bulb on the left choose **Add text to i18n/l10n Editor**. This show some dialog boxed to confirm vales and the add the values to the translations.
+- In any **.dart** file select any text including the quotes the from the light bulb on the left choose **Add text to i18n/l10n Editor**. This show some dialog boxed to confirm vales and then add the values to the translations.
   
   <img alt="Add select text to the editor" src="https://github.com/DionJChapman/Localization-Internationalization-Editor/blob/master/images/text-select-open.gif?raw=true" width="60%">
 
