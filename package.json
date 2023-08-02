@@ -11,7 +11,7 @@
     },
     "description": "This editor will allow you to edit you Localization (i18n) and Internationalization (i10n) files easly. Using Microsoft Translation, you can translate to a wide range of languages automatically.",
     "icon": "media/logo.png",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "pricing": "Free",
     "engines": {
         "vscode": "^1.80.0"
