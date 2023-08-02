@@ -8,7 +8,7 @@ i18n-l10n-editor is a Visual Studio Code extension to easily edit your i18n and 
 
 i18n-l10n-editor can be used in two ways :
 
-- Click the **i18n/l10n Button on the status bar. This will search for any l10n.yaml file and then open the translations from these files. You do not have to set <ins>i18n-l10n-editor.translationService</ins> for this to work. But you should set a list of supported folders in <ins>i18n-l10n-editor.workspaceFolders</ins> so the editor can search for translation files in your project.
+- Click the **i18n/l10n Editor** Button on the status bar. This will search for any l10n.yaml file and then open the translations from these files. You do not have to set <ins>i18n-l10n-editor.workspaceFolders</ins> for this to work. But you should set a list of supported folders in <ins>i18n-l10n-editor.supportedFolders</ins> so the editor can search for translation files in your project.
   
   <img alt="Open with Statusbar" src="https://github.com/DionJChapman/Localization-Internationalization-Editor/blob/master/images/statusbar-open.gif?raw=true" width="60%">
 
