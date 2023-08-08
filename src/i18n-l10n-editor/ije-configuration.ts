@@ -82,6 +82,8 @@ export class IJEConfiguration {
                 var path = vscode.Uri.file(d.path).fsPath;
                 if (fs.existsSync(path)) {
                     _folders.push({ name: d.name, path: path, arb: d.arb, folder: d.folder, languages: d.languages});
+                } else if (fs.existsSync(d.path)) {
+                    _folders.push({ name: d.name, path: d.path, arb: d.arb, folder: d.folder, languages: d.languages});
                 }
             });
         } else {

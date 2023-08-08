@@ -1,30 +1,37 @@
 import * as vscode from 'vscode';
 import * as yaml from 'yaml';
 import * as fs from 'fs';
+import * as os from 'os';
 
 import { capalize } from '../shared/capalize';
 import { promises } from 'dns';
 import { IJEFolder } from '../models/ije-folder';
 import { IJEConfiguration } from '../ije-configuration';
+import { url } from 'inspector';
 
 export async function findYAML(path): Promise<IJEFolder[]> {
     const yamlFileName = 'l10n.yaml';
     let folders: IJEFolder[] = [];
+    let pathSeparator = "/";
 
     if (path === null) {
-        path = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        path = vscode.workspace.workspaceFolders[0].uri.path;
+    }
+
+    if (path.indexOf("\\") !== -1) {
+        pathSeparator = "\\";
     }
 
     let filePath = path;
-    if (filePath.split('/').length > 2) {
-        let split = filePath.split('/');
+    if (filePath.split(pathSeparator).length > 2) {
+        let split = filePath.split(pathSeparator);
         filePath = `${split[split.length - 1]}`;
     }
 
-    let yamlFiles = await vscode.workspace.findFiles(`${path}/**/${yamlFileName}`);
+    let yamlFiles = await vscode.workspace.findFiles(`${path}${pathSeparator}**${pathSeparator}${yamlFileName}`);
 
     if (yamlFiles.length === 0) {
-        yamlFiles = await vscode.workspace.findFiles(`**/${yamlFileName}`);
+        yamlFiles = await vscode.workspace.findFiles(`**${pathSeparator}${yamlFileName}`);
     }
 
     if (yamlFiles.length === 0) {
@@ -44,20 +51,20 @@ export async function findYAML(path): Promise<IJEFolder[]> {
 
         let yamlPath: string = yamlFile.toString();
 
-        if (yamlPath.split('/').length > 2) {
-            let split = yamlPath.split('/');
+        if (yamlPath.split(pathSeparator).length > 2) {
+            let split = yamlPath.split(pathSeparator);
             yamlPath = `${split[split.length - 2]}`;
 
-            _name = `${capalize(split[split.length - 3]).trim()}/${capalize(split[split.length - 2]).trim()}`;
+            _name = `${capalize(split[split.length - 3]).trim()}${pathSeparator}${capalize(split[split.length - 2]).trim()}`;
             _folder = split[split.length - 2];
         }
 
-        let s = yamlFile.toString();
-        if (s.startsWith('file://')) {
-            s = s.substring(7);
-        }
+        //let s = .toString();
+        //if (s.startsWith(`file:${pathSeparator}${pathSeparator}`)) {
+        //    s = s.substring(7);
+        //}
 
-        let f = fs.readFileSync(s);
+        let f = fs.readFileSync(yamlFile.fsPath);
         let lines = f.toString().split("\n");
         for (let l in lines) {
             let c = lines[l].split(":");
@@ -84,19 +91,19 @@ export async function findYAML(path): Promise<IJEFolder[]> {
         for (let e in existingExtensions) {
             let ext = existingExtensions[e];
             if (_arbPath.length === 0) {
-                let arbFiles = await vscode.workspace.findFiles(`**/${yamlPath}/${_path}/*.${ext}`);
+                let arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${yamlPath}${pathSeparator}${_path}${pathSeparator}*.${ext}`);
 
                 if (arbFiles.length === 0) {
-                    arbFiles = await vscode.workspace.findFiles(`**/${_path}/*.${ext}`);
+                    arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${_path}${pathSeparator}*.${ext}`);
                 }
 
                 if (arbFiles.length > 0) {
                     for (let a in arbFiles) {
                         let _file = arbFiles[a].toString();
                         if (_file.indexOf('.history') === -1 && _files.indexOf('node_modules') === -1) {
-                            if (_file.lastIndexOf('/') !== -1) {
-                                _arbPath = _file.substring(7, _file.lastIndexOf('/'));
-                                let _n = _file.substring(_file.lastIndexOf('/') + 1);
+                            if (_file.lastIndexOf(pathSeparator) !== -1) {
+                                _arbPath = _file.substring(7, _file.lastIndexOf(pathSeparator));
+                                let _n = _file.substring(_file.lastIndexOf(pathSeparator) + 1);
                                 _files.push(_n.replace(`.${ext}`, ""));
                                 if (_arb === '' && _n.indexOf(defaultLanguage) !== -1) {
                                     _arb = _n;
@@ -117,16 +124,16 @@ export async function findYAML(path): Promise<IJEFolder[]> {
             }
         });
         if (add && _arb !== "") {
+            if (os.platform() === 'win32') {
+                _path = _path.substring(1);
+                _path = _path.replace("%3A", ":");
+            }
+
             folders.push({ name: _name, path: _path, arb: _arb, folder: _folder, languages: _files});
         }
 
     }
 
-    /* filter(f => {
-            f.path === _path;
-        }).*/
-
-    // lets see if we can find any other translations
     const supportedFolders = IJEConfiguration.SUPPORTED_FOLDERS;
     const defaultLanguage = IJEConfiguration.DEFAULT_LANGUAGE;
 
@@ -135,15 +142,15 @@ export async function findYAML(path): Promise<IJEFolder[]> {
         let _name = "", _path = "", _arb = "", _folder = "", _files = [];
         for (let e in existingExtensions) {
             let ext = existingExtensions[e];
-            let arbFiles = await vscode.workspace.findFiles(`**/${folder}/*.${ext}`);
+            let arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${folder}${pathSeparator}*.${ext}`);
 
             if (arbFiles.length > 0) {
                 for (let a in arbFiles) {
                     let _file = arbFiles[a].toString();
                     if (_file.indexOf('.history') === -1 && _file.indexOf('node_modules') === -1) {
-                        if (_file.lastIndexOf('/') !== -1) {
-                            _path = _file.substring(7, _file.lastIndexOf('/'));
-                            _name = _file.substring(_file.lastIndexOf('/') + 1);
+                        if (_file.lastIndexOf(pathSeparator) !== -1) {
+                            _path = _file.substring(7, _file.lastIndexOf(pathSeparator));
+                            _name = _file.substring(_file.lastIndexOf(pathSeparator) + 1);
                             if (_arb === "") {
                                 _arb = _name;
                             }
@@ -177,6 +184,11 @@ export async function findYAML(path): Promise<IJEFolder[]> {
             }
         });
         if (add && _arb !== "") {
+            if (os.platform() === 'win32') {
+                _path = _path.substring(1);
+                _path = _path.replace("%3A", ":");
+            }
+
             folders.push({ name: _name, path: _path, arb: _arb, folder: _folder, languages: _files });
         }
     }

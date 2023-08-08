@@ -40,7 +40,7 @@ export async function activate(context: vscode.ExtensionContext) {
             vscode.commands.registerCommand(EditFilesCommand.commandName, async (...args: EditFilesParameters[]): Promise<void> => applySaveAndRunFlutterPubGet(args[0]))
         );
 
-        IJEConfiguration.arbFolders = await findYAML(vscode.workspace.workspaceFolders[0].uri.fsPath);
+        IJEConfiguration.arbFolders = await findYAML(vscode.workspace.workspaceFolders[0].uri.path);
     }
 }
 
