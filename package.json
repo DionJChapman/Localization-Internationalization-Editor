@@ -11,7 +11,7 @@
     },
     "description": "This editor will allow you to edit you Localization (i18n) and Internationalization (i10n) files easly. Using Microsoft Translation, you can translate to a wide range of languages automatically.",
     "icon": "media/logo.png",
-    "version": "3.1.1",
+    "version": "3.1.2",
     "pricing": "Free",
     "engines": {
         "vscode": "^1.80.0"
@@ -56,7 +56,13 @@
                 "i18n-l10n-editor.keyCaseStyle": {
                     "default": "no change",
                     "type": "string",
-                    "enum":  ["no change", "camelCase", "Capalize", "lowercase", "UPPERCASE"],
+                    "enum": [
+                        "no change",
+                        "camelCase",
+                        "Capalize",
+                        "lowercase",
+                        "UPPERCASE"
+                    ],
                     "description": "how to write keys to the files valid methods are [no change, camelCase, lowercase, UPPERCASE].\ncamelCase requires spaces when typing key."
                 },
                 "i18n-l10n-editor.sortKeyTogether": {
@@ -68,13 +74,12 @@
                     "default": false,
                     "type": "boolean",
                     "description": "Will auto translate all new key translation when adding a new language."
-                }, 
+                },
                 "i18n-l10n-editor.defaultLanguage": {
                     "default": "en",
                     "type": "string",
                     "description": "Used when no default language is specified in translation files otherwise the first file found is used."
                 },
-                
                 "i18n-l10n-editor.jsonSpace": {
                     "default": 2,
                     "type": [
@@ -145,17 +150,17 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-		"@types/vscode": "^1.80.0",
-		"@types/glob": "^7.2.0",
-		"@types/mocha": "^10.0.1",
-		"@types/node": "20.4.1",
-		"@typescript-eslint/eslint-plugin": "^6.0.0",
-		"@typescript-eslint/parser": "^6.0.0",
-		"eslint": "^8.44.0",
-		"glob": "^8.0.3",
-		"mocha": "^10.2.0",
-		"typescript": "^4.7.4",
-		"@vscode/test-electron": "^2.1.5",
+        "@types/vscode": "^1.80.0",
+        "@types/glob": "^7.2.0",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "20.4.1",
+        "@typescript-eslint/eslint-plugin": "^6.0.0",
+        "@typescript-eslint/parser": "^6.0.0",
+        "eslint": "^8.44.0",
+        "glob": "^8.0.3",
+        "mocha": "^10.2.0",
+        "typescript": "^4.7.4",
+        "@vscode/test-electron": "^2.1.5",
         "yaml": "^2.3.1"
     },
     "dependencies": {

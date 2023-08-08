@@ -2,6 +2,12 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.1.2]
+
+Release Date: 08/08/2023
+
+- Fixed issues with Windows paths
+
 ## [3.1.1]
 
 Release Date 02/08/2023
