@@ -2,6 +2,13 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.1.3]
+
+Release Date: 08/08/2023
+
+- Fixed Mac issue from Windows Context Menu changes
+- Added Code to check sub-directories for files
+
 ## [3.1.2]
 
 Release Date: 08/08/2023

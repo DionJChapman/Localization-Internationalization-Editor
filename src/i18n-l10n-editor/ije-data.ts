@@ -641,6 +641,12 @@ export class IJEData {
     private _loadFolder(folderPath: string) {
         const files = fs.readdirSync(folderPath);
 
+        files.forEach((path: string) => {
+            if (fs.lstatSync(`${folderPath}/${path}`).isDirectory()) {
+                this._loadFolder(`${folderPath}/${path}`);
+            }
+        });
+
         let existingExtensions = IJEConfiguration.SUPPORTED_EXTENSIONS;
 
         existingExtensions = existingExtensions;
