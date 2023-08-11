@@ -41,12 +41,7 @@
                 {
                     "command": "i18n-l10n-editor",
                     "group": "navigation",
-                    "when": "explorerResourceIsFolder targetPath.includes(supportedFolders)"
-                },
-                {
-                    "command": "i18n-l10n-editor",
-                    "group": "navigation",
-                    "when": "explorerResourceIsFolder && resourceFilename in ext:supportedFolders"
+                    "when": "explorerResourceIsFolder && (resourceFilename in ext:supportedFolders || targetPath.includes(supportedFolders))"
                 }
             ]
         },
