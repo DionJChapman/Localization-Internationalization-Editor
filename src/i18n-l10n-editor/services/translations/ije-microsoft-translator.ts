@@ -82,8 +82,8 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                     },
                     params: {
                         'api-version': '3.0',
-                        from: language,
-                        to: lang
+                        from: language.replace("_","-"),
+                        to: lang.replace("_","-")
                     },
                     data: [
                         {
@@ -106,8 +106,8 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                         .map(l => ({
                             [l]: data[0].translations.filter(t => {
                                 let to = t.to;
-                                if (to.indexOf('_') !== -1) {
-                                    to = t.to.substring(0, t.to.indexOf('_'));
+                                if (to.indexOf('-') !== -1) {
+                                    to = t.to.substring(0, t.to.indexOf('-'));
                                 }
                                 // if (to.indexOf('-') !== -1) {
                                 //     to = t.to.substring(0, t.to.indexOf('-'));

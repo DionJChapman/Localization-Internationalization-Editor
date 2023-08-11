@@ -254,6 +254,7 @@ export class IJEData {
         const langs: IJELangs[] = [];
 
         if (_lang.length > 0) {
+            _lang = _lang.replace("-","_");
             let lang = _lang;
             existingFolders.forEach(async f => {
                 if (IJEData._filteredFolder === '*' || f.path === IJEData._filteredFolder) {
