@@ -298,7 +298,7 @@ export class IJEDataRenderService {
 
         let render = '<div class="container-fluid">';
         render += '<div class="row">';
-        render += '<div class="col-4" style="position: fixed; top: 95px; z-index: 1000;">';
+        render += '<div class="col-4" style="position: fixed; top: 95px; z-index: 1000; width: 490px; max-width: 490px;">';
         render += '<div style="word-wrap: break-word;" class="list-group">';
 
         let selected = '';
