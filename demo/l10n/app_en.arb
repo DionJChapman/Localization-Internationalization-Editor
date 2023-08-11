@@ -6,5 +6,6 @@
     "helloWorld": "Hello World",
     "@helloWorld": {
         "description": "Just a test"
-    }
+    },
+    "testKey": "Test"
 }

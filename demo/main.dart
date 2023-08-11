@@ -19,7 +19,7 @@ class App extends StatelessWidget {
         appBar: AppBar(title: Text(l10n.account)),
         body: Column(
           children: [
-            Text("Just some test text"),
+            Text("Just some test text to test with"),
           ],
         ),
       ),
