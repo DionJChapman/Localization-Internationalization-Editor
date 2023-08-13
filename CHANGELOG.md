@@ -2,6 +2,17 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.1.4]
+
+- Changed **i18n-l10n-editor.sortKeyTogether** to default value of true
+- Added default values for **arb-dir** and **template-arb-file** if missing from l10n.yaml
+- Added base translations for when you use sub-languages for **flutter gen-l10n** complience
+  - Example when using zh-Hans it will also create zh arb file
+- Removed the folder selector for each line as it was confusing and changing the folder can create issues
+- Fixed a few UI issues with Tree View
+- Fixed issues with 2 Context Menu items in some setups
+- Fixed issue where it would not copy across to blank translation fields
+
 ## [3.1.3]
 
 Release Date: 08/08/2023

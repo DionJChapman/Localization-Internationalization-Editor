@@ -11,10 +11,10 @@
     },
     "description": "This editor will allow you to edit you Localization (i18n) and Internationalization (l10n) files easly. Using Microsoft Translation, you can translate to a wide range of languages automatically.",
     "icon": "media/logo.png",
-    "version": "3.1.3",
+    "version": "3.1.4",
     "pricing": "Free",
     "engines": {
-        "vscode": "^1.80.0"
+        "vscode": "^1.81.1"
     },
     "sponsor": {
         "url": "https://www.paypal.com/paypalme/puggsincyberspace?country.x=AU&locale.x=en_AU"
@@ -41,12 +41,7 @@
                 {
                     "command": "i18n-l10n-editor",
                     "group": "navigation",
-                    "when": "explorerResourceIsFolder targetPath.includes(supportedFolders)"
-                },
-                {
-                    "command": "i18n-l10n-editor",
-                    "group": "navigation",
-                    "when": "explorerResourceIsFolder && resourceFilename in ext:supportedFolders"
+                    "when": "explorerResourceIsFolder && (resourceFilename in ext:supportedFolders || targetPath.includes(supportedFolders))"
                 }
             ]
         },
@@ -71,7 +66,7 @@
                     "description": "how to write keys to the files valid methods are [no change, camelCase, lowercase, UPPERCASE].\ncamelCase requires spaces when typing key."
                 },
                 "i18n-l10n-editor.sortKeyTogether": {
-                    "default": false,
+                    "default": true,
                     "type": "boolean",
                     "description": "Sort files so that key and @key will be kept together."
                 },

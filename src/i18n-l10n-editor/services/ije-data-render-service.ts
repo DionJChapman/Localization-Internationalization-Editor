@@ -130,19 +130,18 @@ export class IJEDataRenderService {
                 `<button type="button" class="btn" style="width: 40px; maxWidth: 40px; padding-top: 20px;" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
 
             if (showFolder && folders.length > 1 && IJEData._filteredFolder === '*') {
-                render += `<td style="background: #1f1f1f; width: 300px; white-space: nowrap;"><div class="input-group-append" style="background: #1f1f1f; width: 300px; white-space: nowrap;"><select id="select-folder-${t.id}" class="form-control" style="width: 300px;" onchange="updateFolder(this,${t.id})">`;
+                render += `<td style="background: #1f1f1f; width: 300px; white-space: nowrap;"><div class="input-group-append" style="background: #1f1f1f; width: 300px; white-space: nowrap;">`;
 
                 folders.forEach(d => {
                     if (included.length === 0 || included.includes(d.arb.split('.')[0])) {
                         if (d.path === t.folder) {
                             selectedLanguages = d.languages;
                             selected = `${d.folder}/${d.arb}`;
+                            render += `<input id="select-folder-${t.id}" class="form-control" style="width: 300px;" value="${d.name}" onClick="blur();"/>`;
                         }
-                        render += `<option value='${d.path.replace(/"/g, '&quot;')}' ${d.path === t.folder ? 'selected' : ''}>${d.name}</option>`;
                     }
                 });
-
-                render += '</select>';
+                
                 render += '</div></td>';
             }
 
@@ -298,7 +297,7 @@ export class IJEDataRenderService {
 
         let render = '<div class="container-fluid">';
         render += '<div class="row">';
-        render += '<div class="col-4" style="position: fixed; top: 95px; z-index: 1000;">';
+        render += '<div class="col-4" style="position: fixed; top: 95px; z-index: 1000; width: 490px; max-width: 490px;">';
         render += '<div style="word-wrap: break-word;" class="list-group">';
 
         let selected = '';

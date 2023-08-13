@@ -8,7 +8,6 @@ import { IJEDataTranslation } from './models/ije-data-translation';
 import { IJEDataTranslationError } from './models/ije-data-translation';
 import { IJETranslationService } from './services/ije-translation-service';
 import { IJEManager } from './ije-manager';
-import { IJEFolder } from './models/ije-folder';
 import { IJEPage } from './models/ije-page';
 import { IJESort } from './models/ije-sort';
 import { IJEView, IJEViewType } from './models/ije-view';
@@ -254,7 +253,15 @@ export class IJEData {
         const langs: IJELangs[] = [];
 
         if (_lang.length > 0) {
-            _lang = _lang.replace("-","_");
+            _lang = _lang.replace('-', '_');
+            let split = _lang.split('_');
+            if (split.length > 1) {
+                for (let s = 0; s < split.length; ++s) {
+                    split[s] = split[s].toLocaleLowerCase();
+                }
+                split[split.length - 1] = split[split.length - 1].substring(0, 1).toLocaleUpperCase() + split[split.length - 1].substring(1);
+                _lang = split.join('_');
+            }
             let lang = _lang;
             existingFolders.forEach(async f => {
                 if (IJEData._filteredFolder === '*' || f.path === IJEData._filteredFolder) {
@@ -262,12 +269,21 @@ export class IJEData {
                     oldLang = f.arb.split('.')[0];
 
                     let _dest = '';
+                    let _base = '';
                     if (f.arb.split('_').length === 1) {
                         lang = _lang;
                         _dest = `${f.path}/${_lang}.${f.arb.split('.')[f.arb.split('.').length - 1]}`;
+                        _base = `${f.path}/${_lang.split('_')[0]}.${f.arb.split('.')[f.arb.split('.').length - 1]}`;
                     } else {
                         lang = `${f.arb.split('_')[0]}_${_lang}`;
                         _dest = `${f.path}/${f.arb.split('_')[0]}_${_lang}.${f.arb.split('.')[f.arb.split('.').length - 1]}`;
+                        _base = `${f.path}/${f.arb.split('_')[0]}_${_lang.split('_')[0]}.${f.arb.split('.')[f.arb.split('.').length - 1]}`;
+                    }
+
+                    if (fs.existsSync(_base) || _lang === _lang.split('_')[0]) {
+                        _base = '';
+                    } else {
+                        langs.push({ from: oldLang, to: `${f.arb.split('_')[0]}_${_lang.split('_')[0]}` });
                     }
 
                     if (_src !== '//' && f.arb !== '') {
@@ -284,6 +300,19 @@ export class IJEData {
                             }
                         }
                         fs.writeFileSync(vscode.Uri.file(_dest).fsPath, split.join('\n'));
+                        if (_base !== '') {
+                            for (let p = 0; p < split.length; ++p) {
+                                if (split[p].indexOf('@@locale') !== -1 || split[p].indexOf('@@local') !== -1) {
+                                    const l = split[p].split(':');
+                                    if (oldLang === '' && l.length === 2 && l[1].lastIndexOf('"') > l[1].indexOf('"')) {
+                                        oldLang = l[1].substring(l[1].indexOf('"') + 1, l[1].lastIndexOf('"'));
+                                    }
+                                    split[p] = `    "@@locale": "${_lang.split('_')[0]}",`;
+                                    break;
+                                }
+                            }
+                            fs.writeFileSync(vscode.Uri.file(_base).fsPath, split.join('\n'));
+                        }
 
                         let add = true;
                         langs.forEach(l => {
@@ -536,11 +565,11 @@ export class IJEData {
             languages
                 .filter(l => l !== from)
                 .forEach(l => {
-                    if (translation.languages[from] && translation.languages[l]) {
+                    if (translation.languages[from]) {
                         translation.languages[l] = translation.languages[from];
-                        this._manager.refreshDataTable();
                     }
                 });
+            this._manager.refreshDataTable();
         }
     }
 

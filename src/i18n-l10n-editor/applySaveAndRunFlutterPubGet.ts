@@ -1,14 +1,19 @@
 import * as vscode from 'vscode';
 import { EditFilesParameters } from './commands/editFilesParameters';
 import { IJEManager } from './ije-manager';
+import { IJEData } from './ije-data';
 //import { getChangesForArbFiles } from '../getChangesForArbFiles';
 //import { runFlutterPubGet } from './runFlutterPubGet';
 
 export async function applySaveAndRunFlutterPubGet(editFilesParameters: EditFilesParameters): Promise<void> {
     const { workspace } = vscode;
 
-    if (!IJEManager.manager) {
+    if (!IJEManager.manager || !IJEManager.manager.isValid()) {
         vscode.commands.executeCommand('i18n-l10n-editor');
+        IJEManager.manager.refreshDataTable();
+        
+        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        sleep(500);
     }
 
     const manager: IJEManager = IJEManager.manager;
@@ -44,9 +49,6 @@ export async function applySaveAndRunFlutterPubGet(editFilesParameters: EditFile
         } else {
             manager.addKey(editFilesParameters.keyValue.key, editFilesParameters.keyValue.value);
         }
-
-        //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-        //sleep(250);
 
         IJEManager.manager.search(editFilesParameters.keyValue.key);
     }

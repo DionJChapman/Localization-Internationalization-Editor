@@ -100,10 +100,6 @@ export class IJEManager {
         this._panel.webview.postMessage({ command: 'search-text', search: key });
 
         this._data.search(key);
-        if (IJEManager.editor) {
-            //vscode.workspace.textDocuments;
-            IJEManager.editor.show(IJEManager.editor.viewColumn);
-        }
     }
 
     refreshDataTable() {
@@ -140,6 +136,14 @@ export class IJEManager {
                     .map(l => `<script src="${this._panel.webview.asWebviewUri ? this._panel.webview.asWebviewUri(l) : l.with({ scheme: 'vscode-resource' })}"></script>`)
                     .join('\n')
             );
+    }
+
+    isValid() {
+        try {
+            return this._panel.webview !== null;
+        } catch (e) {
+            return false;
+        }
     }
 }
 
