@@ -67,8 +67,8 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
   - This sets how to write keys to the files valid methods are **no change**, *camelCase*, *Capalize*, *lowercase*, *UPPERCASE*. Both camelCase and Capalize requires spaces when typing the key. The default value is *no change*.
     - `i18n-l10n-editor.keyCaseStyle: "no change"`
 - **i18n-l10n-editor.sortKeyTogether**
-  - Sort files and the editor so that key and @key will be kept together. The default value is false.
-    - `i18n-l10n-editor.sortKeyTogether: false`
+  - Sort files and the editor so that key and @key will be kept together. The default value is true.
+    - `i18n-l10n-editor.sortKeyTogether: true`
 - **i18n-l10n-editor.autoTranslateNewLanguage**
   - This will auto translate any new translations files added to the editor. It requires the translations to be added. The default value is *false*.
     - `i18n-l10n-editor.autoTranslateNewLanguage: false`
