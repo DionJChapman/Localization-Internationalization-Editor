@@ -2,6 +2,12 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.1.7]
+
+Release Date: 25/08/2023
+
+- Added *l10n.yaml documentation and fixed layout
+  
 ## [3.1.5]
 
 - Minor documentation update
@@ -223,7 +229,7 @@ Release Date 14/01/2021
 - Added code for a description.json file for i18n translations (*depreciated*)
 - Update readme documentation
 
-## [1.0.0]
+## [1.0.0 ]
 
 Release Date 13/01/2021
 

@@ -56,6 +56,18 @@ i18n-l10n-editor can be used in two ways :
 
 *NOTE* for translations to work your require <ins>i18n-l10n-editor.translationService</ins>, <ins>i18n-l10n-editor.translationServiceApiKey</ins> and <ins>i18n-l10n-editor.translationServiceApiRegion</ins> to be set. Currently the only translation service is the [Microsoft Translation API](https://www.microsoft.com/en-us/translator/business/translator-api/).
 
+## l10n.yaml file
+
+These are typical settings for the **l10n.yaml** file used to configure Internationalisation.
+
+```
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+untranslated-messages-file: missing.log
+nullable-getter: false
+```
+
 ## Settings
 
 To access the settings click Code -> Settings on a Mac or File Preference on Windows. In the setting click Extensions and the scroll down to **Localization Internationalization Editor**
