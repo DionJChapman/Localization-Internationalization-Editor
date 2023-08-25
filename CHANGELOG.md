@@ -2,6 +2,10 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.1.5]
+
+- Minor documentation update
+  
 ## [3.1.4]
 
 - Changed **i18n-l10n-editor.sortKeyTogether** to default value of true

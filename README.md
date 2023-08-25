@@ -74,7 +74,7 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
     - `i18n-l10n-editor.autoTranslateNewLanguage: false`
 - **i18n-l10n-editor.defaultLanguage**
   - Used when no default language is specified in translation files otherwise the first file found is used. The default vale is *en*.
-    - `i18n-l10n-editor.defaultLanguage: false`
+    - `i18n-l10n-editor.defaultLanguage: "en"`
 - **i18n-l10n-editor.translationService**
   - Specified which translation service to use (Only Microsoft translator is currently available). The default value is blank.
     - `i18n-l10n-editor.translationService: ""`
