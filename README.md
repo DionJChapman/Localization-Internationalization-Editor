@@ -34,7 +34,7 @@ i18n-l10n-editor can be used in two ways :
 
 - This will create a new translation file. if <ins>i18n-l10n-editor.autoTranslateNewLanguage</ins> is enabled the it will translate the new file from the default translation file. This will save all translations before creating the new file.
   
-<img alt="Tree View" src="https://github.com/DionJChapman/Localization-Internationalization-Editor/blob/master/images/table.png?raw=true" width="40"><img alt="Tabel View" src="https://github.com/DionJChapman/Localization-Internationalization-Editor/blob/master/images/tree.png?raw=true" width="40">
+<img alt="Tree View" src="https://github.com/DionJChapman/Localization-Internationalization-Editor/blob/master/images/table.png?raw=true" width="40"><img alt="Table View" src="https://github.com/DionJChapman/Localization-Internationalization-Editor/blob/master/images/tree.png?raw=true" width="40">
 
 - Switch between table and tree views.
 
@@ -54,18 +54,30 @@ i18n-l10n-editor can be used in two ways :
 
 - This will copy the default translation text to all translations within the folder without translating the text. This is good to copy your descriptions across.
 
-*NOTE* for translations to work your require <ins>i18n-l10n-editor.translationService</ins>, <ins>i18n-l10n-editor.translationServiceApiKey</ins> and <ins>i18n-l10n-editor.translationServiceApiRegion</ins> to be set. Currently the only translation service is the [Microsoft Translation API](https://www.microsoft.com/en-us/translator/business/translator-api/).
+**NOTE** for translations to work your require *i18n-l10n-editor.translationService*, *i18n-l10n-editor.translationServiceApiKey* and *i18n-l10n-editor.translationServiceApiRegion* to be set. Currently the only translation service is the [Microsoft Translation API](https://www.microsoft.com/en-us/translator/business/translator-api/).
 
 ## l10n.yaml file
 
-These are typical settings for the **l10n.yaml** file used to configure Internationalisation.
+These are typical settings for the **l10n.yaml** file used to configure Internationalisation. This is the proffered setup.
 
-```
+``` language="text"
 arb-dir: lib/l10n
 template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
 untranslated-messages-file: missing.log
 nullable-getter: false
+```
+
+You can also use the **pubspec.yaml** file to configure Internationalisation.
+
+``` language="text"
+flutter_intl:
+  enabled: true
+  arb-dir: lib/l10n/arb
+  template-arb-file: app_en.arb
+  output-localization-file: app_localizations.dart
+  untranslated-messages-file: missing.log
+  nullable-getter: false
 ```
 
 ## Settings

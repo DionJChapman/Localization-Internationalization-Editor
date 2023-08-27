@@ -2,6 +2,13 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.2.0]
+
+- Added code to read the **pubspec.yaml** file for configuration if it can't find a **l10n.yaml** file
+- Fixed issues where it wasn't rendering a field for each language when adding a new key
+- Fixed issue where it was not using the **i18n-l10n-editor.defaultLanguage** setting if it could't find one
+- Updated documentation for changes
+  
 ## [3.1.7]
 
 Release Date: 25/08/2023
@@ -16,7 +23,7 @@ Release Date: 25/08/2023
 
 - Changed **i18n-l10n-editor.sortKeyTogether** to default value of true
 - Added default values for **arb-dir** and **template-arb-file** if missing from l10n.yaml
-- Added base translations for when you use sub-languages for **flutter gen-l10n** complience
+- Added base translations for when you use sub-languages for **flutter gen-l10n** compliance
   - Example when using zh-Hans it will also create zh arb file
 - Removed the folder selector for each line as it was confusing and changing the folder can create issues
 - Fixed a few UI issues with Tree View
