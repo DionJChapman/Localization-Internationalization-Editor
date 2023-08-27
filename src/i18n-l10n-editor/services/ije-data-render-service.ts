@@ -89,6 +89,9 @@ export class IJEDataRenderService {
         if (_defaultARB.lastIndexOf('.') !== -1) {
             _defaultARB = _defaultARB.substring(0, _defaultARB.lastIndexOf('.'));
         }
+        if (_defaultARB === '') {
+            _defaultARB = IJEConfiguration.DEFAULT_LANGUAGE;
+        }
 
         languages.sort((a, b) => {
             if (a === _defaultARB) {
@@ -174,8 +177,7 @@ export class IJEDataRenderService {
                 render += `<button type="button" class="btn btn-vscode" style="background: #5C9CFF; width: 40px; maxWidth: 40px; padding-left: 8px; border-radius: 0px 5px 5px 0px;" onclick="copyFolder(${t.id}, '${t.folder}')"><i class="icon-copy-folders"></i></button>`;
             }
 
-            render += `</div></td>
-            `;
+            render += `</div></td>`;
 
             let defaultARB = _defaultARB;
             languages
@@ -191,7 +193,7 @@ export class IJEDataRenderService {
                 .forEach((language: string) => {
                     let showIt = false;
                     let showBlank = false;
-                    if (included.includes(language)) {
+                    if (included.includes(language) || t.key === "") {
                         showIt = true;
                         showBlank = false;
                     } else if (included.length === 0) {

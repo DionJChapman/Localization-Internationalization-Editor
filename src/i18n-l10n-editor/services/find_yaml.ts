@@ -28,12 +28,20 @@ export async function findYAML(path): Promise<IJEFolder[]> {
         filePath = `${split[split.length - 1]}`;
     }
 
+    // try to find an l10n.yaml on the workspace path for configuration
     let yamlFiles = await vscode.workspace.findFiles(`${path}${pathSeparator}**${pathSeparator}${yamlFileName}`);
 
+    // try to find a l10n.yaml in the project for configuration
     if (yamlFiles.length === 0) {
         yamlFiles = await vscode.workspace.findFiles(`**${pathSeparator}${yamlFileName}`);
     }
 
+    // try to see if there is a pubspec.yaml for configuration
+    if (yamlFiles.length === 0) {
+        yamlFiles = await vscode.workspace.findFiles(`**${pathSeparator}pubspec.yaml`);
+    }
+
+    // forget about it then
     if (yamlFiles.length === 0) {
         return folders;
     }
@@ -50,6 +58,10 @@ export async function findYAML(path): Promise<IJEFolder[]> {
         const yamlFile = yamlFiles[y];
 
         let yamlPath: string = yamlFile.toString();
+
+        if (yamlPath.indexOf(`${pathSeparator}.`) !== -1) {
+            continue;
+        }
 
         if (yamlPath.split(pathSeparator).length > 2) {
             let split = yamlPath.split(pathSeparator);
@@ -69,9 +81,9 @@ export async function findYAML(path): Promise<IJEFolder[]> {
             let lines = f.toString().split('\n');
             for (let l in lines) {
                 let c = lines[l].split(':');
-                if (c[0] === 'arb-dir') {
+                if (c[0].trim() === 'arb-dir') {
                     _path = c[1].trim();
-                } else if (c[0] === 'template-arb-file') {
+                } else if (c[0].trim() === 'template-arb-file') {
                     _arb = c[1].trim();
                 }
             }
