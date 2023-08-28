@@ -1,6 +1,6 @@
 # Change Log
 
-All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
+All notable changes to the "i18n-l10n-editor" extension will be documented in this file.
 
 ## [3.2.2]
 
