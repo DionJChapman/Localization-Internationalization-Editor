@@ -11,7 +11,7 @@
     },
     "description": "This editor will allow you to edit you Localization (i18n) and Internationalization (l10n) files easly. Using Microsoft Translation, you can translate to a wide range of languages automatically.",
     "icon": "media/logo.png",
-    "version": "3.2.2",
+    "version": "3.3.2",
     "pricing": "Free",
     "engines": {
         "vscode": "^1.81.1"
@@ -25,8 +25,7 @@
     "activationEvents": [
         "onStartupFinished",
         "onLanguage:dart",
-        "workspaceContains:**/*.dart",
-        "onCommand:i18n-l10n-editor"
+        "workspaceContains:**/*.dart"
     ],
     "main": "./out/extension.js",
     "contributes": {
