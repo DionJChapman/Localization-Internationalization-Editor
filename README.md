@@ -108,6 +108,17 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
 - **i18n-l10n-editor.translationServiceApiRegion**
   - Api region used by the translation service. Copy this from the Key Generation page. The default value is blank.
     - `i18n-l10n-editor.translationServiceApiRegion: ""`
+- **i18n-l10n-editor.substitutionText**
+  - A String to replace text when highlighting text in a Dart editor. To have this work you should place the following in your build methods `final l10n = AppLocalizations.of(context);` This will allow the editor to place `l10n.exampleKey` in your files.
+    - `i18n-l10n-editor.substitutionText: "l10n"`
+  
+``` language="dart"
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Builder(...
+```
+
 - **18n-l10n-editor.jsonSpace**
   - A String or Number that's used to insert white space into the output JSON. The default value is *2*.
     - `18n-l10n-editor.jsonSpace: 2`
@@ -132,11 +143,10 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
 As I now have this editor work the way I wanted it to, I will be slowing down on changes. You are welcome to submit feature request to my [GitHub](https://github.com/DionJChapman/Localization-Internationalization-Editor/issues/new/choose)
 
 - Add translations services for **Google Translate** and **Amazon Translate**
-- Add translations to the Editor
 
 ## Commercial Usage
 
-**i18n/l10n Editor** is free for non-commercial usage. If you wish to use it for commercial purposes then I would appreciate a donation of $US5/user [PayPal.Me](https://paypal.me/puggsincyberspace?country.x=AU&locale.x=en_AU). This extension can save you hours doing translations manual and a small donation would be welcomed.
+**i18n/l10n Editor** is free for non-commercial usage. If you wish to use it for commercial purposes then I would appreciate a donation of $US5/user [PayPal.Me](https://paypal.me/puggsincyberspace?country.x=AU&locale.x=en_AU) or [Buy Me a Coffee](https://bmc.link/nativebit). This extension can save you hours doing translations manual and a small donation would be welcomed.
 
 ## Author
 

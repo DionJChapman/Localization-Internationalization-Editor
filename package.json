@@ -11,7 +11,7 @@
     },
     "description": "This editor will allow you to edit you Localization (i18n) and Internationalization (l10n) files easly. Using Microsoft Translation, you can translate to a wide range of languages automatically.",
     "icon": "media/logo.png",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "pricing": "Free",
     "engines": {
         "vscode": "^1.81.1"
@@ -79,6 +79,13 @@
                     "default": "en",
                     "type": "string",
                     "description": "Used when no default language is specified in translation files otherwise the first file found is used."
+                },
+                "i18n-l10n-editor.substitutionText": {
+                    "default": "l10n",
+                    "type": [
+                        "string"
+                    ],
+                    "description": "A String to replace text when highlighting text in a Dart editor. To have this work you should place the following in your build methods final l10n = AppLocalizations.of(context); This will allow the editor to place l10n.exampleKey in your files."
                 },
                 "i18n-l10n-editor.jsonSpace": {
                     "default": 2,
