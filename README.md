@@ -54,7 +54,7 @@ i18n-l10n-editor can be used in two ways :
 
 - This will copy the default translation text to all translations within the folder without translating the text. This is good to copy your descriptions across.
 
-**NOTE** for translations to work your require *i18n-l10n-editor.translationService*, *i18n-l10n-editor.translationServiceApiKey* and *i18n-l10n-editor.translationServiceApiRegion* to be set. Currently the only translation service is the [Microsoft Translation API](https://www.microsoft.com/en-us/translator/business/translator-api/).
+**NOTE** for translations to work your require *i18n-l10n-editor.translationService*, *i18n-l10n-editor.translationServiceApiKey* and *i18n-l10n-editor.translationServiceApiRegion* to be set. Currently we only support the following translations services Microsoft Translation, Google Translation and Amazon Translation. See Language Documentation for a list of supported language codes for each service.
 
 ## l10n.yaml file
 
@@ -137,6 +137,13 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
     return Builder(...
 ```
 
+## Language Documentation
+
+- [Microsoft Translation Languages](https://www.microsoft.com/en-us/translator/business/translator-api/)
+- [Google Translations Languages](https://cloud.google.com/translate/docs/languages)
+- [Amazon Translations Languages](https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html)
+- [Amazon Translation Regions](https://docs.aws.amazon.com/general/latest/gr/translate-service.html)
+  
 ## Future Development
 
 As I now have this editor work the way I wanted it to, I will be slowing down on changes. You are welcome to submit feature request to my [GitHub](https://github.com/DionJChapman/Localization-Internationalization-Editor/issues/new/choose)

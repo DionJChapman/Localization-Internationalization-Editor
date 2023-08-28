@@ -12,3 +12,5 @@ vsc-extension-quickstart.md
 **/*.arb
 demo/**
 .history/**
+images/**
+
