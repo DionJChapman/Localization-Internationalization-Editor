@@ -108,17 +108,6 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
 - **i18n-l10n-editor.translationServiceApiRegion**
   - Api region used by the translation service. Copy this from the Key Generation page. The default value is blank.
     - `i18n-l10n-editor.translationServiceApiRegion: ""`
-- **i18n-l10n-editor.substitutionText**
-  - A String to replace text when highlighting text in a Dart editor. To have this work you should place the following in your build methods `final l10n = AppLocalizations.of(context);` This will allow the editor to place `l10n.exampleKey` in your files.
-    - `i18n-l10n-editor.substitutionText: "l10n"`
-  
-``` language="dart"
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Builder(...
-```
-
 - **18n-l10n-editor.jsonSpace**
   - A String or Number that's used to insert white space into the output JSON. The default value is *2*.
     - `18n-l10n-editor.jsonSpace: 2`
@@ -137,6 +126,16 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
 - **i18n-l10n-editor.workspaceFolders**
   - An array of objects to specify which folders are used to manage your translations (deprecated). This is only used if the editor can not find any translation folders. The default value is blank.
     - `i18n-l10n-editor.workspaceFolders: []`
+- **i18n-l10n-editor.substitutionText**
+  - A String to replace text when highlighting text in a Dart editor. To have this work you should place the following in your build methods `final l10n = AppLocalizations.of(context);` This will allow the editor to place `l10n.exampleKey` in your files.
+    - `i18n-l10n-editor.substitutionText: "l10n"`
+  
+``` language="dart"
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Builder(...
+```
 
 ## Future Development
 
