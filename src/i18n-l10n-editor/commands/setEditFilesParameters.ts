@@ -9,7 +9,6 @@ import { Placeholder } from '../placeholders/placeholder';
 import { PlaceholderType } from '../placeholders/placeholderType';
 import { camelize } from '../shared/camelize';
 import { extractInterpolatedVariables } from '../shared/parser/parser';
-import { getConfiguration } from '../getConfiguration';
 import { showDateFormatQuickPick } from '../placeholders/dateFormatQuickPick';
 import { showInputBox } from '../services/inputBox/showInputBox';
 import { showPlaceholderQuickPick } from '../placeholders/placeholderQuickPick';

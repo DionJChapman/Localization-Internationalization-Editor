@@ -69,6 +69,11 @@ export class IJEConfiguration {
         return value !== undefined ? value : "en";
     }
 
+    static get SUBSTITUTION_TEXT(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.substitutionText');
+        return value !== undefined ? value : "l10n";
+    }
+
     static arbFolders: IJEFolder[] = [];
 
     static get WORKSPACE_FOLDERS(): IJEFolder[] {

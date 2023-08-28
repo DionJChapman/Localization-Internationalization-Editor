@@ -2,11 +2,21 @@
 
 All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension will be documented in this file.
 
+## [3.2.2]
+
+Release Date: 28/08/2023
+
+- Added new setting **i18n-l10n-editor.substitutionText** with the default value of *l10n* to replace text in Dart files. Make this blank if you don't want to use it. Example *l10n.exampleKey* or *l10n.exampleKey(placeholder)*
+- Added code substitution to dart files when highlighting text to create translations
+- Update documentation for this feature
+  
 ## [3.2.0]
+
+Release Date: 28/08/2023
 
 - Added code to read the **pubspec.yaml** file for configuration if it can't find a **l10n.yaml** file
 - Fixed issues where it wasn't rendering a field for each language when adding a new key
-- Fixed issue where it was not using the **i18n-l10n-editor.defaultLanguage** setting if it could't find one
+- Fixed issue where it wasn't using the **i18n-l10n-editor.defaultLanguage** setting if it could't find a default language
 - Added changes to the editor title when working with multiple folders individually
 - Updated documentation for changes
   
@@ -29,7 +39,7 @@ Release Date: 25/08/2023
 - Removed the folder selector for each line as it was confusing and changing the folder can create issues
 - Fixed a few UI issues with Tree View
 - Fixed issues with 2 Context Menu items in some setups
-- Fixed issue where it would not copy across to blank translation fields
+- Fixed issue where it wouldn't copy across to blank translation fields
 
 ## [3.1.3]
 
@@ -141,7 +151,7 @@ Release Date 29/07/2023
 - Added a linefeed at end of files.
 - Added the use of temporary .tmp files when saving.
 - Added check on .tmp files for minimum size of 10 characters. An i18n format would be 12 and an l10n format would be 20.
-- Temporary files kept when translation is not saved.
+- Temporary files kept when translation isn't saved.
 - Removed code that could result in files of '{}'.
 
 ## [2.1.3]
