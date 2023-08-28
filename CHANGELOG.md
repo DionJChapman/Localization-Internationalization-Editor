@@ -7,6 +7,7 @@ All notable changes to the "i18n-l10n-editor"  and "i18n-arb-editor" extension w
 - Added code to read the **pubspec.yaml** file for configuration if it can't find a **l10n.yaml** file
 - Fixed issues where it wasn't rendering a field for each language when adding a new key
 - Fixed issue where it was not using the **i18n-l10n-editor.defaultLanguage** setting if it could't find one
+- Added changes to the editor title when working with multiple folders individually
 - Updated documentation for changes
   
 ## [3.1.7]

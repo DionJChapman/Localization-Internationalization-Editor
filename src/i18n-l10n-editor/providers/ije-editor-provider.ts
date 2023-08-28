@@ -13,8 +13,15 @@ export class IJEEditorProvider {
                 retainContextWhenHidden: true,
                 enableScripts: true,
                 localResourceRoots: [vscode.Uri.file(_path.join(context.extensionPath, 'media'))]
+                
             });
 
+            let path = uri ? uri.fsPath : null;
+            if (path && path.lastIndexOf("/") !== -1) {
+                path = path.substring(path.lastIndexOf("/") + 1);
+                panel.title = `i18n/l10n Editor ${path}`;
+            }
+            
             new IJEManager(context, panel, uri ? uri.fsPath : null);
         });
     }
