@@ -23,7 +23,7 @@
         "Other"
     ],
     "activationEvents": [
-        "*",
+        "onStartupFinished",
         "onLanguage:dart",
         "workspaceContains:**/*.dart",
         "onCommand:i18n-l10n-editor"
