@@ -4,7 +4,7 @@ export function getFunctionCall(
   variables: string[]
 ): string {
   const functionCall = `${appLocalizationsVariable}.${key}`;
-  if (variables.length === 0) {
+  if (variables && variables.length === 0) {
     return functionCall;
   }
   const variablesString = variables

@@ -80,7 +80,7 @@ export class IJEConfiguration {
         const _folders: IJEFolder[] = [];
 
         let folders;
-        if (this.arbFolders.length !== 0) {
+        if (this.arbFolders && this.arbFolders.length !== 0) {
             folders = this.arbFolders;
 
             folders.forEach(d => {

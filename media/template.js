@@ -14,7 +14,7 @@ var vscode;
         if (folders) {
           var select = document.getElementById("select-folder");
           
-          if (folders.length > 1) {
+          if (folders && folders.length > 1) {
           var option = document.createElement("option");
             option.text = '*';
             option.value = '*';
