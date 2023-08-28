@@ -252,7 +252,7 @@ export class IJEData {
 
         const langs: IJELangs[] = [];
 
-        if (_lang.length > 0) {
+        if (_lang && _lang.length > 0) {
             _lang = _lang.replace('-', '_');
             let split = _lang.split('_');
             if (split.length > 1) {

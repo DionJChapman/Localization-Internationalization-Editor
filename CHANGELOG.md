@@ -8,6 +8,7 @@ Release Date: 28/08/2023
 
 - Added new setting **i18n-l10n-editor.substitutionText** with the default value of *l10n* to replace text in Dart files. Make this blank if you don't want to use it. Example *l10n.exampleKey* or *l10n.exampleKey(placeholder)*
 - Added code substitution to dart files when highlighting text to create translations
+- Removed the catch-all event trigger for better performance
 - Update documentation for this feature
   
 ## [3.2.0]
