@@ -33,7 +33,7 @@ export class IJEAmazonTranslator implements IJETranslation {
             return { [language]: text };
         }
 
-        const endpoint = `https://translate.${apiRegion}.amazonaws.com`;
+        const host = `translate.${apiRegion}.amazonaws.com`;
 
         let _languages = [];
 
@@ -81,31 +81,48 @@ export class IJEAmazonTranslator implements IJETranslation {
         // prepare the headers
         const yyyyMMdd = formatYYYYMMDD(new Date());
         const yyyyMMddTHHmmssZ = formatYYYYMMDDhhmmss(new Date());
+
+        const algorithm = 'AWS4-HMAC-SHA256';
+        const contentType = 'application/x-amz-json-1.1';
+        const serviceTarget = 'AWSShineFrontendService_20170701.TranslateText';
+        const credentialScope = `${yyyyMMdd}/${apiRegion}/translate/aws4_request`;
+        const signedHeaders = 'content-type;host;x-amz-date;x-amz-target';
+        const canonicalHeaders = `content-type:${contentType}\nhost:${host}\nx-amz-date:${yyyyMMddTHHmmssZ}\nx-amz-target:${serviceTarget}\n`;  
+
         const dateKey = CryptoJS.HmacSHA256(`AWS4${apiSecret}`, yyyyMMdd);
         const dateRegionKey = CryptoJS.HmacSHA256(dateKey, apiRegion);
         const dateRegionServiceKey = CryptoJS.HmacSHA256(dateRegionKey, 'translate');
         const signatureKey = CryptoJS.HmacSHA256(dateRegionServiceKey, 'aws4_request');
-        const signature = signatureKey.toString(CryptoJS.enc.Hex);
 
         await _languages.forEach(async lang => {
             try {
+                const body = `{"Text": "${text}","SourceLanguageCode": "${language.replace('_', '-')}","TargetLanguageCode": "${lang.replace('_', '-')}"}`;
+                const bodyHash = CryptoJS.SHA256(body).toString(CryptoJS.enc.Hex);
+
+                const canonicalRequest = `POST\n/\n\n${canonicalHeaders}\n${signedHeaders}\n${bodyHash}`;
+                const signKey = `${algorithm}\n${yyyyMMddTHHmmssZ}\n${credentialScope}\n${CryptoJS.SHA256(canonicalRequest).toString(CryptoJS.enc.Hex)}`;
+                const signature = CryptoJS.HmacSHA256(signatureKey, signKey).toString(CryptoJS.enc.Hex);
+        
                 var response = await axios({
-                    baseURL: endpoint,
+                    baseURL: `https://${host}/`,
                     method: 'post',
                     headers: {
-                        'Content-type': 'application/x-amz-json-1.1',
-                        'X-Amz-Target': 'AWSShineFrontendService_20170701.TranslateText',
-                        'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
-                        'X-Amz-Credential': `${apiKey}/${yyyyMMdd}/${apiRegion}/translate/aws4_request`,
+                        'Content-type': contentType,
+                        'X-Amz-Target': serviceTarget,
+                        //"X-Amz-Content-Sha256": "beaead3198f7da1e70d03ab969765e0821b24fc913697e929e726aeaebf0eba3",
+                        'X-Amz-Algorithm': algorithm,
+                        //'X-Amz-Credential': `${apiKey}/${credentialScope}`,
                         'X-Amz-Date': `${yyyyMMddTHHmmssZ}`,
-                        'X-Amz-SignedHeaders': 'host;x-amz-date',
-                        'X-Amz-Signature': signature
+                        //'X-Amz-SignedHeaders': signedHeaders,
+                        //'X-Amz-Signature': signature,
+                        "Authorization": `AWS4-HMAC-SHA256 Credential=${apiKey}/${credentialScope}, SignedHeaders=content-type;host;x-amz-date;x-amz-target, Signature=${signature}`
                     },
-                    params: {
-                        Text: text,
-                        SourceLangCode: language.replace('_', '-'),
-                        TargetLanguageCode: lang.replace('_', '-')
-                    },
+                    //params: {
+                    //    Text: text,
+                    //    SourceLangCode: language.replace('_', '-'),
+                    //    TargetLanguageCode: lang.replace('_', '-')
+                    //},
+                    data: body,
                     responseType: 'json'
                 });
 
@@ -179,7 +196,7 @@ function formatYYYYMMDD(inputDate: Date) {
     date = date.toString().padStart(2, '0');
     month = month.toString().padStart(2, '0');
 
-    return `${date}/${month}/${year}`;
+    return `${year}${month}${date}`;
 }
 
 function formatYYYYMMDDhhmmss(inputDate: Date) {
