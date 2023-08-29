@@ -130,7 +130,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                                 place = 0;
                                 _substitutes.forEach(s => {
                                     if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
-                                        _text = _text.substring(0, _text.indexOf('{', place) - 1) + s + _text.substring(_text.indexOf('}', place) + 1);
+                                        _text = _text.substring(0, _text.indexOf('{', place)) + s + _text.substring(_text.indexOf('}', place) + 1);
                                         place = _text.indexOf('}', place) + 1;
                                     }
                                 });
