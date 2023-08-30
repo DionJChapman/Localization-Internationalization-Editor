@@ -10,7 +10,6 @@ import { IJEConfiguration } from '../ije-configuration';
 import { url } from 'inspector';
 
 export async function findYAML(path): Promise<IJEFolder[]> {
-    const yamlFileName = 'l10n.yaml';
     let folders: IJEFolder[] = [];
     let pathSeparator = '/';
 
@@ -28,17 +27,24 @@ export async function findYAML(path): Promise<IJEFolder[]> {
         filePath = `${split[split.length - 1]}`;
     }
 
-    // try to find an l10n.yaml on the workspace path for configuration
-    let yamlFiles = await vscode.workspace.findFiles(`${path}${pathSeparator}**${pathSeparator}${yamlFileName}`);
+    const yamlFilenames = IJEConfiguration.SUPPORTED_YAML_FILES;
 
-    // try to find a l10n.yaml in the project for configuration
-    if (yamlFiles.length === 0) {
-        yamlFiles = await vscode.workspace.findFiles(`**${pathSeparator}${yamlFileName}`);
-    }
+    let yamlFiles = [];
 
-    // try to see if there is a pubspec.yaml for configuration
-    if (yamlFiles.length === 0) {
-        yamlFiles = await vscode.workspace.findFiles(`**${pathSeparator}pubspec.yaml`);
+    for (let y in yamlFilenames) {
+        let yf = await vscode.workspace.findFiles(`${path}${pathSeparator}**${pathSeparator}${yamlFilenames[y]}`);
+
+        if (yf.length === 0) {
+            yf = await vscode.workspace.findFiles(`**${pathSeparator}${yamlFilenames[y]}`);
+        }
+
+        if (yf.length > 0) {
+            for (let f in yf) {
+                if (yf[f].toString().indexOf(`${pathSeparator}.`) === -1) {
+                    yamlFiles.push(yf[f]);
+                }
+            }
+        }
     }
 
     // forget about it then
@@ -89,14 +95,14 @@ export async function findYAML(path): Promise<IJEFolder[]> {
             }
         }
         if (!_path || _path.length === 0) {
-            vscode.window.showErrorMessage(`No setting for arb-dir, using default value 'lib/l10n'. File update: ${yamlPath}`);
+            //vscode.window.showErrorMessage(`No setting for arb-dir, using default value 'lib/l10n'. File update: ${yamlPath}`);
             _path = 'lib/l10n';
-            fs.appendFileSync(yamlFile.fsPath, '\narb-dir: lib/l10n\n');
+            //fs.appendFileSync(yamlFile.fsPath, '\narb-dir: lib/l10n\n');
         }
         if (!_arb || _arb.length === 0) {
-            vscode.window.showErrorMessage(`No setting for template-arb-file, using default value 'app_${IJEConfiguration.DEFAULT_LANGUAGE}.arb'. Please update: ${yamlPath}`);
+            //vscode.window.showErrorMessage(`No setting for template-arb-file, using default value 'app_${IJEConfiguration.DEFAULT_LANGUAGE}.arb'. Please update: ${yamlPath}`);
             _arb = `app_${IJEConfiguration.DEFAULT_LANGUAGE}.arb`;
-            fs.appendFileSync(yamlFile.fsPath, `\ntemplate-arb-file: ${_arb}\n`);
+            //fs.appendFileSync(yamlFile.fsPath, `\ntemplate-arb-file: ${_arb}\n`);
         }
 
         if (_path.startsWith(_folder)) {

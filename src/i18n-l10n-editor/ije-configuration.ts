@@ -41,6 +41,10 @@ export class IJEConfiguration {
         return value !== undefined ? value : '\n';
     }
 
+    static get SUPPORTED_YAML_FILES(): string[] {
+        const value = vscode.workspace.getConfiguration().get<string[]>('i18n-l10n-editor.supportedYamlFiles');
+        return value !== undefined ? value : ["i18n.yaml", "l10n.yaml", "r13n.yaml", "pubspec.yaml"];
+    }
     static get SUPPORTED_FOLDERS(): string[] {
         const value = vscode.workspace.getConfiguration().get<string[]>('i18n-l10n-editor.supportedFolders');
         return value !== undefined ? value : ['l10n', 'i18n'];

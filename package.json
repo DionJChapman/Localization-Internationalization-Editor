@@ -9,9 +9,9 @@
     "repository": {
         "url": "https://github.com/DionJChapman/Localization-Internationalization-Editor"
     },
-    "description": "This editor will allow you to edit you Localization (i18n) and Internationalization (l10n) files easily. Using Microsoft Translation, you can translate to a wide range of languages automatically.",
+    "description": "This editor will allow you to edit you Localization and Internationalization files easily. Using Microsoft Translation, you can translate to a wide range of languages automatically. Supported formats are i13n, l10n, r13n, arb and json.",
     "icon": "media/logo.png",
-    "version": "3.2.3",
+    "version": "3.2.6",
     "pricing": "Free",
     "engines": {
         "vscode": "^1.81.1"
@@ -109,10 +109,21 @@
                     ],
                     "description": "String used to signify the end of a line."
                 },
+                "i18n-l10n-editor.supportedYamlFiles": {
+                    "default": [
+                        "i18n.yaml",
+                        "l10n.yaml",
+                        "r13n.yaml",
+                        "pubspec.yaml"
+                    ],
+                    "type": "array",
+                    "description": "An array of YAML file names that's used to search for configuration settings."
+                },
                 "i18n-l10n-editor.supportedFolders": {
                     "default": [
                         "i18n",
-                        "l10n"
+                        "l10n",
+                        "r13n"
                     ],
                     "type": "array",
                     "description": "An array of folder names that's used to open the extension through the right click (restart required after changing the value)."
