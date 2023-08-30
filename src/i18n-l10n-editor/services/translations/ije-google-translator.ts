@@ -6,25 +6,25 @@ import { IJETranslation } from './ije-translation';
 import { IJEDataTranslation } from '../../models/ije-data-translation';
 import { IJEManager } from '../../ije-manager';
 
-export class IJEMicrosoftTranslator implements IJETranslation {
+export class IJEGoogleTranslator implements IJETranslation {
     results: { [language: string]: string };
     _manager: IJEManager;
     async translate(text: string, translation: IJEDataTranslation, language: string, languages: string[]): Promise<{ [language: string]: string }> {
         const apiKey = IJEConfiguration.TRANSLATION_SERVICE_API_KEY;
         if (apiKey && apiKey.length === 0) {
-            vscode.window.showErrorMessage('Your Microsoft API Key is blank. please update setting i18nJsonEditor.translationServiceApiKey');
+            vscode.window.showErrorMessage('Your Google API Key is blank. please update setting i18nJsonEditor.translationServiceApiKey');
 
             return { [language]: text };
         }
 
         const apiRegion = IJEConfiguration.TRANSLATION_SERVICE_API_REGION;
         if (apiRegion && apiRegion.length === 0) {
-            vscode.window.showErrorMessage('Your Microsoft API Region is blank. please update setting i18nJsonEditor.translationServiceApiRegion');
+            vscode.window.showErrorMessage('Your Google API Region is blank. please update setting i18nJsonEditor.translationServiceApiRegion');
 
             return { [language]: text };
         }
 
-        const endpoint = 'https://api.cognitive.microsofttranslator.com';
+        const endpoint = 'https://translate.googleapis.com';
 
         let _languages = [];
 
@@ -72,7 +72,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
         await _languages.forEach(async lang => {
             try {
                 var response = await axios({
-                    baseURL: endpoint + `/translate`,
+                    baseURL: endpoint + `/language/translate/v2`,
                     //url: '/translate?api-version=3.0&from=en&to=fr',
                     method: 'post',
                     headers: {
@@ -130,7 +130,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                                 place = 0;
                                 _substitutes.forEach(s => {
                                     if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
-                                        _text = _text.substring(0, _text.indexOf('{', place)) + s + _text.substring(_text.indexOf('}', place) + 1);
+                                        _text = _text.substring(0, _text.indexOf('{', place) - 1) + s + _text.substring(_text.indexOf('}', place) + 1);
                                         place = _text.indexOf('}', place) + 1;
                                     }
                                 });

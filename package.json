@@ -11,7 +11,7 @@
     },
     "description": "This editor will allow you to edit you Localization and Internationalization files easily. Using Microsoft Translation, you can translate to a wide range of languages automatically. Supported formats are i13n, l10n, r13n, arb and json.",
     "icon": "media/logo.png",
-    "version": "3.2.6",
+    "version": "3.3.4",
     "pricing": "Free",
     "engines": {
         "vscode": "^1.81.1"
@@ -40,7 +40,7 @@
                 {
                     "command": "i18n-l10n-editor",
                     "group": "navigation",
-                    "when": "explorerResourceIsFolder && (resourceFilename in ext:supportedFolders || targetPath.includes(supportedFolders))"
+                    "when": "explorerResourceIsFolder"
                 }
             ]
         },
@@ -138,14 +138,20 @@
                 },
                 "i18n-l10n-editor.translationService": {
                     "type": "string",
-                    "description": "Specified which translation service to use (Only Microsoft translator is currently available).",
+                    "description": "Specified which translation service to use.",
                     "enum": [
-                        "MicrosoftTranslator"
+                        "MicrosoftTranslator",
+                        "GoogleTranslator",
+                        "AmazonTranslator"
                     ]
                 },
                 "i18n-l10n-editor.translationServiceApiKey": {
                     "type": "string",
                     "description": "Api key used by the translation service. Copy this from the Key Generation page."
+                },
+                "i18n-l10n-editor.translationServiceApiSecret": {
+                    "type": "string",
+                    "description": "Api secret used by the translation service. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.translationServiceApiRegion": {
                     "type": "string",
@@ -167,21 +173,24 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-        "@types/vscode": "^1.80.0",
+        "@types/crypto-js": "^4.1.1",
         "@types/glob": "^7.2.0",
         "@types/mocha": "^10.0.1",
         "@types/node": "20.4.1",
+        "@types/vscode": "^1.81.0",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
         "@typescript-eslint/parser": "^6.0.0",
+        "@vscode/test-electron": "^2.1.5",
         "eslint": "^8.44.0",
         "glob": "^8.0.3",
         "mocha": "^10.2.0",
         "typescript": "^4.7.4",
-        "@vscode/test-electron": "^2.1.5",
         "yaml": "^2.3.1"
     },
     "dependencies": {
-        "axios": "^0.27.2"
+        "aws4": "^1.12.0",
+        "axios": "^0.27.2",
+        "crypto-js": "^4.1.1",
+        "crypto-ts": "^1.0.2"
     }
 }
-
