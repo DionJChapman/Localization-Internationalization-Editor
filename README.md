@@ -6,7 +6,7 @@ i18n-l10n-editor is a Visual Studio Code extension to easily edit your i18n and 
 
 ## Usage
 
-i18n-l10n-editor can be used in two ways :
+i18n-l10n-editor can be used in three ways:
 
 - Click the **i18n/l10n Editor** Button on the status bar. This will search for any l10n.yaml file and then open the translations from these files. You do not have to set <ins>i18n-l10n-editor.workspaceFolders</ins> for this to work. But you should set a list of supported folders in <ins>i18n-l10n-editor.supportedFolders</ins> so the editor can search for translation files in your project.
   
@@ -58,7 +58,7 @@ i18n-l10n-editor can be used in two ways :
 
 ## l10n.yaml file
 
-These are typical settings for the **l10n.yaml** file used to configure Internationalisation. This is the proffered setup.
+These are typical settings for the **YAML** file used to configure Internationalization. This is the proffered method of setup.
 
 ``` language="text"
 arb-dir: lib/l10n
@@ -68,7 +68,7 @@ untranslated-messages-file: missing.log
 nullable-getter: false
 ```
 
-You can also use the **pubspec.yaml** file to configure Internationalisation.
+You can also use the **pubspec.yaml** file to configure Internationalization.
 
 ``` language="text"
 flutter_intl:
@@ -117,9 +117,12 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
 - **i18n-l10n-editor.lineEnding**
   - String used to signify the end of a line. The default value is *\\n*.
     - `i18n-l10n-editor.lineEnding: "\\n"`
+- **i18n-l10n-editor.supportedYamlFiles*
+  - An array of **YAML** file names that's used to search for configuration settings.
+    - `i18n-l10n-editor.supportedYamlFiles: ["i18n.yaml","l10n.yaml","r13n.yaml","pubspec.yaml"]`
 - **i18n-l10n-editor.supportedFolders**
   - An array of folder names that's used to open the extension through the right click (restart required after changing the value). The default values are *l10n* and *l18n*.
-    - `i18n-l10n-editor.supportedFolders: ["l10n","i18n"]`
+    - `i18n-l10n-editor.supportedFolders: ["l10n","i18n","r13n"]`
 - **i18n-l10n-editor.supportedExtensions**
   - An array of file extension to check when loading the editor. If no file exists then the first one is used by default (restart required after changing the value). The default values are *arb* and *json*.
     - `i18n-l10n-editor.supportedExtensions: ["arb","json"]`

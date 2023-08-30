@@ -2,6 +2,28 @@
 
 All notable changes to the "i18n-l10n-editor" extension will be documented in this file.
 
+## [3.2.6]
+
+Release Date: 30/08/2023
+
+- Removed the code to add default settings to config files when missing. It will still use default settings but will no longer save them.
+
+## [3.2.5]
+
+Release Date: 30/08/2023
+
+- Added new setting to list possible **YAML** files to look for configuration data
+  - Examples are *l10n.yaml*, *i18n.yaml*, *r13n.yaml* and *pubspec.yaml*
+- Added code to search a list of possible config files
+- Updated Documentation
+
+## [3.2.3]
+
+Release Date: 29/08/2023
+
+- Fixed issue where a character was being removed before {value} arguments when translating
+  - **Note** the translation services may still add and remove spaces as it sees fit
+
 ## [3.2.2]
 
 Release Date: 28/08/2023
