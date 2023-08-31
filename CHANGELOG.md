@@ -2,6 +2,12 @@
 
 All notable changes to the "i18n-l10n-editor" extension will be documented in this file.
 
+## [3.3.0]
+
+- Added version number to status bar
+- Added Amazon and Google translation services
+- Added Translation specific settings
+
 ## [3.2.6]
 
 Release Date: 30/08/2023

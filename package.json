@@ -11,7 +11,7 @@
     },
     "description": "This editor will allow you to edit you Localization and Internationalization files easily. Using Microsoft Translation, you can translate to a wide range of languages automatically. Supported formats are i13n, l10n, r13n, arb and json.",
     "icon": "media/logo.png",
-    "version": "3.3.4",
+    "version": "3.3.0",
     "pricing": "Free",
     "engines": {
         "vscode": "^1.81.1"
@@ -140,22 +140,37 @@
                     "type": "string",
                     "description": "Specified which translation service to use.",
                     "enum": [
-                        "MicrosoftTranslator",
+                        "AmazonTranslator",
                         "GoogleTranslator",
-                        "AmazonTranslator"
+                        "MicrosoftTranslator"
                     ]
                 },
                 "i18n-l10n-editor.translationServiceApiKey": {
                     "type": "string",
-                    "description": "Api key used by the translation service. Copy this from the Key Generation page."
+                    "description": "Api key used by the translation service, leave this blank if you wish to switch between Translation Services. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.translationServiceApiSecret": {
                     "type": "string",
-                    "description": "Api secret used by the translation service. Copy this from the Key Generation page."
+                    "description": "Api secret used by the translation service, leave this blank if you wish to switch between Translation Services. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.translationServiceApiRegion": {
                     "type": "string",
-                    "description": "Api region used by the translation service. Copy this from the Key Generation page."
+                    "description": "Api region used by the translation service, leave this blank if you wish to switch between Translation Services. Copy this from the Key Generation page."
+                },
+                "i18n-l10n-editor.translationServiceAmazon": {
+                    "default": ["","",""],
+                    "type": "string",
+                    "description": "Settings for the Amazon Translate APIs [\"apiKey\",\"apiSecret\",\"apiRegion\"]. Copy this from the Key Generation page."
+                },
+                "i18n-l10n-editor.translationServiceGoogle": {
+                    "default": ["","",""],
+                    "type": "string",
+                    "description": "Settings for the Google Translate APIs [\"apiKey\",\"apiSecret\",\"apiRegion\"]. Copy this from the Key Generation page."
+                },
+                "i18n-l10n-editor.translationServiceMicrosoft": {
+                    "default": ["","",""],
+                    "type": "string",
+                    "description": "Settings for the Microsoft Translate APIs [\"apiKey\",\"apiSecret (blank)\",\"apiRegion\"]. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.workspaceFolders": {
                     "type": "array",

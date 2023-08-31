@@ -10,14 +10,14 @@ export class IJEMicrosoftTranslator implements IJETranslation {
     results: { [language: string]: string };
     _manager: IJEManager;
     async translate(text: string, translation: IJEDataTranslation, language: string, languages: string[]): Promise<{ [language: string]: string }> {
-        const apiKey = IJEConfiguration.TRANSLATION_SERVICE_API_KEY;
+        const apiKey = IJEConfiguration.TRANSLATION_SERVICE_MICROSOFT_KEY || IJEConfiguration.TRANSLATION_SERVICE_API_KEY;
         if (apiKey && apiKey.length === 0) {
             vscode.window.showErrorMessage('Your Microsoft API Key is blank. please update setting i18nJsonEditor.translationServiceApiKey');
 
             return { [language]: text };
         }
 
-        const apiRegion = IJEConfiguration.TRANSLATION_SERVICE_API_REGION;
+        const apiRegion = IJEConfiguration.TRANSLATION_SERVICE_MICROSOFT_REGION || IJEConfiguration.TRANSLATION_SERVICE_API_REGION;
         if (apiRegion && apiRegion.length === 0) {
             vscode.window.showErrorMessage('Your Microsoft API Region is blank. please update setting i18nJsonEditor.translationServiceApiRegion');
 

@@ -54,7 +54,7 @@ i18n-l10n-editor can be used in three ways:
 
 - This will copy the default translation text to all translations within the folder without translating the text. This is good to copy your descriptions across.
 
-**NOTE** for translations to work your require *i18n-l10n-editor.translationService*, *i18n-l10n-editor.translationServiceApiKey* and *i18n-l10n-editor.translationServiceApiRegion* to be set. Currently we only support the following translations services Microsoft Translation, Google Translation and Amazon Translation. See Language Documentation for a list of supported language codes for each service.
+**NOTE** for translations to work your require *i18n-l10n-editor.translationService*, *i18n-l10n-editor.translationServiceApiKey* and *i18n-l10n-editor.translationServiceApiRegion* to be set or the Translation Specific settings. Currently we only support the following translations services Microsoft Translation, Google Translation and Amazon Translation. See Language Documentation for a list of supported language codes for each service.
 
 ## l10n.yaml file
 
@@ -103,11 +103,23 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
   - Specified which translation service to use (Only Microsoft translator is currently available). The default value is blank.
     - `i18n-l10n-editor.translationService: ""`
 - **i18n-l10n-editor.translationServiceApiKey**
-  - Api key used by the translation service. Copy this from the Key Generation page. The default value is blank.
+  - Api key used by the translation service. Copy this from the Key Generation page. Leave this blank if you wish to switch between Translation Services.
     - `i18n-l10n-editor.translationServiceApiKey: ""`
+- **i18n-l10n-editor.translationServiceApiSecret**
+  - Api secret used by the translation service. Copy this from the Key Generation page. Leave this blank if you wish to switch between Translation Services.
+    - `i18n-l10n-editor.translationServiceApiSecret: ""`
 - **i18n-l10n-editor.translationServiceApiRegion**
-  - Api region used by the translation service. Copy this from the Key Generation page. The default value is blank.
+  - Api region used by the translation service. Copy this from the Key Generation page. Leave this blank if you wish to switch between Translation Services.
     - `i18n-l10n-editor.translationServiceApiRegion: ""`
+- **i18n-l10n-editor.translationServiceAmazon**
+  - Settings for the Amazon Translate APIs ["apiKey","apiSecret","apiRegion"]. Copy this from the Key Generation page.
+    - `i18n-l10n-editor.translationServiceAmazon: ["","",""]`
+- **i18n-l10n-editor.translationServiceGoogle**
+  - Settings for the Google Translate APIs ["apiKey","apiSecret","apiRegion"]. Copy this from the Key Generation page.
+    - `i18n-l10n-editor.translationServiceGoogle: ["","",""]`
+- **i18n-l10n-editor.translationServiceMicrosoft**
+  - Settings for the Microsoft Translate APIs ["apiKey","apiSecret (blank)","apiRegion"]. Copy this from the Key Generation page.
+    - `i18n-l10n-editor.translationServiceMicrosoft["","",""]`
 - **18n-l10n-editor.jsonSpace**
   - A String or Number that's used to insert white space into the output JSON. The default value is *2*.
     - `18n-l10n-editor.jsonSpace: 2`

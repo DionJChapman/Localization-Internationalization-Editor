@@ -73,6 +73,45 @@ export class IJEConfiguration {
         return value !== undefined ? value : null;
     }
 
+    static get TRANSLATION_SERVICE_AMAZON_KEY(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceAmazon');
+        return value !== undefined && value.length === 3 ? value[0] : null;
+    }
+    static get TRANSLATION_SERVICE_AMAZON_SECRET(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceAmazon');
+        return value !== undefined && value.length === 3 ? value[1] : null;
+    }
+    static get TRANSLATION_SERVICE_AMAZON_REGION(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceAmazon');
+        return value !== undefined && value.length === 3 ? value[2] : null;
+    }
+
+    static get TRANSLATION_SERVICE_GOOGLE_KEY(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceGoogle');
+        return value !== undefined && value.length === 3 ? value[0] : null;
+    }
+    static get TRANSLATION_SERVICE_GOOGLE_SECRET(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceGoogle');
+        return value !== undefined && value.length === 3 ? value[1] : null;
+    }
+    static get TRANSLATION_SERVICE_GOOGLE_REGION(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceGoogle');
+        return value !== undefined && value.length === 3 ? value[2] : null;
+    }
+
+    static get TRANSLATION_SERVICE_MICROSOFT_KEY(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceMicrosoft');
+        return value !== undefined && value.length === 3 ? value[0] : null;
+    }
+    static get TRANSLATION_SERVICE_MICROSOFT_SECRET(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceMicrosoft');
+        return value !== undefined && value.length === 3 ? value[1] : null;
+    }
+    static get TRANSLATION_SERVICE_MICROSOFT_REGION(): string {
+        const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.translationServiceMicrosoft');
+        return value !== undefined && value.length === 3 ? value[2] : null;
+    }
+
     static get DEFAULT_LANGUAGE(): string {
         const value = vscode.workspace.getConfiguration().get<string>('i18n-l10n-editor.defaultLanguage');
         return value !== undefined ? value : "en";
