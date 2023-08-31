@@ -7,6 +7,7 @@ All notable changes to the "i18n-l10n-editor" extension will be documented in th
 - Added version number to status bar
 - Added Amazon and Google translation services
 - Added Translation specific settings
+- Updated Documentation
 
 ## [3.2.6]
 

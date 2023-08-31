@@ -154,16 +154,16 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
 
 ## Language Documentation
 
-- [Microsoft Translation Languages](https://www.microsoft.com/en-us/translator/business/translator-api/)
-- [Google Translations Languages](https://cloud.google.com/translate/docs/languages)
+When switching between languages it is possible that some translations will fail due language codes. For example Microsoft uses zh-Hant where Amazon uses zh-TW. On top of this there are differences in words used. It is best to stick with one Translation Service for the duration of a project.
+
 - [Amazon Translations Languages](https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html)
 - [Amazon Translation Regions](https://docs.aws.amazon.com/general/latest/gr/translate-service.html)
+- [Google Translations Languages](https://cloud.google.com/translate/docs/languages)
+- [Microsoft Translation Languages](https://www.microsoft.com/en-us/translator/business/translator-api/)
   
 ## Future Development
 
-As I now have this editor work the way I wanted it to, I will be slowing down on changes. You are welcome to submit feature request to my [GitHub](https://github.com/DionJChapman/Localization-Internationalization-Editor/issues/new/choose)
-
-- Add translations services for **Google Translate** and **Amazon Translate**
+I have now completed everything i wanted to by taking over this project and feel that there isn't much more i can add. Please submit feature request to my [GitHub](https://github.com/DionJChapman/Localization-Internationalization-Editor/issues/new/choose) if you feel you need them to be added.
 
 ## Commercial Usage
 

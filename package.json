@@ -158,18 +158,30 @@
                     "description": "Api region used by the translation service, leave this blank if you wish to switch between Translation Services. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.translationServiceAmazon": {
-                    "default": ["","",""],
-                    "type": "string",
+                    "default": [
+                        "",
+                        "",
+                        ""
+                    ],
+                    "type": "array",
                     "description": "Settings for the Amazon Translate APIs [\"apiKey\",\"apiSecret\",\"apiRegion\"]. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.translationServiceGoogle": {
-                    "default": ["","",""],
-                    "type": "string",
+                    "default": [
+                        "",
+                        "",
+                        ""
+                    ],
+                    "type": "array",
                     "description": "Settings for the Google Translate APIs [\"apiKey\",\"apiSecret\",\"apiRegion\"]. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.translationServiceMicrosoft": {
-                    "default": ["","",""],
-                    "type": "string",
+                    "default": [
+                        "",
+                        "",
+                        ""
+                    ],
+                    "type": "array",
                     "description": "Settings for the Microsoft Translate APIs [\"apiKey\",\"apiSecret (blank)\",\"apiRegion\"]. Copy this from the Key Generation page."
                 },
                 "i18n-l10n-editor.workspaceFolders": {
@@ -204,8 +216,6 @@
     },
     "dependencies": {
         "aws4": "^1.12.0",
-        "axios": "^0.27.2",
-        "crypto-js": "^4.1.1",
-        "crypto-ts": "^1.0.2"
+        "axios": "^0.27.2"
     }
 }

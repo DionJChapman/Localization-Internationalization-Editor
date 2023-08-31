@@ -11,7 +11,7 @@ export abstract class IJETranslationService {
     public static async translate(translation: IJEDataTranslation, language: string, languages: string[]) {
         const translationService = IJEConfiguration.TRANSLATION_SERVICE;
 
-        if (!translationService || !IJEConfiguration.TRANSLATION_SERVICE_API_KEY) {
+        if (!translationService) {
             return;
         }
         let service: IJETranslation;

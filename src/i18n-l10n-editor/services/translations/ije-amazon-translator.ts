@@ -1,7 +1,6 @@
 import axios, { AxiosError, AxiosResponse, AxiosResponseTransformer } from 'axios';
 import * as vscode from 'vscode';
-import * as CryptoJS from 'crypto-js';
-//import {formatDate} from '@angular/common';
+import * as aws4 from 'aws4';
 
 import { IJEConfiguration } from '../../ije-configuration';
 import { IJETranslation } from './ije-translation';
@@ -78,100 +77,57 @@ export class IJEAmazonTranslator implements IJETranslation {
             }
         }
 
-        // prepare the headers
-        const yyyyMMdd = formatYYYYMMDD(new Date());
-        const yyyyMMddTHHmmssZ = formatYYYYMMDDhhmmss(new Date());
-
-        const algorithm = 'AWS4-HMAC-SHA256';
-        const contentType = 'application/x-amz-json-1.1';
-        const serviceTarget = 'AWSShineFrontendService_20170701.TranslateText';
-        const credentialScope = `${yyyyMMdd}/${apiRegion}/translate/aws4_request`;
-        const signedHeaders = 'content-type;host;x-amz-date;x-amz-target';
-        const canonicalHeaders = `content-type:${contentType}\nhost:${host}\nx-amz-date:${yyyyMMddTHHmmssZ}\nx-amz-target:${serviceTarget}\n`;  
-
-        const dateKey = CryptoJS.HmacSHA256(`AWS4${apiSecret}`, yyyyMMdd);
-        const dateRegionKey = CryptoJS.HmacSHA256(dateKey, apiRegion);
-        const dateRegionServiceKey = CryptoJS.HmacSHA256(dateRegionKey, 'translate');
-        const signatureKey = CryptoJS.HmacSHA256(dateRegionServiceKey, 'aws4_request');
-
         await _languages.forEach(async lang => {
             try {
+                const contentType = 'application/x-amz-json-1.1';
+                const serviceTarget = 'AWSShineFrontendService_20170701.TranslateText';
                 const body = `{"Text": "${text}","SourceLanguageCode": "${language.replace('_', '-')}","TargetLanguageCode": "${lang.replace('_', '-')}"}`;
-                const bodyHash = CryptoJS.SHA256(body).toString(CryptoJS.enc.Hex);
+                const options = {
+                    "host": host,
+                    "path": "/",
+                    "method": "POST",
+                    "headers": {
+                        "content-type": contentType
+                    },
+                    "body": body
+                };
 
-                const canonicalRequest = `POST\n/\n\n${canonicalHeaders}\n${signedHeaders}\n${bodyHash}`;
-                const signKey = `${algorithm}\n${yyyyMMddTHHmmssZ}\n${credentialScope}\n${CryptoJS.SHA256(canonicalRequest).toString(CryptoJS.enc.Hex)}`;
-                const signature = CryptoJS.HmacSHA256(signatureKey, signKey).toString(CryptoJS.enc.Hex);
-        
+                const authentication = aws4.sign(options, {accessKeyId: apiKey, secretAccessKey: apiSecret});
+
                 var response = await axios({
                     baseURL: `https://${host}/`,
                     method: 'post',
                     headers: {
                         'Content-type': contentType,
                         'X-Amz-Target': serviceTarget,
-                        //"X-Amz-Content-Sha256": "beaead3198f7da1e70d03ab969765e0821b24fc913697e929e726aeaebf0eba3",
-                        'X-Amz-Algorithm': algorithm,
-                        //'X-Amz-Credential': `${apiKey}/${credentialScope}`,
-                        'X-Amz-Date': `${yyyyMMddTHHmmssZ}`,
-                        //'X-Amz-SignedHeaders': signedHeaders,
-                        //'X-Amz-Signature': signature,
-                        "Authorization": `AWS4-HMAC-SHA256 Credential=${apiKey}/${credentialScope}, SignedHeaders=content-type;host;x-amz-date;x-amz-target, Signature=${signature}`
+                        'X-Amz-Date': authentication.headers["X-Amz-Date"],
+                        Authorization: authentication.headers.Authorization
                     },
-                    //params: {
-                    //    Text: text,
-                    //    SourceLangCode: language.replace('_', '-'),
-                    //    TargetLanguageCode: lang.replace('_', '-')
-                    //},
                     data: body,
                     responseType: 'json'
                 });
 
                 const data = response.data;
 
-                if (data.length === 0) {
+                if (data === undefined) {
                     return { [language]: text };
                 }
-
-                const results = Object.assign(
-                    {},
-                    ...languages
-                        .filter(l => l !== language)
-                        .map(l => ({
-                            [l]: data[0].translations.filter(t => {
-                                let to = t.to;
-                                if (to.indexOf('-') !== -1) {
-                                    to = t.to.substring(0, t.to.indexOf('-'));
-                                }
-                                // if (to.indexOf('-') !== -1) {
-                                //     to = t.to.substring(0, t.to.indexOf('-'));
-                                // }
-                                if (l.indexOf(to) !== -1 || l.indexOf(t.to) !== -1) {
-                                    return t.text as string;
-                                }
-                            })
-                        }))
-                );
 
                 languages
                     .filter(l => l !== language)
                     .forEach(l => {
-                        if (results[l]) {
-                            let r = results[l][0];
-                            if (r) {
-                                let _text = r['text'];
-                                //const _l = r['to'];
+                        if (l.endsWith(data.TargetLanguageCode) || l.endsWith(data.TargetLanguageCode.split(""))) {
+                            let _text = data.TranslatedText;
+                            if (_text) {
                                 place = 0;
                                 _substitutes.forEach(s => {
                                     if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
-                                        _text = _text.substring(0, _text.indexOf('{', place) - 1) + s + _text.substring(_text.indexOf('}', place) + 1);
+                                        _text = _text.substring(0, _text.indexOf('{', place)) + s + _text.substring(_text.indexOf('}', place) + 1);
                                         place = _text.indexOf('}', place) + 1;
                                     }
                                 });
                                 translation.languages[l] = _text;
-                                //translation.languages[_l] = _text;
                                 this._manager.refreshDataTable();
-                                //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-                                //sleep(250);
                             }
                         }
                     });
@@ -185,36 +141,3 @@ export class IJEAmazonTranslator implements IJETranslation {
         });
     }
 }
-
-function formatYYYYMMDD(inputDate: Date) {
-    let date, month, year;
-
-    date = inputDate.getDate();
-    month = inputDate.getMonth() + 1;
-    year = inputDate.getFullYear();
-
-    date = date.toString().padStart(2, '0');
-    month = month.toString().padStart(2, '0');
-
-    return `${year}${month}${date}`;
-}
-
-function formatYYYYMMDDhhmmss(inputDate: Date) {
-    let date, month, year, hour, minute, second;
-
-    date = inputDate.getDate();
-    month = inputDate.getMonth() + 1;
-    year = inputDate.getFullYear();
-    hour = inputDate.getHours();
-    minute = inputDate.getMinutes();
-    second = inputDate.getSeconds();
-
-    date = date.toString().padStart(2, '0');
-    month = month.toString().padStart(2, '0');
-    hour = hour.toString().padStart(2, '0');
-    minute = minute.toString().padStart(2, '0');
-    second = second.toString().padStart(2, '0');
-
-    return `${year}${month}${date}T${hour}${minute}${second}Z`;
-}
-
