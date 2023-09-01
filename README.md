@@ -115,7 +115,7 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
   - Settings for the Amazon Translate APIs ["apiKey","apiSecret","apiRegion"]. Copy this from the Key Generation page.
     - `i18n-l10n-editor.translationServiceAmazon: ["","",""]`
 - **i18n-l10n-editor.translationServiceGoogle**
-  - Settings for the Google Translate APIs ["apiKey","apiSecret","apiRegion"]. Copy this from the Key Generation page.
+  - Settings for the Google Translate APIs ["apiKey","apiSecret","ProjectID"]. Copy this from the Key Generation page.
     - `i18n-l10n-editor.translationServiceGoogle: ["","",""]`
 - **i18n-l10n-editor.translationServiceMicrosoft**
   - Settings for the Microsoft Translate APIs ["apiKey","apiSecret (blank)","apiRegion"]. Copy this from the Key Generation page.
