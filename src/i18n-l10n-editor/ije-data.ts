@@ -144,6 +144,11 @@ export class IJEData {
     render() {
         let render = '';
         let translations = this._getDisplayedTranslations();
+        const hasTranslation = IJEConfiguration.TRANSLATION_SERVICE !== undefined && 
+        (IJEConfiguration.TRANSLATION_SERVICE_API_KEY !== undefined || 
+            IJEConfiguration.TRANSLATION_SERVICE_AMAZON_KEY !== undefined || 
+            IJEConfiguration.TRANSLATION_SERVICE_GOOGLE_KEY !== undefined || 
+            IJEConfiguration.TRANSLATION_SERVICE_MICROSOFT_KEY !== undefined);
         switch (this._view.type) {
             case IJEViewType.LIST:
                 render += IJEDataRenderService.renderList(
@@ -154,7 +159,7 @@ export class IJEData {
                     this._page,
                     this._sort,
                     this._manager.isWorkspace,
-                    !!IJEConfiguration.TRANSLATION_SERVICE && !!IJEConfiguration.TRANSLATION_SERVICE_API_KEY
+                    hasTranslation
                 );
                 break;
             case IJEViewType.TABLE:
@@ -164,7 +169,7 @@ export class IJEData {
                     this._page,
                     this._sort,
                     this._manager.isWorkspace,
-                    !!IJEConfiguration.TRANSLATION_SERVICE && !!IJEConfiguration.TRANSLATION_SERVICE_API_KEY
+                    hasTranslation
                 );
                 break;
         }

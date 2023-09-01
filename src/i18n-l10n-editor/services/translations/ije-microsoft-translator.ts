@@ -10,14 +10,14 @@ export class IJEMicrosoftTranslator implements IJETranslation {
     results: { [language: string]: string };
     _manager: IJEManager;
     async translate(text: string, translation: IJEDataTranslation, language: string, languages: string[]): Promise<{ [language: string]: string }> {
-        const apiKey = IJEConfiguration.TRANSLATION_SERVICE_API_KEY;
+        const apiKey = IJEConfiguration.TRANSLATION_SERVICE_MICROSOFT_KEY || IJEConfiguration.TRANSLATION_SERVICE_API_KEY;
         if (apiKey && apiKey.length === 0) {
             vscode.window.showErrorMessage('Your Microsoft API Key is blank. please update setting i18nJsonEditor.translationServiceApiKey');
 
             return { [language]: text };
         }
 
-        const apiRegion = IJEConfiguration.TRANSLATION_SERVICE_API_REGION;
+        const apiRegion = IJEConfiguration.TRANSLATION_SERVICE_MICROSOFT_REGION || IJEConfiguration.TRANSLATION_SERVICE_API_REGION;
         if (apiRegion && apiRegion.length === 0) {
             vscode.window.showErrorMessage('Your Microsoft API Region is blank. please update setting i18nJsonEditor.translationServiceApiRegion');
 
@@ -73,7 +73,6 @@ export class IJEMicrosoftTranslator implements IJETranslation {
             try {
                 var response = await axios({
                     baseURL: endpoint + `/translate`,
-                    //url: '/translate?api-version=3.0&from=en&to=fr',
                     method: 'post',
                     headers: {
                         'Ocp-Apim-Subscription-Key': apiKey,
@@ -109,9 +108,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                                 if (to.indexOf('-') !== -1) {
                                     to = t.to.substring(0, t.to.indexOf('-'));
                                 }
-                                // if (to.indexOf('-') !== -1) {
-                                //     to = t.to.substring(0, t.to.indexOf('-'));
-                                // }
+                                
                                 if (l.indexOf(to) !== -1 || l.indexOf(t.to) !== -1) {
                                     return t.text as string;
                                 }
@@ -126,7 +123,6 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                             let r = results[l][0];
                             if (r) {
                                 let _text = r['text'];
-                                //const _l = r['to'];
                                 place = 0;
                                 _substitutes.forEach(s => {
                                     if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
@@ -135,10 +131,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                                     }
                                 });
                                 translation.languages[l] = _text;
-                                //translation.languages[_l] = _text;
                                 this._manager.refreshDataTable();
-                                //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-                                //sleep(250);
                             }
                         }
                     });

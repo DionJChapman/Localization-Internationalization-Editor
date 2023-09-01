@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse, AxiosResponseTransformer } from 'axios';
 import * as vscode from 'vscode';
+import * as Translate from '@google-cloud/translate';
 
 import { IJEConfiguration } from '../../ije-configuration';
 import { IJETranslation } from './ije-translation';
@@ -10,14 +11,14 @@ export class IJEGoogleTranslator implements IJETranslation {
     results: { [language: string]: string };
     _manager: IJEManager;
     async translate(text: string, translation: IJEDataTranslation, language: string, languages: string[]): Promise<{ [language: string]: string }> {
-        const apiKey = IJEConfiguration.TRANSLATION_SERVICE_API_KEY;
+        const apiKey = IJEConfiguration.TRANSLATION_SERVICE_GOOGLE_KEY || IJEConfiguration.TRANSLATION_SERVICE_API_KEY;
         if (apiKey && apiKey.length === 0) {
             vscode.window.showErrorMessage('Your Google API Key is blank. please update setting i18nJsonEditor.translationServiceApiKey');
 
             return { [language]: text };
         }
 
-        const apiRegion = IJEConfiguration.TRANSLATION_SERVICE_API_REGION;
+        const apiRegion = IJEConfiguration.TRANSLATION_SERVICE_GOOGLE_REGION || IJEConfiguration.TRANSLATION_SERVICE_API_REGION;
         if (apiRegion && apiRegion.length === 0) {
             vscode.window.showErrorMessage('Your Google API Region is blank. please update setting i18nJsonEditor.translationServiceApiRegion');
 
@@ -71,75 +72,32 @@ export class IJEGoogleTranslator implements IJETranslation {
 
         await _languages.forEach(async lang => {
             try {
-                var response = await axios({
-                    baseURL: endpoint + `/language/translate/v2`,
-                    //url: '/translate?api-version=3.0&from=en&to=fr',
-                    method: 'post',
-                    headers: {
-                        'Ocp-Apim-Subscription-Key': apiKey,
-                        'Ocp-Apim-Subscription-Region': apiRegion,
-                        'Content-type': 'application/json'
-                    },
-                    params: {
-                        'api-version': '3.0',
-                        from: language.replace("_","-"),
-                        to: lang.replace("_","-")
-                    },
-                    data: [
-                        {
-                            text: text
-                        }
-                    ],
-                    responseType: 'json'
-                });
+                const translate = new Translate.v2.Translate();
+                translate.key = apiKey;
+                translate.projectId = apiRegion;
 
-                const data = response.data;
+                const options = {
+                    to: lang.replace('_', '-'),
+                    from: language.replace('_', '-'),
+                    model: 'base'
+                };
 
-                if (data.length === 0) {
-                    return { [language]: text };
-                }
-
-                const results = Object.assign(
-                    {},
-                    ...languages
-                        .filter(l => l !== language)
-                        .map(l => ({
-                            [l]: data[0].translations.filter(t => {
-                                let to = t.to;
-                                if (to.indexOf('-') !== -1) {
-                                    to = t.to.substring(0, t.to.indexOf('-'));
-                                }
-                                // if (to.indexOf('-') !== -1) {
-                                //     to = t.to.substring(0, t.to.indexOf('-'));
-                                // }
-                                if (l.indexOf(to) !== -1 || l.indexOf(t.to) !== -1) {
-                                    return t.text as string;
-                                }
-                            })
-                        }))
-                );
+                let [translations] = await translate.translate(text, options);
 
                 languages
                     .filter(l => l !== language)
                     .forEach(l => {
-                        if (results[l]) {
-                            let r = results[l][0];
-                            if (r) {
-                                let _text = r['text'];
-                                //const _l = r['to'];
-                                place = 0;
-                                _substitutes.forEach(s => {
-                                    if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
-                                        _text = _text.substring(0, _text.indexOf('{', place) - 1) + s + _text.substring(_text.indexOf('}', place) + 1);
-                                        place = _text.indexOf('}', place) + 1;
-                                    }
-                                });
-                                translation.languages[l] = _text;
-                                //translation.languages[_l] = _text;
-                                this._manager.refreshDataTable();
-                                //const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-                                //sleep(250);
-                            }
+                        if (l.endsWith(lang) || l.endsWith(lang.replace('_', '-').split('-')[0])) {
+                            let _text = translations;
+                            place = 0;
+                            _substitutes.forEach(s => {
+                                if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
+                                    _text = _text.substring(0, _text.indexOf('{', place)) + s + _text.substring(_text.indexOf('}', place) + 1);
+                                    place = _text.indexOf('}', place) + 1;
+                                }
+                            });
+                            translation.languages[l] = _text;
+                            this._manager.refreshDataTable();
                         }
                     });
 
@@ -152,4 +110,3 @@ export class IJEGoogleTranslator implements IJETranslation {
         });
     }
 }
-

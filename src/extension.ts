@@ -17,8 +17,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     if (vscode.workspace.workspaceFolders !== undefined) {
         let myStatusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+        const version = vscode.extensions.getExtension("NativeBit.i18n-l10n-editor").packageJSON.version;
         myStatusBarItem.command = 'i18n-l10n-editor';
-        myStatusBarItem.text = `$(globe) i18n/l10n Editor`;
+        myStatusBarItem.text = `$(globe) i18n/l10n Editor ${version}`;
         myStatusBarItem.show();
 
         context.subscriptions.push(await IJEEditorProvider.register(context));
