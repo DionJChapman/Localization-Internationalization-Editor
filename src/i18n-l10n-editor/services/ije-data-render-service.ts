@@ -1,6 +1,7 @@
 import { IJEConfiguration } from '../ije-configuration';
 import { IJEData } from '../ije-data';
 import { IJEDataTranslation } from '../models/ije-data-translation';
+import { IJEFolder } from '../models/ije-folder';
 import { IJEPage } from '../models/ije-page';
 import { IJESort } from '../models/ije-sort';
 
@@ -55,18 +56,21 @@ export class IJEDataRenderService {
                 : width >= 0
                 ? 'position: sticky; top: 80px; z-index: 1100; width: ${width}px; maxWidth: ${width}px; background: #1f1f1f;'
                 : '';
-        return `<th class="text-center" style="background: #1f1f1f; cursor: pointer; ${style}" onclick="sort('${column}',${sort.column === column ? !sort.ascending : true})">
-           ${column}             
-           ${sort.column === column ? (sort.ascending ? '<i class="icon-up-open"></i>' : '<i class="icon-down-open"></i>') : ''}
+        return (
+            `<th class="text-center" style="background: #1f1f1f; cursor: pointer; ${style}" onclick="sort('${column}',${sort.column === column ? !sort.ascending : true})">` +
+            `${column}${sort.column === column ? (sort.ascending ? '<i class="icon-up-open"></i>' : '<i class="icon-down-open"></i>') : ''}
             
-        </th>`;
+        </th>`
+        );
     }
 
     static renderTable(translations: IJEDataTranslation[], languages: string[], page: IJEPage, sort: IJESort, showFolder: boolean = true, hasTranslateService = false) {
         let render = '<table class="table table-borderless" style="margin-left: -10px; margin-top: 70px;" >';
         render += '<tr>';
         render += '<th style="background: #1f1f1f; position: sticky; left: 0px; top: 80px; z-index: 1200; width: 40px; maxWidth: 40px; margin: 0px; padding: 0px;">&nbsp;</th>';
+
         const folders = IJEConfiguration.WORKSPACE_FOLDERS;
+
         if (showFolder && folders.length > 1 && IJEData._filteredFolder === '*') {
             render += this._getTableHeader('FOLDER', -1, 300, sort);
         }
@@ -77,7 +81,7 @@ export class IJEDataRenderService {
         let included: string[] = [];
         folders.forEach(d => {
             if (IJEData._filteredFolder !== '*') {
-                if (d.path === IJEData._filteredFolder) {
+                if (d.path === IJEData._filteredFolder && d.arb.indexOf(defaultLanguage) >= 0) {
                     _defaultARB = d.arb;
                     included = d.languages;
                 }
@@ -90,38 +94,44 @@ export class IJEDataRenderService {
             _defaultARB = _defaultARB.substring(0, _defaultARB.lastIndexOf('.'));
         }
         if (_defaultARB === '') {
-            _defaultARB = IJEConfiguration.DEFAULT_LANGUAGE;
+            _defaultARB = defaultLanguage;
         }
 
         languages.sort((a, b) => {
-            if (a === _defaultARB) {
-                return -1;
-            }
-            if (b === _defaultARB) {
-                return 0;
-            }
-            return a > b ? 1 : -1;
-        });
-
-        languages
-            .sort((a, b) => {
-                if (a === _defaultARB) {
+            if (a.indexOf('/') >= 0 || b.indexOf('/') >= 0) {
+                const aSplit = a.split('/');
+                const bSplit = b.split('/');
+                if (aSplit[1] === bSplit[1]) {
+                    if (aSplit[0] === _defaultARB || aSplit[0].startsWith(_defaultARB)) {
+                        return -1;
+                    }
+                    if (bSplit[0] === _defaultARB || bSplit[0].startsWith(_defaultARB)) {
+                        return 0;
+                    }
+                    return aSplit[0] > bSplit[0] ? 1 : -1;
+                } else {
+                    return aSplit[1] > bSplit[1] ? 1 : -1;
+                }
+            } else {
+                if (a === _defaultARB || a.startsWith(_defaultARB)) {
                     return -1;
                 }
-                if (b === _defaultARB) {
+                if (b === _defaultARB || b.startsWith(_defaultARB)) {
                     return 0;
                 }
                 return a > b ? 1 : -1;
-            })
-            .forEach((language: string) => {
-                if (included.length === 0 || included.includes(language)) {
-                    if (language === _defaultARB) {
-                        render += `${this._getTableHeader(language, 490, 400, sort)}`;
-                    } else {
-                        render += `${this._getTableHeader(language, -1, 400, sort)}`;
-                    }
+            }
+        });
+
+        languages.forEach((language: string) => {
+            if (included.length === 0 || included.includes(language)) {
+                if (language === _defaultARB) {
+                    render += `${this._getTableHeader(language, 490, 400, sort)}`;
+                } else {
+                    render += `${this._getTableHeader(language, -1, 400, sort)}`;
                 }
-            });
+            }
+        });
         render += '</tr>';
 
         translations.forEach(t => {
@@ -137,14 +147,20 @@ export class IJEDataRenderService {
 
                 folders.forEach(d => {
                     if (included.length === 0 || included.includes(d.arb.split('.')[0])) {
-                        if (d.path === t.folder) {
+                        let l = d.folder;
+                        let f = t.folder;
+                        if (l && f.indexOf(l) >= 0 && f.indexOf("/", f.indexOf(l) + l.length + 2) >= 0) {
+                            f = f.substring(0, f.indexOf("/", f.indexOf(l) + l.length + 2));
+                        }
+
+                        if (d.path === f) {
                             selectedLanguages = d.languages;
                             selected = `${d.folder}/${d.arb}`;
                             render += `<input id="select-folder-${t.id}" class="form-control" style="width: 300px;" value="${d.name}" onClick="blur();"/>`;
                         }
                     }
                 });
-                
+
                 render += '</div></td>';
             }
 
@@ -155,10 +171,8 @@ export class IJEDataRenderService {
                 for (let j = 0; j < i; ++j) {
                     if (indent === 0) {
                         indent += 10;
-                        //width += 10;
                     }
                     indent += 10;
-                    //width -= 10;
                 }
             }
 
@@ -180,77 +194,79 @@ export class IJEDataRenderService {
             render += `</div></td>`;
 
             let defaultARB = _defaultARB;
-            languages
-                .sort((a, b) => {
-                    if (a === defaultARB) {
-                        return -1;
-                    }
-                    if (b === defaultARB) {
-                        return 0;
-                    }
-                    return a > b ? 1 : -1;
-                })
-                .forEach((language: string) => {
-                    let showIt = false;
-                    let showBlank = false;
-                    if (included.includes(language) || t.key === "") {
-                        showIt = true;
-                        showBlank = false;
-                    } else if (included.length === 0) {
-                        for (let f in folders) {
-                            let fol = folders[f];
-                            if (selected === '') {
-                                showIt = true;
-                                defaultARB = fol.arb.split('.')[0];
-                                break;
-                            } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
-                                showIt = true;
-                                defaultARB = fol.arb.split('.')[0];
-                                break;
-                            } else {
-                                showBlank = true;
-                            }
+            languages.forEach((language: string) => {
+                let showIt = false;
+                let showBlank = false;
+                if (included.includes(language) || t.key === '') {
+                    showIt = true;
+                    showBlank = false;
+                } else if (included.length === 0) {
+                    for (let f in folders) {
+                        let fol = folders[f];
+                        if (selected === '') {
+                            showIt = true;
+                            defaultARB = fol.arb.split('.')[0];
+                            break;
+                        } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
+                            showIt = true;
+                            defaultARB = fol.arb.split('.')[0];
+                            break;
+                        } else {
+                            showBlank = true;
                         }
                     }
-                    if (showIt || t.languages[language] !== undefined) {
-                        render += `<td style="background: #1f1f1f; ${
-                            language === defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;` : ' maxWidth: 400px; width: 400px;'
-                        }">`;
-                        if (hasTranslateService) {
-                            render += `<div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">`;
-                        }
-                        render += `<input class="form-control" style="minWith: 240px; width: 240px; white-space: nowrap;" type="text" placeholder="Translation..." onfocus="mark(${t.id})" onchange="updateInput(this,${t.id},'${language}');" `;
-                        if (t.languages[language]) {
-                            render += `value="${t.languages[language].replace(/\n/g, '\\n').replace(/"/g, '&quot;')}" `;
-                        }
-                        render += '/>';
-                        if (hasTranslateService) {
-                            const style = language === defaultARB ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
-                            if (!t.key.startsWith('@@')) {
+                }
+                if (defaultARB === '') {
+                    defaultARB = _defaultARB;
+                }
+                if (defaultARB.indexOf("/") >= 0) {
+                    defaultARB = defaultARB.split("/")[0];
+                }
+                if (showIt || t.languages[language] !== undefined) {
+                    render += `<td style="background: #1f1f1f; ${
+                        language === defaultARB || language.startsWith(defaultARB)
+                            ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;`
+                            : ' maxWidth: 400px; width: 400px;'
+                    }">`;
+                    if (hasTranslateService) {
+                        render += `<div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">`;
+                    }
+                    render += `<input class="form-control" style="minWith: 240px; width: 240px; white-space: nowrap;" type="text" placeholder="Translation..." onfocus="mark(${t.id})" onchange="updateInput(this,${t.id},'${language}');" `;
+                    if (t.languages[language]) {
+                        render += `value="${t.languages[language].replace(/\n/g, '\\n').replace(/"/g, '&quot;')}" `;
+                    }
+                    render += '/>';
+                    if (hasTranslateService) {
+                        const style =
+                            language === defaultARB || language.startsWith(defaultARB) ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
+                        if (!t.key.startsWith('@@')) {
+                            render +=
+                                `<div class="input-group-append">` +
+                                `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${language}', '${
+                                    defaultARB === language || language.startsWith(defaultARB)
+                                        ? selectedLanguages.length === 0
+                                            ? languages.join(',')
+                                            : selectedLanguages.join(',')
+                                        : language
+                                }');"><i class="icon-language"></i></button></div>`;
+                            if (language === defaultARB || language.startsWith(defaultARB)) {
                                 render +=
                                     `<div class="input-group-append">` +
-                                    `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${defaultARB}', '${
-                                        defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')) : language
-                                    }');"><i class="icon-language"></i></button></div>`;
-                                if (language === defaultARB) {
-                                    render +=
-                                        `<div class="input-group-append">` +
-                                        `<button type="button" class="btn btn-vscode" style="background: #BBFFBB90; white-space: nowrap;" onclick="copyInput(this,${
-                                            t.id
-                                        }, '${defaultARB}', '${
-                                            defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')) : language
-                                        }');"><i class="icon-right-open"></i></button></div>`;
-                                }
+                                    `<button type="button" class="btn btn-vscode" style="background: #BBFFBB90; white-space: nowrap;" onclick="copyInput(this,
+                                            ${t.id}, '${language}', '${
+                                        selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')
+                                    }');"><i class="icon-right-open"></i></button></div>`;
                             }
-                            render += '</div>';
                         }
-                        render += '</td>';
-                    } else if (showBlank) {
-                        render += `<td style="background: #1f1f1f; ${
-                            language === defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;` : ' maxWidth: 400px; width: 400px;'
-                        }"><div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">&nbsp;</div></td>`;
+                        render += '</div>';
                     }
-                });
+                    render += '</td>';
+                } else if (showBlank) {
+                    render += `<td style="background: #1f1f1f; ${
+                        language === defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;` : ' maxWidth: 400px; width: 400px;'
+                    }"><div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">&nbsp;</div></td>`;
+                }
+            });
 
             render += '</tr>';
         });
@@ -379,7 +395,8 @@ export class IJEDataRenderService {
                     }
                 }
             });
-            languages.sort((a, b) => {
+            languages
+                .sort((a, b) => {
                     if (a === defaultARB) {
                         return -1;
                     }

@@ -2,7 +2,20 @@
 
 All notable changes to the "i18n-l10n-editor" extension will be documented in this file.
 
-## [3.3.0]
+## [3.3.5]
+
+Release Date: 05/09/2023
+
+- Added the ability to work with language based folder structures
+  - Fixed issues with file loader
+  - Fixed issues with table rendering
+  - Fixed issues with automatic translations
+  - Fixed issues with saving
+- Refactored and cleaned up code
+
+## [3.3.2]
+
+Release Date: 01/09/2023
 
 - Added version number to status bar
 - Added Amazon and Google translation services

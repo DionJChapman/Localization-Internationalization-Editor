@@ -71,7 +71,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
 
         await _languages.forEach(async lang => {
             try {
-                var response = await axios({
+                let response = await axios({
                     baseURL: endpoint + `/translate`,
                     method: 'post',
                     headers: {
@@ -81,8 +81,8 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                     },
                     params: {
                         'api-version': '3.0',
-                        from: language.replace("_","-"),
-                        to: lang.replace("_","-")
+                        from: language.split('/')[0].replace('_', '-'),
+                        to: lang.split('/')[0].replace('_', '-')
                     },
                     data: [
                         {
@@ -108,7 +108,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                                 if (to.indexOf('-') !== -1) {
                                     to = t.to.substring(0, t.to.indexOf('-'));
                                 }
-                                
+
                                 if (l.indexOf(to) !== -1 || l.indexOf(t.to) !== -1) {
                                     return t.text as string;
                                 }
@@ -119,19 +119,22 @@ export class IJEMicrosoftTranslator implements IJETranslation {
                 languages
                     .filter(l => l !== language)
                     .forEach(l => {
-                        if (results[l]) {
-                            let r = results[l][0];
-                            if (r) {
-                                let _text = r['text'];
-                                place = 0;
-                                _substitutes.forEach(s => {
-                                    if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
-                                        _text = _text.substring(0, _text.indexOf('{', place)) + s + _text.substring(_text.indexOf('}', place) + 1);
-                                        place = _text.indexOf('}', place) + 1;
-                                    }
-                                });
-                                translation.languages[l] = _text;
-                                this._manager.refreshDataTable();
+                        let s = language.split("/");
+                        if (s.length !== 2 || (s.length === 2 && l.endsWith(s[1]))) {
+                            if (results[l]) {
+                                let r = results[l][0];
+                                if (r) {
+                                    let _text = r['text'];
+                                    place = 0;
+                                    _substitutes.forEach(s => {
+                                        if (_text.indexOf('}', place) > _text.indexOf('{', place)) {
+                                            _text = _text.substring(0, _text.indexOf('{', place)) + s + _text.substring(_text.indexOf('}', place) + 1);
+                                            place = _text.indexOf('}', place) + 1;
+                                        }
+                                    });
+                                    translation.languages[l] = _text;
+                                    this._manager.refreshDataTable();
+                                }
                             }
                         }
                     });

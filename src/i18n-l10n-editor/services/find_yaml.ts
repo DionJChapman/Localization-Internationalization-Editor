@@ -54,6 +54,8 @@ export async function findYAML(path): Promise<IJEFolder[]> {
 
     const existingExtensions = IJEConfiguration.SUPPORTED_EXTENSIONS;
 
+    let found = false;
+
     for (let y in yamlFiles) {
         let _name: string;
         let _path: string;
@@ -89,74 +91,86 @@ export async function findYAML(path): Promise<IJEFolder[]> {
                 let c = lines[l].split(':');
                 if (c[0].trim() === 'arb-dir') {
                     _path = c[1].trim();
+                    found = true;
                 } else if (c[0].trim() === 'template-arb-file') {
                     _arb = c[1].trim();
                 }
             }
         }
-        if (!_path || _path.length === 0) {
+        if (!found && (!_path || _path.length === 0)) {
             //vscode.window.showErrorMessage(`No setting for arb-dir, using default value 'lib/l10n'. File update: ${yamlPath}`);
             _path = 'lib/l10n';
             //fs.appendFileSync(yamlFile.fsPath, '\narb-dir: lib/l10n\n');
         }
-        if (!_arb || _arb.length === 0) {
+        if (!found && (!_arb || _arb.length === 0)) {
             //vscode.window.showErrorMessage(`No setting for template-arb-file, using default value 'app_${IJEConfiguration.DEFAULT_LANGUAGE}.arb'. Please update: ${yamlPath}`);
             _arb = `app_${IJEConfiguration.DEFAULT_LANGUAGE}.arb`;
             //fs.appendFileSync(yamlFile.fsPath, `\ntemplate-arb-file: ${_arb}\n`);
         }
 
-        if (_path.startsWith(_folder)) {
-            _path = _path.substring(_folder.length + 1);
-        }
-        _name = `${_name} (${_path})`;
+        if (_path) {
+            if (_path.startsWith(_folder)) {
+                _path = _path.substring(_folder.length + 1);
+            }
+            _name = `${_name} (${_path})`;
 
-        let _arbPath: string = '';
-        _files = [];
+            let _arbPath: string = '';
+            _files = [];
 
-        const defaultLanguage = IJEConfiguration.DEFAULT_LANGUAGE;
+            const defaultLanguage = IJEConfiguration.DEFAULT_LANGUAGE;
 
-        for (let e in existingExtensions) {
-            let ext = existingExtensions[e];
-            if (_arbPath.length === 0) {
-                let arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${yamlPath}${pathSeparator}${_path}${pathSeparator}*.${ext}`);
+            for (let e in existingExtensions) {
+                let ext = existingExtensions[e];
+                if (_arbPath.length === 0) {
+                    let arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${yamlPath}${pathSeparator}${_path}${pathSeparator}*.${ext}`);
 
-                if (arbFiles.length === 0) {
-                    arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${_path}${pathSeparator}*.${ext}`);
-                }
+                    if (arbFiles.length === 0) {
+                        arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${yamlPath}${pathSeparator}${_path}${pathSeparator}*${pathSeparator}*.${ext}`);
+                    }
 
-                if (arbFiles.length > 0) {
-                    for (let a in arbFiles) {
-                        let _file = arbFiles[a].toString();
-                        if (_file.indexOf('.history') === -1 && _files.indexOf('node_modules') === -1) {
-                            if (_file.lastIndexOf(pathSeparator) !== -1) {
-                                _arbPath = _file.substring(7, _file.lastIndexOf(pathSeparator));
-                                let _n = _file.substring(_file.lastIndexOf(pathSeparator) + 1);
-                                _files.push(_n.replace(`.${ext}`, ''));
-                                if (_arb === '' && _n.indexOf(defaultLanguage) !== -1) {
-                                    _arb = _n;
+                    if (arbFiles.length === 0) {
+                        arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${_path}${pathSeparator}*.${ext}`);
+                    }
+
+                    if (arbFiles.length === 0) {
+                        arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${_path}${pathSeparator}*${pathSeparator}*.${ext}`);
+                    }
+
+                    if (arbFiles.length > 0) {
+                        for (let a in arbFiles) {
+                            let _file = arbFiles[a].toString();
+                            if (_file.indexOf('.history') === -1 && _files.indexOf('node_modules') === -1) {
+                                if (_file.lastIndexOf(_path) !== -1) {
+                                    _arbPath = _file.substring(7, _file.lastIndexOf(_path) + _path.length);
+                                    let _n = _file.substring(_file.lastIndexOf(_path) + _path.length + 1);
+                                    _files.push(_n.replace(`.${ext}`, ''));
+                                    if (_arb === '' && _n.indexOf(defaultLanguage) !== -1) {
+                                        _arb = _n;
+                                    }
                                 }
                             }
                         }
                     }
+                } else {
+                    _path = _arbPath;
                 }
-            } else {
-                _path = _arbPath;
-            }
-        }
-
-        let add = true;
-        folders.forEach(f => {
-            if (f.path === _path) {
-                add = false;
-            }
-        });
-        if (add && _arb !== '') {
-            if (os.platform() === 'win32') {
-                _path = _path.substring(1);
-                _path = _path.replace('%3A', ':');
             }
 
-            folders.push({ name: _name, path: _path, arb: _arb, folder: _folder, languages: _files });
+            let add = true;
+            folders.forEach(f => {
+                if (f.path === _path) {
+                    add = false;
+                    return;
+                }
+            });
+            if (add && _arb !== '') {
+                if (os.platform() === 'win32') {
+                    _path = _path.substring(1);
+                    _path = _path.replace('%3A', ':');
+                }
+
+                folders.push({ name: _name, path: _path, arb: _arb, folder: _folder, languages: _files });
+            }
         }
     }
 
@@ -174,13 +188,17 @@ export async function findYAML(path): Promise<IJEFolder[]> {
             let ext = existingExtensions[e];
             let arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${folder}${pathSeparator}*.${ext}`);
 
+            if (arbFiles.length === 0) {
+                arbFiles = await vscode.workspace.findFiles(`**${pathSeparator}${folder}${pathSeparator}*${pathSeparator}*.${ext}`);
+            }
+
             if (arbFiles.length > 0) {
                 for (let a in arbFiles) {
                     let _file = arbFiles[a].toString();
                     if (_file.indexOf('.history') === -1 && _file.indexOf('node_modules') === -1) {
-                        if (_file.lastIndexOf(pathSeparator) !== -1) {
-                            _path = _file.substring(7, _file.lastIndexOf(pathSeparator));
-                            _name = _file.substring(_file.lastIndexOf(pathSeparator) + 1);
+                        if (_file.lastIndexOf(folder) !== -1) {
+                            _path = _file.substring(7, _file.lastIndexOf(folder) + folder.length);
+                            _name = _file.substring(_file.lastIndexOf(folder) + folder.length + 1);
                             if (_arb === '') {
                                 _arb = _name;
                             }

@@ -32,6 +32,7 @@ export class IJEData {
     private _sort: IJESort;
 
     constructor(private _manager: IJEManager) {
+        IJEData._filteredFolder= '*';
         this._loadFiles();
         this._defaultValues();
     }
@@ -79,14 +80,9 @@ export class IJEData {
                 arb = arb.substring(0, arb.lastIndexOf('.'));
             }
 
-            // translation.languages = { [arb]: text };
             if (key.startsWith('@') && !key.startsWith('@@')) {
-                //const t = this._get(translation.id);
                 this._languages.forEach(l => {
-                    // if (l !== arb) {
                     translation.languages[l] = text;
-
-                    // }
                 });
             } else {
                 let lang: string = '';
@@ -144,11 +140,12 @@ export class IJEData {
     render() {
         let render = '';
         let translations = this._getDisplayedTranslations();
-        const hasTranslation = IJEConfiguration.TRANSLATION_SERVICE !== undefined && 
-        (IJEConfiguration.TRANSLATION_SERVICE_API_KEY !== undefined || 
-            IJEConfiguration.TRANSLATION_SERVICE_AMAZON_KEY !== undefined || 
-            IJEConfiguration.TRANSLATION_SERVICE_GOOGLE_KEY !== undefined || 
-            IJEConfiguration.TRANSLATION_SERVICE_MICROSOFT_KEY !== undefined);
+        const hasTranslation =
+            IJEConfiguration.TRANSLATION_SERVICE !== undefined &&
+            (IJEConfiguration.TRANSLATION_SERVICE_API_KEY !== undefined ||
+                IJEConfiguration.TRANSLATION_SERVICE_AMAZON_KEY !== undefined ||
+                IJEConfiguration.TRANSLATION_SERVICE_GOOGLE_KEY !== undefined ||
+                IJEConfiguration.TRANSLATION_SERVICE_MICROSOFT_KEY !== undefined);
         switch (this._view.type) {
             case IJEViewType.LIST:
                 render += IJEDataRenderService.renderList(
@@ -163,14 +160,7 @@ export class IJEData {
                 );
                 break;
             case IJEViewType.TABLE:
-                render += IJEDataRenderService.renderTable(
-                    translations,
-                    this._languages,
-                    this._page,
-                    this._sort,
-                    this._manager.isWorkspace,
-                    hasTranslation
-                );
+                render += IJEDataRenderService.renderTable(translations, this._languages, this._page, this._sort, this._manager.isWorkspace, hasTranslation);
                 break;
         }
 
@@ -408,7 +398,7 @@ export class IJEData {
         // TODO revisit this to pass in the different sort code and no duplicate it
         if (!IJEConfiguration.SORT_KEY_TOGETHER) {
             Object.entries(folders).forEach(entry => {
-                const [key, value] = entry;
+                let [key, value] = entry;
                 this._languages.forEach(language => {
                     let o = {};
                     value
@@ -424,6 +414,11 @@ export class IJEData {
                     json = json.replace(/\n/g, IJEConfiguration.LINE_ENDING);
                     if (json !== '{}') {
                         existingExtensions.forEach((ext: string) => {
+                            if (key.lastIndexOf('/') >= 0 && language.indexOf('/')) {
+                                if (language.startsWith(key.substring(key.lastIndexOf('/') + 1))) {
+                                    key = key.substring(0, key.lastIndexOf('/'));
+                                }
+                            }
                             var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
                             if (fs.existsSync(s)) {
                                 f = s;
@@ -450,7 +445,7 @@ export class IJEData {
             });
         } else {
             Object.entries(folders).forEach(entry => {
-                const [key, value] = entry;
+                let [key, value] = entry;
                 this._languages.forEach(language => {
                     let o = {};
 
@@ -485,6 +480,11 @@ export class IJEData {
                     json = json.replace(/\n/g, IJEConfiguration.LINE_ENDING);
                     if (json !== '{}') {
                         existingExtensions.forEach((ext: string) => {
+                            if (key.lastIndexOf('/') >= 0 && language.indexOf('/')) {
+                                if (language.startsWith(key.substring(key.lastIndexOf('/') + 1))) {
+                                    key = key.substring(0, key.lastIndexOf('/'));
+                                }
+                            }
                             var s = vscode.Uri.file(_path.join(key, language + '.' + ext)).fsPath;
                             if (fs.existsSync(s)) {
                                 f = s;
@@ -555,9 +555,14 @@ export class IJEData {
     async translate(id: number, from: string = '', to: string = '') {
         const translation = this._get(id);
         if (translation && from) {
+            let langs = to.split(',');
+            if (langs.length > 0 && langs[0].indexOf('/') >= 0 && from.indexOf('/') === -1) {
+                const split = langs[0].split('/');
+                from = `${from}/${split[1]}`;
+            }
             const service = IJETranslationService;
             service._manager = this._manager;
-            await service.translate(translation, from, to.split(','));
+            await service.translate(translation, from, langs);
             this._manager.refreshDataTable();
         }
     }
@@ -682,28 +687,36 @@ export class IJEData {
             }
         });
 
-        let existingExtensions = IJEConfiguration.SUPPORTED_EXTENSIONS;
+        const supportedExtensions = IJEConfiguration.SUPPORTED_EXTENSIONS;
+        const supportFolders = IJEConfiguration.SUPPORTED_FOLDERS;
 
-        existingExtensions = existingExtensions;
+        let langPath = '';
+
+        supportFolders.forEach(p => {
+            if (folderPath.lastIndexOf(p) > -1) {
+                langPath = folderPath.substring(folderPath.lastIndexOf(p) + p.length + 1) + '/';
+                return;
+            }
+        });
 
         const translate: any = {};
         const keys: string[] = [];
 
-        existingExtensions.forEach((ext: string) => {
+        supportedExtensions.forEach((ext: string) => {
             files
                 .filter(f => f.endsWith('.' + ext))
                 .forEach((file: string) => {
-                    var language = file.split('.')[0];
+                    const language = langPath !== "/"? langPath + file.split('.')[0] : file.split('.')[0];
                     if (this._languages.indexOf(language) === -1) {
                         this._languages.push(language);
                     }
 
                     try {
-                        let rawData = fs.readFileSync(_path.join(folderPath, file));
-                        let jsonData = this._stripBOM(rawData.toString());
-                        let content = JSON.parse(jsonData);
+                        const rawData = fs.readFileSync(_path.join(folderPath, file));
+                        const jsonData = this._stripBOM(rawData.toString());
+                        const content = JSON.parse(jsonData);
 
-                        let keysValues = this._getKeysValues(content);
+                        const keysValues = this._getKeysValues(content);
 
                         for (let key in keysValues) {
                             if (keys.indexOf(key) === -1) {
@@ -727,7 +740,14 @@ export class IJEData {
             });
 
             const t = this._createFactoryIJEDataTranslation();
-            t.folder = folderPath;
+            let fp = folderPath;
+            if (langPath !== "/" && langPath !== "") {
+                let lp = langPath.substring(0,langPath.length - 1);
+                if (fp.endsWith(lp)) {
+                    fp = fp.substring(0, fp.length - lp.length - 1);
+                }
+            }
+            t.folder = fp;
             t.key = key;
             t.languages = languages;
             this._insert(t);
@@ -755,7 +775,9 @@ export class IJEData {
     private _getDisplayedTranslations(): IJEDataTranslation[] {
         var o = this._translations;
         if (IJEData._filteredFolder !== '*') {
-            o = o.filter(t => t.folder === IJEData._filteredFolder);
+            o = o.filter(t => 
+                t.folder.startsWith(IJEData._filteredFolder)
+                );
         }
 
         o = o
@@ -946,7 +968,17 @@ export class IJEData {
     }
 
     private _insert(translation: IJEDataTranslation) {
-        this._translations.push(translation);
+        let trans = this._getKey(translation.key);
+        if (trans && trans.folder === translation.folder) {
+            Object.entries(translation.languages).forEach(l => {
+                const [language, a] = l;
+                if (trans.languages[language] === undefined) {
+                    trans.languages[language] = a;
+                }
+            });
+        } else {
+            this._translations.push(translation);
+        }
     }
 
     private _split(key: string) {
