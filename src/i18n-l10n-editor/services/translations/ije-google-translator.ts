@@ -77,8 +77,8 @@ export class IJEGoogleTranslator implements IJETranslation {
                 translate.projectId = apiRegion;
 
                 const options = {
-                    to: lang.replace('_', '-'),
-                    from: language.replace('_', '-'),
+                    to: lang.split('/')[0].replace('_', '-'),
+                    from: language.split('/')[0].replace('_', '-'),
                     model: 'base'
                 };
 
@@ -87,7 +87,7 @@ export class IJEGoogleTranslator implements IJETranslation {
                 languages
                     .filter(l => l !== language)
                     .forEach(l => {
-                        if (l.endsWith(lang) || l.endsWith(lang.replace('_', '-').split('-')[0])) {
+                        if (l.endsWith(lang) || l.endsWith(lang.replace('_', '-').split('-')[0]) || l.startsWith(lang) || l.startsWith(lang.replace('_', '-').split('-')[0])) {
                             let _text = translations;
                             place = 0;
                             _substitutes.forEach(s => {

@@ -2,6 +2,15 @@
 
 All notable changes to the "i18n-l10n-editor" extension will be documented in this file.
 
+## [3.3.6]
+
+- Fixed issues with default language files for language folder structures
+- Fixed issues with single language translations
+- Fixed issues with Amazon and Google translations for language folder structures
+- Aligned Tree View with the Table View for language folder structures
+- Fixed addition issues with Tree View
+- Refactored code
+  
 ## [3.3.5]
 
 Release Date: 05/09/2023
