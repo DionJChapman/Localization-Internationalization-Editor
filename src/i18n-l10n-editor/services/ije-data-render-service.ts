@@ -79,13 +79,16 @@ export class IJEDataRenderService {
         const defaultLanguage = IJEConfiguration.DEFAULT_LANGUAGE;
         let _defaultARB = '';
         let included: string[] = [];
+        const langStr = languages.join(',');
         folders.forEach(d => {
             if (IJEData._filteredFolder !== '*') {
-                if (d.path === IJEData._filteredFolder && d.arb.indexOf(defaultLanguage) >= 0) {
+                if (d.path === IJEData._filteredFolder && d.arb.indexOf(defaultLanguage) >= 0 && langStr.indexOf(d.arb.split('.')[0]) >= 0) {
                     _defaultARB = d.arb;
                     included = d.languages;
                 }
-            } else if (_defaultARB === '' && d.arb.indexOf(defaultLanguage) !== -1) {
+            } else if (_defaultARB === '' && d.arb.indexOf('/') >= 0 && d.arb.startsWith(defaultLanguage)) {
+                _defaultARB = d.arb.split('/')[0];
+            } else if (_defaultARB === '' && d.arb.indexOf('/') === -1 && d.arb.indexOf(defaultLanguage) !== -1 && langStr.indexOf(d.arb.split('.')[0]) >= 0) {
                 _defaultARB = d.arb;
             }
         });
@@ -149,8 +152,8 @@ export class IJEDataRenderService {
                     if (included.length === 0 || included.includes(d.arb.split('.')[0])) {
                         let l = d.folder;
                         let f = t.folder;
-                        if (l && f.indexOf(l) >= 0 && f.indexOf("/", f.indexOf(l) + l.length + 2) >= 0) {
-                            f = f.substring(0, f.indexOf("/", f.indexOf(l) + l.length + 2));
+                        if (l && f.indexOf(l) >= 0 && f.indexOf('/', f.indexOf(l) + l.length + 2) >= 0) {
+                            f = f.substring(0, f.indexOf('/', f.indexOf(l) + l.length + 2));
                         }
 
                         if (d.path === f) {
@@ -205,11 +208,11 @@ export class IJEDataRenderService {
                         let fol = folders[f];
                         if (selected === '') {
                             showIt = true;
-                            defaultARB = fol.arb.split('.')[0];
+                            //defaultARB = fol.arb.split('.')[0];
                             break;
                         } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
                             showIt = true;
-                            defaultARB = fol.arb.split('.')[0];
+                            //defaultARB = fol.arb.split('.')[0];
                             break;
                         } else {
                             showBlank = true;
@@ -219,9 +222,9 @@ export class IJEDataRenderService {
                 if (defaultARB === '') {
                     defaultARB = _defaultARB;
                 }
-                if (defaultARB.indexOf("/") >= 0) {
-                    defaultARB = defaultARB.split("/")[0];
-                }
+                //if (defaultARB.indexOf('/') >= 0) {
+                defaultARB = defaultARB.split('/')[0];
+                //}
                 if (showIt || t.languages[language] !== undefined) {
                     render += `<td style="background: #1f1f1f; ${
                         language === defaultARB || language.startsWith(defaultARB)
@@ -240,22 +243,21 @@ export class IJEDataRenderService {
                         const style =
                             language === defaultARB || language.startsWith(defaultARB) ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
                         if (!t.key.startsWith('@@')) {
+                            let from = language.indexOf('/') >= 0 ? `${defaultARB.split('/')[0]}/${language.split('/')[1]}` : defaultARB;
+                            let to =
+                                from !== language
+                                    ? language
+                                    : selectedLanguages.length === 0
+                                    ? languages.filter(l => l.indexOf('/') === -1 || (from.indexOf('/') >= 0 && l.endsWith(from.split('/')[1]))).join(',')
+                                    : selectedLanguages.join(',');
                             render +=
                                 `<div class="input-group-append">` +
-                                `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${language}', '${
-                                    defaultARB === language || language.startsWith(defaultARB)
-                                        ? selectedLanguages.length === 0
-                                            ? languages.join(',')
-                                            : selectedLanguages.join(',')
-                                        : language
-                                }');"><i class="icon-language"></i></button></div>`;
+                                `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${from}','${to}');"><i class="icon-language"></i></button></div>`;
                             if (language === defaultARB || language.startsWith(defaultARB)) {
                                 render +=
                                     `<div class="input-group-append">` +
                                     `<button type="button" class="btn btn-vscode" style="background: #BBFFBB90; white-space: nowrap;" onclick="copyInput(this,
-                                            ${t.id}, '${language}', '${
-                                        selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')
-                                    }');"><i class="icon-right-open"></i></button></div>`;
+                                            ${t.id}, '${from}', '${to}');"><i class="icon-right-open"></i></button></div>`;
                             }
                         }
                         render += '</div>';
@@ -288,29 +290,55 @@ export class IJEDataRenderService {
         hasTranslateService = false
     ) {
         const folders = IJEConfiguration.WORKSPACE_FOLDERS;
-        let _defaultARB = 'app_en';
+
+        const defaultLanguage = IJEConfiguration.DEFAULT_LANGUAGE;
+        let _defaultARB = '';
         let included: string[] = [];
+        const langStr = languages.join(',');
         folders.forEach(d => {
             if (IJEData._filteredFolder !== '*') {
-                if (d.path === IJEData._filteredFolder) {
+                if (d.path === IJEData._filteredFolder && d.arb.indexOf(defaultLanguage) >= 0) {
                     _defaultARB = d.arb;
                     included = d.languages;
                 }
+            } else if (_defaultARB === '' && d.arb.indexOf('/') >= 0 && d.arb.startsWith(defaultLanguage) && langStr.indexOf(d.arb.split('.')[0]) >= 0) {
+                _defaultARB = d.arb.split('/')[0];
+            } else if (_defaultARB === '' && d.arb.indexOf('/') === -1 && d.arb.indexOf(defaultLanguage) !== -1 && langStr.indexOf(d.arb.split('.')[0]) >= 0) {
+                _defaultARB = d.arb;
             }
         });
 
-        if (_defaultARB.indexOf('.') !== -1) {
-            _defaultARB = _defaultARB.substring(0, _defaultARB.indexOf('.'));
+        if (_defaultARB.lastIndexOf('.') !== -1) {
+            _defaultARB = _defaultARB.substring(0, _defaultARB.lastIndexOf('.'));
+        }
+        if (_defaultARB === '') {
+            _defaultARB = defaultLanguage;
         }
 
         languages.sort((a, b) => {
-            if (a === _defaultARB) {
-                return -1;
+            if (a.indexOf('/') >= 0 || b.indexOf('/') >= 0) {
+                const aSplit = a.split('/');
+                const bSplit = b.split('/');
+                if (aSplit[1] === bSplit[1]) {
+                    if (aSplit[0] === _defaultARB || aSplit[0].startsWith(_defaultARB)) {
+                        return -1;
+                    }
+                    if (bSplit[0] === _defaultARB || bSplit[0].startsWith(_defaultARB)) {
+                        return 0;
+                    }
+                    return aSplit[0] > bSplit[0] ? 1 : -1;
+                } else {
+                    return aSplit[1] > bSplit[1] ? 1 : -1;
+                }
+            } else {
+                if (a === _defaultARB || a.startsWith(_defaultARB)) {
+                    return -1;
+                }
+                if (b === _defaultARB || b.startsWith(_defaultARB)) {
+                    return 0;
+                }
+                return a > b ? 1 : -1;
             }
-            if (b === _defaultARB) {
-                return 0;
-            }
-            return a > b ? 1 : -1;
         });
 
         let render = '<div class="container-fluid">';
@@ -320,9 +348,10 @@ export class IJEDataRenderService {
 
         let selected = '';
         let selectedLanguages: string[] = [];
+        let key = '';
         translations.forEach(t => {
             let indent = 10;
-            //let width = 400;
+            key = t.key;
             if (sort.column === 'KEY' && !t.key.startsWith('@@') && t.key.startsWith('@')) {
                 let i = t.key.length - t.key.replace(/\./g, '').length;
                 for (let j = 0; j < i; ++j) {
@@ -379,82 +408,74 @@ export class IJEDataRenderService {
                     </div>
                 </div>`;
             let defaultARB = _defaultARB;
+            // languages.forEach((language: string) => {
+            //     if (included.length === 0) {
+            //         for (let f in folders) {
+            //             let fol = folders[f];
+            //             if (!selectFolder || fol.path === selectFolder) {
+            //                 if (selected === '') {
+            //                     defaultARB = fol.arb.split('.')[0];
+            //                     break;
+            //                 } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
+            //                     defaultARB = fol.arb.split('.')[0];
+            //                     break;
+            //                 }
+            //             }
+            //         }
+            //     }
+            // });
             languages.forEach((language: string) => {
-                if (included.length === 0) {
+                let showIt = false;
+                if (included.includes(language)) {
+                    showIt = true;
+                } else if (included.length === 0) {
                     for (let f in folders) {
                         let fol = folders[f];
                         if (!selectFolder || fol.path === selectFolder) {
                             if (selected === '') {
-                                defaultARB = fol.arb.split('.')[0];
+                                showIt = true;
                                 break;
                             } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
-                                defaultARB = fol.arb.split('.')[0];
+                                showIt = true;
                                 break;
                             }
                         }
                     }
                 }
-            });
-            languages
-                .sort((a, b) => {
-                    if (a === defaultARB) {
-                        return -1;
-                    }
-                    if (b === defaultARB) {
-                        return 0;
-                    }
-                    return a > b ? 1 : -1;
-                })
-                .forEach((language: string) => {
-                    let showIt = false;
-                    if (included.includes(language)) {
-                        showIt = true;
-                    } else if (included.length === 0) {
-                        for (let f in folders) {
-                            let fol = folders[f];
-                            if (!selectFolder || fol.path === selectFolder) {
-                                if (selected === '') {
-                                    showIt = true;
-                                    break;
-                                } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
-                                    showIt = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (showIt) {
-                        render += `<label>${language}</label>`;
-                        if (hasTranslateService) {
-                            render += `<div class="row">
+                if (showIt) {
+                    render += `<label>${language}</label>`;
+                    if (hasTranslateService) {
+                        render += `<div class="row">
                                     <div class="col-10">`;
-                        }
-                        render += `<textarea class="form-control mb-2" rows="6" placeholder="Translation..." onchange="updateInput(this,${selectTranslation.id},'${language}');">`;
-                        if (selectTranslation.languages[language]) {
-                            render += selectTranslation.languages[language];
-                        }
-                        render += '</textarea>';
-                        if (hasTranslateService) {
-                            const style = language === defaultARB ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
+                    }
+                    render += `<textarea class="form-control mb-2" rows="6" placeholder="Translation..." onchange="updateInput(this,${selectTranslation.id},'${language}');">`;
+                    if (selectTranslation.languages[language]) {
+                        render += selectTranslation.languages[language];
+                    }
+                    render += '</textarea>';
+                    if (hasTranslateService) {
+                        const style = language === defaultARB || language.startsWith(defaultARB)? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
+                        if (!selectTranslation.key.startsWith('@@')) {
+                            let from = language.indexOf('/') >= 0 ? `${defaultARB.split('/')[0]}/${language.split('/')[1]}` : defaultARB;
+                            let to =
+                                from !== language
+                                    ? language
+                                    : selectedLanguages.length === 0
+                                    ? languages.filter(l => l.indexOf('/') === -1 || (from.indexOf('/') >= 0 && l.endsWith(from.split('/')[1]))).join(',')
+                                    : selectedLanguages.join(',');
                             render += `</div>
-                                    <div class="col-2">
-                                        <button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this, ${selectTranslation.id},'${defaultARB}', '${
-                                defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')) : language
-                            }');"><i class="icon-language"></i></button>
-                                    `;
-                            if (language === defaultARB) {
+                            <div class="col-2">
+                                <button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this, ${selectTranslation.id},'${from}', '${to}');"><i class="icon-language"></i></button>`;
+                            if (language === defaultARB || language.startsWith(defaultARB)) {
                                 render += `<button type="button" class="btn btn-vscode" style="background: #BBFFBB90; white-space: nowrap;" onclick="copyInput(this,
-                                                ${selectTranslation.id}
-                                            , '${defaultARB}', '${
-                                    defaultARB === language ? (selectedLanguages.length === 0 ? languages.join(',') : selectedLanguages.join(',')) : language
-                                }');"><i class="icon-down-open"></i></button>`;
+                                ${selectTranslation.id}, '${from}', '${to}');"><i class="icon-down-open"></i></button>`;
                             }
-
-                            render += '        </div>';
                         }
                         render += '</div>';
                     }
-                });
+                    render += '</div>';
+                }
+            });
         }
 
         render += '</div>';

@@ -81,7 +81,7 @@ export class IJEAmazonTranslator implements IJETranslation {
             try {
                 const contentType = 'application/x-amz-json-1.1';
                 const serviceTarget = 'AWSShineFrontendService_20170701.TranslateText';
-                const body = `{"Text": "${text}","SourceLanguageCode": "${language.replace('_', '-')}","TargetLanguageCode": "${lang.replace('_', '-')}"}`;
+                const body = `{"Text": "${text}","SourceLanguageCode": "${language.split('/')[0].replace('_', '-')}","TargetLanguageCode": "${lang.split('/')[0].replace('_', '-')}"}`;
                 const options = {
                     "host": host,
                     "path": "/",
@@ -116,7 +116,7 @@ export class IJEAmazonTranslator implements IJETranslation {
                 languages
                     .filter(l => l !== language)
                     .forEach(l => {
-                        if (l.endsWith(data.TargetLanguageCode) || l.endsWith(data.TargetLanguageCode.split(""))) {
+                        if (l.endsWith(data.TargetLanguageCode) || l.endsWith(data.TargetLanguageCode.replace('_', '-').split('-')[0]) || l.startsWith(data.TargetLanguageCode) || l.startsWith(data.TargetLanguageCode.replace('_', '-').split('-')[0])) {
                             let _text = data.TranslatedText;
                             if (_text) {
                                 place = 0;
