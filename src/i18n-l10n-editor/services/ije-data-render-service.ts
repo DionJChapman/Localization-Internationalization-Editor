@@ -208,11 +208,9 @@ export class IJEDataRenderService {
                         let fol = folders[f];
                         if (selected === '') {
                             showIt = true;
-                            //defaultARB = fol.arb.split('.')[0];
                             break;
                         } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
                             showIt = true;
-                            //defaultARB = fol.arb.split('.')[0];
                             break;
                         } else {
                             showBlank = true;
@@ -222,9 +220,7 @@ export class IJEDataRenderService {
                 if (defaultARB === '') {
                     defaultARB = _defaultARB;
                 }
-                //if (defaultARB.indexOf('/') >= 0) {
                 defaultARB = defaultARB.split('/')[0];
-                //}
                 if (showIt || t.languages[language] !== undefined) {
                     render += `<td style="background: #1f1f1f; ${
                         language === defaultARB || language.startsWith(defaultARB)
@@ -356,7 +352,6 @@ export class IJEDataRenderService {
                 let i = t.key.length - t.key.replace(/\./g, '').length;
                 for (let j = 0; j < i; ++j) {
                     indent += 10;
-                    //width -= 10;
                 }
             }
 
@@ -408,22 +403,6 @@ export class IJEDataRenderService {
                     </div>
                 </div>`;
             let defaultARB = _defaultARB;
-            // languages.forEach((language: string) => {
-            //     if (included.length === 0) {
-            //         for (let f in folders) {
-            //             let fol = folders[f];
-            //             if (!selectFolder || fol.path === selectFolder) {
-            //                 if (selected === '') {
-            //                     defaultARB = fol.arb.split('.')[0];
-            //                     break;
-            //                 } else if (selected === `${fol.folder}/${fol.arb}` && fol.languages.includes(language)) {
-            //                     defaultARB = fol.arb.split('.')[0];
-            //                     break;
-            //                 }
-            //             }
-            //         }
-            //     }
-            // });
             languages.forEach((language: string) => {
                 let showIt = false;
                 if (included.includes(language)) {
