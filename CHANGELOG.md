@@ -4,6 +4,8 @@ All notable changes to the "i18n-l10n-editor" extension will be documented in th
 
 ## [3.3.6]
 
+Release Date: 12/09/2023
+
 - Fixed issues with default language files for language folder structures
 - Fixed issues with single language translations
 - Fixed issues with Amazon and Google translations for language folder structures
