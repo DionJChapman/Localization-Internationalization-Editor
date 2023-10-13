@@ -1,10 +1,12 @@
 {
-    "@@locale": "de",
-    "HELLO": "Hallo",
-    "HELLO PORTAL": "Hallo Portal",
-    "HELLO_WORLD": "Hallo Welt",
-    "helloWorld": "Hallo Welt",
-    "@helloWorld": {
-        "description": "Nur ein Test"
-    }
+  "@@locale": "de",
+  "HELLO": "Hallo",
+  "HELLO PORTAL": "Hallo Portal",
+  "HELLO_WORLD": "Hallo Welt",
+  "helloWorld": "Hallo Welt",
+  "@helloWorld": {
+    "description": "Nur ein Test"
+  },
+  "test_case": "test",
+  "TestCase": "test"
 }

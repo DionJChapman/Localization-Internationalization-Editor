@@ -237,7 +237,9 @@ export class IJEDataRenderService {
                     render += '/>';
                     if (hasTranslateService) {
                         const style =
-                            language === defaultARB || language.startsWith(defaultARB) ? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
+                            language === defaultARB || language.startsWith(defaultARB) || language.endsWith(`_${defaultARB}`)
+                                ? 'style="background: green; white-space: nowrap;"'
+                                : 'style="white-space: nowrap;"';
                         if (!t.key.startsWith('@@')) {
                             let from = language.indexOf('/') >= 0 ? `${defaultARB.split('/')[0]}/${language.split('/')[1]}` : defaultARB;
                             let to =
@@ -246,10 +248,13 @@ export class IJEDataRenderService {
                                     : selectedLanguages.length === 0
                                     ? languages.filter(l => l.indexOf('/') === -1 || (from.indexOf('/') >= 0 && l.endsWith(from.split('/')[1]))).join(',')
                                     : selectedLanguages.join(',');
+                            if (to.indexOf('_') > 0) {
+                                from = to.split('_')[0] + '_' + from;
+                            }
                             render +=
                                 `<div class="input-group-append">` +
                                 `<button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this,${t.id}, '${from}','${to}');"><i class="icon-language"></i></button></div>`;
-                            if (language === defaultARB || language.startsWith(defaultARB)) {
+                            if (language === defaultARB || language.startsWith(defaultARB) || language.endsWith(`_${defaultARB}`)) {
                                 render +=
                                     `<div class="input-group-append">` +
                                     `<button type="button" class="btn btn-vscode" style="background: #BBFFBB90; white-space: nowrap;" onclick="copyInput(this,
@@ -261,7 +266,9 @@ export class IJEDataRenderService {
                     render += '</td>';
                 } else if (showBlank) {
                     render += `<td style="background: #1f1f1f; ${
-                        language === defaultARB ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;` : ' maxWidth: 400px; width: 400px;'
+                        language === defaultARB || language.startsWith(defaultARB) || language.endsWith(`_${defaultARB}`)
+                            ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;`
+                            : ' maxWidth: 400px; width: 400px;'
                     }"><div class="input-group" style="minWith: 400px; width: 400px; white-space: nowrap;">&nbsp;</div></td>`;
                 }
             });
@@ -433,7 +440,10 @@ export class IJEDataRenderService {
                     }
                     render += '</textarea>';
                     if (hasTranslateService) {
-                        const style = language === defaultARB || language.startsWith(defaultARB)? 'style="background: green; white-space: nowrap;"' : 'style="white-space: nowrap;"';
+                        const style =
+                            language === defaultARB || language.startsWith(defaultARB) || language.endsWith(`_${defaultARB}`)
+                                ? 'style="background: green; white-space: nowrap;"'
+                                : 'style="white-space: nowrap;"';
                         if (!selectTranslation.key.startsWith('@@')) {
                             let from = language.indexOf('/') >= 0 ? `${defaultARB.split('/')[0]}/${language.split('/')[1]}` : defaultARB;
                             let to =
@@ -442,10 +452,13 @@ export class IJEDataRenderService {
                                     : selectedLanguages.length === 0
                                     ? languages.filter(l => l.indexOf('/') === -1 || (from.indexOf('/') >= 0 && l.endsWith(from.split('/')[1]))).join(',')
                                     : selectedLanguages.join(',');
+                            if (to.indexOf('_') > 0) {
+                                from = to.split('_')[0] + '_' + from;
+                            }
                             render += `</div>
                             <div class="col-2">
                                 <button type="button" class="btn btn-vscode" ${style} onclick="translateInput(this, ${selectTranslation.id},'${from}', '${to}');"><i class="icon-language"></i></button>`;
-                            if (language === defaultARB || language.startsWith(defaultARB)) {
+                            if (language === defaultARB || language.startsWith(defaultARB) || language.endsWith(`_${defaultARB}`)) {
                                 render += `<button type="button" class="btn btn-vscode" style="background: #BBFFBB90; white-space: nowrap;" onclick="copyInput(this,
                                 ${selectTranslation.id}, '${from}', '${to}');"><i class="icon-down-open"></i></button>`;
                             }

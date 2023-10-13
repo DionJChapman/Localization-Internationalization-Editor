@@ -1,6 +1,7 @@
 {
-    "@@locale": "fr",
-    "HELLO": "Hallo",
-    "HELLO PORTAL": "Hello Portal",
-    "HELLO_WORLD": "Hello World"
+  "@@locale": "fr",
+  "HELLO": "Hallo",
+  "HELLO PORTAL": "Hello Portal",
+  "HELLO_WORLD": "Hello World",
+  "test_case": "test"
 }

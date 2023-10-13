@@ -11,7 +11,7 @@
     },
     "description": "This editor will allow you to edit you Localization and Internationalization files easily. Using Amazon, Google and Microsoft Translation, you can translate to a wide range of languages automatically. Supported formats are i13n, l10n, r13n, arb and json.",
     "icon": "media/logo.png",
-    "version": "3.3.6",
+    "version": "3.3.7",
     "pricing": "Free",
     "engines": {
         "vscode": "^1.81.1"

@@ -1,11 +1,13 @@
 {
-    "@@locale": "en_AU",
-    "HELLO": "Hello",
-    "HELLO PORTAL": "Hello Portal",
-    "HELLO_WORLD": "Hello World",
-    "helloWorld": "Hello World",
-    "@helloWorld": {
-        "description": "Just a test"
-    },
-    "testKey": "Test"
+  "@@locale": "en_AU",
+  "HELLO": "Hello",
+  "HELLO PORTAL": "Hello Portal",
+  "HELLO_WORLD": "Hello World",
+  "helloWorld": "Hello World",
+  "@helloWorld": {
+    "description": "Just a test"
+  },
+  "test_case": "test",
+  "TestCase": "test",
+  "testKey": "Test"
 }

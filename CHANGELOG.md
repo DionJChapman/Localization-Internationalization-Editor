@@ -2,6 +2,13 @@
 
 All notable changes to the "i18n-l10n-editor" extension will be documented in this file.
 
+## [3.3.7]
+
+Release Date: 13/10/2023
+
+- Fixed issue where non 0-9 and a-z characters where being removed with 'No Change' key options
+- Fixed issue with default file detection
+  
 ## [3.3.6]
 
 Release Date: 12/09/2023
