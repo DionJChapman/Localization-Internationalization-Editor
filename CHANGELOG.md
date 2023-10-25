@@ -2,6 +2,11 @@
 
 All notable changes to the "i18n-l10n-editor" extension will be documented in this file.
 
+## [3.4.0]
+
+- Added setting to enable execute flutter gen-l10n when saving the translations
+- Added code to execute flutter gen-l10n for each folder. requires the l10n.yaml file for the settings.
+
 ## [3.3.7]
 
 Release Date: 13/10/2023

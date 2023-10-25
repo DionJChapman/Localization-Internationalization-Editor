@@ -32,7 +32,7 @@ export class IJEData {
     private _sort: IJESort;
 
     constructor(private _manager: IJEManager) {
-        IJEData._filteredFolder= '*';
+        IJEData._filteredFolder = '*';
         this._loadFiles();
         this._defaultValues();
     }
@@ -520,6 +520,27 @@ export class IJEData {
         this._loadFiles();
 
         this._manager.refreshDataTable();
+
+        const f1 = IJEConfiguration.WORKSPACE_FOLDERS;
+
+        if (IJEConfiguration.EXECUTE_FLUTTER_GEN) {
+            const terminal = vscode.window.createTerminal('Flutter Gen');
+            terminal.show();
+
+            f1.forEach(f => {
+                let path = f.path;
+                if (path.indexOf(f.folder) >= 0) {
+                    path = path.substring(0, path.indexOf(f.folder)) + f.folder;
+                }
+                terminal.sendText(`cd ${path}`, true);
+                terminal.sendText('flutter gen-l10n', true);
+            });
+
+            terminal.hide();
+            terminal.dispose();
+
+            msg += " and fluter gen-l10n executed";
+        }
     }
 
     search(value: string) {
@@ -706,7 +727,7 @@ export class IJEData {
             files
                 .filter(f => f.endsWith('.' + ext))
                 .forEach((file: string) => {
-                    const language = langPath !== "/"? langPath + file.split('.')[0] : file.split('.')[0];
+                    const language = langPath !== '/' ? langPath + file.split('.')[0] : file.split('.')[0];
                     if (this._languages.indexOf(language) === -1) {
                         this._languages.push(language);
                     }
@@ -741,8 +762,8 @@ export class IJEData {
 
             const t = this._createFactoryIJEDataTranslation();
             let fp = folderPath;
-            if (langPath !== "/" && langPath !== "") {
-                let lp = langPath.substring(0,langPath.length - 1);
+            if (langPath !== '/' && langPath !== '') {
+                let lp = langPath.substring(0, langPath.length - 1);
                 if (fp.endsWith(lp)) {
                     fp = fp.substring(0, fp.length - lp.length - 1);
                 }
@@ -775,9 +796,7 @@ export class IJEData {
     private _getDisplayedTranslations(): IJEDataTranslation[] {
         var o = this._translations;
         if (IJEData._filteredFolder !== '*') {
-            o = o.filter(t => 
-                t.folder.startsWith(IJEData._filteredFolder)
-                );
+            o = o.filter(t => t.folder.startsWith(IJEData._filteredFolder));
         }
 
         o = o

@@ -26,6 +26,11 @@ export class IJEConfiguration {
         return value !== undefined ? value : true;
     }
 
+    static get EXECUTE_FLUTTER_GEN(): boolean {
+        const value = vscode.workspace.getConfiguration().get<boolean>('i18n-l10n-editor.executeFlutterGen');
+        return value !== undefined ? value : true;
+    }
+
     static get JSON_SPACE(): string | number {
         const value = vscode.workspace.getConfiguration().get<string | number>('i18n-l10n-editor.jsonSpace');
         return value !== undefined ? value : 4;

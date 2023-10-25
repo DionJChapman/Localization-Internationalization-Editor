@@ -93,6 +93,9 @@ To access the settings click Code -> Settings on a Mac or File Preference on Win
 - **i18n-l10n-editor.sortKeyTogether**
   - Sort files and the editor so that key and @key will be kept together. The default value is true.
     - `i18n-l10n-editor.sortKeyTogether: true`
+- **i18n-l10n-editor.executeFlutterGen**
+  - Execute flutter gen-l10n when the translations are saved. the requires a l10n.yaml file to work.
+    - `i18n-l10n-editor.executeFlutterGen: true`
 - **i18n-l10n-editor.autoTranslateNewLanguage**
   - This will auto translate any new translations files added to the editor. It requires the translations to be added. The default value is *false*.
     - `i18n-l10n-editor.autoTranslateNewLanguage: false`

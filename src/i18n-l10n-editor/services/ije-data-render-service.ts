@@ -248,7 +248,7 @@ export class IJEDataRenderService {
                                     : selectedLanguages.length === 0
                                     ? languages.filter(l => l.indexOf('/') === -1 || (from.indexOf('/') >= 0 && l.endsWith(from.split('/')[1]))).join(',')
                                     : selectedLanguages.join(',');
-                            if (to.indexOf('_') > 0) {
+                            if (to.indexOf('_') > 0 && from.indexOf('_') === -1 && !from.startsWith(to.split('_')[0])) {
                                 from = to.split('_')[0] + '_' + from;
                             }
                             render +=
@@ -452,7 +452,7 @@ export class IJEDataRenderService {
                                     : selectedLanguages.length === 0
                                     ? languages.filter(l => l.indexOf('/') === -1 || (from.indexOf('/') >= 0 && l.endsWith(from.split('/')[1]))).join(',')
                                     : selectedLanguages.join(',');
-                            if (to.indexOf('_') > 0) {
+                            if (to.indexOf('_') > 0 && from.indexOf('_') === -1 && !from.startsWith(to.split('_')[0])) {
                                 from = to.split('_')[0] + '_' + from;
                             }
                             render += `</div>
