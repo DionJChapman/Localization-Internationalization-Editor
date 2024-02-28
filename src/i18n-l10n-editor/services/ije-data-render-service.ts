@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import { IJEConfiguration } from '../ije-configuration';
 import { IJEData } from '../ije-data';
 import { IJEDataTranslation } from '../models/ije-data-translation';
@@ -7,7 +8,7 @@ import { IJESort } from '../models/ije-sort';
 
 export class IJEDataRenderService {
     static renderPagination(translations: IJEDataTranslation[], page: IJEPage, withPageSizeSelector: boolean = true) {
-        let render = '<div class="container-fluid" style="margin: 0px; padding: 0px;">';
+        let render = '<div class="container-fluid" style="margin: 0px; padding: 0px; background: var(--vscode-sideBar-background);">';
         render += '<div class="row" style="margin: 0px; padding: 0px;">';
         render += '<div class="col-4">';
         render += '<div class="mt-3" style="position: sticky; left: 20px; z-index: 1100;">';
@@ -52,12 +53,12 @@ export class IJEDataRenderService {
     private static _getTableHeader(column: string, position, width, sort: IJESort) {
         let style =
             position >= 0
-                ? `position: sticky; left: ${position}px; top: 80px; z-index: 1200; width: ${width}px; maxWidth: ${width}px; background: #1f1f1f;`
+                ? `position: sticky; left: ${position}px; top: 80px; z-index: 1200; width: ${width}px; maxWidth: ${width}px; background: var(--vscode-editor-background);`
                 : width >= 0
-                ? 'position: sticky; top: 80px; z-index: 1100; width: ${width}px; maxWidth: ${width}px; background: #1f1f1f;'
+                ? 'position: sticky; top: 80px; z-index: 1100; width: ${width}px; maxWidth: ${width}px; background: var(--vscode-editor-background);'
                 : '';
         return (
-            `<th class="text-center" style="background: #1f1f1f; cursor: pointer; ${style}" onclick="sort('${column}',${sort.column === column ? !sort.ascending : true})">` +
+            `<th class="text-center" style="background: var(--vscode-editor-background); cursor: pointer; ${style}" onclick="sort('${column}',${sort.column === column ? !sort.ascending : true})">` +
             `${column}${sort.column === column ? (sort.ascending ? '<i class="icon-up-open"></i>' : '<i class="icon-down-open"></i>') : ''}
             
         </th>`
@@ -67,7 +68,7 @@ export class IJEDataRenderService {
     static renderTable(translations: IJEDataTranslation[], languages: string[], page: IJEPage, sort: IJESort, showFolder: boolean = true, hasTranslateService = false) {
         let render = '<table class="table table-borderless" style="margin-left: -10px; margin-top: 70px;" >';
         render += '<tr>';
-        render += '<th style="background: #1f1f1f; position: sticky; left: 0px; top: 80px; z-index: 1200; width: 40px; maxWidth: 40px; margin: 0px; padding: 0px;">&nbsp;</th>';
+        render += '<th style="background: var(--vscode-editor-background); position: sticky; left: 0px; top: 80px; z-index: 1200; width: 40px; maxWidth: 40px; margin: 0px; padding: 0px;">&nbsp;</th>';
 
         const folders = IJEConfiguration.WORKSPACE_FOLDERS;
 
@@ -142,11 +143,11 @@ export class IJEDataRenderService {
             let selectedLanguages: string[] = [];
             render += '<tr style="padding: 0px; margin: 0px; left: 0px">';
             render +=
-                `<td style="background: #1f1f1f; width: 40px; maxWidth: 40px; white-space: nowrap; position: sticky; left: 0px; z-index: 1000; margin: 0px; padding: 0px;">` +
+                `<td style="background: var(--vscode-editor-background); width: 40px; maxWidth: 40px; white-space: nowrap; position: sticky; left: 0px; z-index: 1000; margin: 0px; padding: 0px;">` +
                 `<button type="button" class="btn" style="width: 40px; maxWidth: 40px; padding-top: 20px;" onclick="remove(${t.id})"><i class="error-vscode icon-trash-empty"></i></button></td>`;
 
             if (showFolder && folders.length > 1 && IJEData._filteredFolder === '*') {
-                render += `<td style="background: #1f1f1f; width: 300px; white-space: nowrap;"><div class="input-group-append" style="background: #1f1f1f; width: 300px; white-space: nowrap;">`;
+                render += `<td style="background: var(--vscode-editor-background); width: 300px; white-space: nowrap;"><div class="input-group-append" style="background: var(--vscode-editor-background); width: 300px; white-space: nowrap;">`;
 
                 folders.forEach(d => {
                     if (included.length === 0 || included.includes(d.arb.split('.')[0])) {
@@ -180,8 +181,8 @@ export class IJEDataRenderService {
             }
 
             render +=
-                `<td style="background: #1f1f1f; white-space: nowrap; position: sticky; left: 40px; z-index: 1000; maxWidth: ${width}px;">` +
-                `<div class="input-group-append" style="width: ${width}px; maxWidth: ${width}px; background: #1f1f1f; white-space: nowrap;"><input id="input-key-${
+                `<td style="background: var(--vscode-editor-background); white-space: nowrap; position: sticky; left: 40px; z-index: 1000; maxWidth: ${width}px;">` +
+                `<div class="input-group-append" style="width: ${width}px; maxWidth: ${width}px; background: var(--vscode-editor-background); white-space: nowrap;"><input id="input-key-${
                     t.id
                 }" class="form-control ${t.valid ? '' : 'is-invalid'}" style="width: ${width - 40}px; maxWidth: ${
                     width - 40
@@ -222,7 +223,7 @@ export class IJEDataRenderService {
                 }
                 defaultARB = defaultARB.split('/')[0];
                 if (showIt || t.languages[language] !== undefined) {
-                    render += `<td style="background: #1f1f1f; ${
+                    render += `<td style="background: var(--vscode-editor-background); ${
                         language === defaultARB || language.startsWith(defaultARB)
                             ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;`
                             : ' maxWidth: 400px; width: 400px;'
@@ -265,7 +266,7 @@ export class IJEDataRenderService {
                     }
                     render += '</td>';
                 } else if (showBlank) {
-                    render += `<td style="background: #1f1f1f; ${
+                    render += `<td style="background: var(--vscode-editor-background); ${
                         language === defaultARB || language.startsWith(defaultARB) || language.endsWith(`_${defaultARB}`)
                             ? `position: sticky; left: 490px; z-index: 1000; maxWidth: 400px; width: 400px;`
                             : ' maxWidth: 400px; width: 400px;'
@@ -311,7 +312,7 @@ export class IJEDataRenderService {
             }
         });
 
-        if (_defaultARB.lastIndexOf('.') !== -1) {
+        if (_defaultARB.lastIndexOf('.') !== -1) {;
             _defaultARB = _defaultARB.substring(0, _defaultARB.lastIndexOf('.'));
         }
         if (_defaultARB === '') {

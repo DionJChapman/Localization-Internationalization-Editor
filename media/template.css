@@ -21,6 +21,10 @@ th {
     border-bottom: 1px solid var(--vscode-input-background) !important;
 }
 
+nav {
+    background-color: var(--vscode-sideBar-background);
+}
+
 .form-control {
     background-color: var(--vscode-input-background);
     border: 0;
@@ -42,12 +46,12 @@ th {
     box-shadow: 0 0 0 0.2rem var(--vscode-errorForeground) !important;
 }
 .btn-vscode {
-    background-color: var(--vscode-button-background);
+    background-color: #0078d4;
     color: var(--vscode-button-foreground);
 }
 
 .btn-vscode:hover {
-    background-color: var(--vscode-button-hoverBackground);
+    background-color: #1e96f2;
 }
 
 .btn-vscode-secondary {
@@ -65,20 +69,20 @@ th {
 }
 
 .page-item.disabled .page-link {
-    background-color: var(--vscode-button-background);
+    background-color: #0078d4;
     color: var(--vscode-button-foreground);
     opacity: 0.5;
     margin: 0px;
 }
 
 .page-link {
-    background-color: var(--vscode-button-background) !important;
+    background-color: #0078d4 !important;
     color: var(--vscode-button-foreground) !important;
     border: 0 !important;
 }
 
 .page-link:hover {
-    background-color: var(--vscode-button-hoverBackground) !important;
+    background-color: #1e96f2 !important;
 }
 
 .page-link:active,
