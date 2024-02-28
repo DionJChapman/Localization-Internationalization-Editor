@@ -2,7 +2,16 @@
 
 All notable changes to the "i18n-l10n-editor" extension will be documented in this file.
 
+## [3.4.1]
+
+Release Date: 28/02/2024
+
+- Removed hard coded background colors so that themes work with the extension.
+- Added color settings to buttons to maintain colors as per documentation.
+
 ## [3.4.0]
+
+Release Date: 25/10/2023
 
 - Added setting to enable execute flutter gen-l10n when saving the translations
 - Added code to execute flutter gen-l10n for each folder. requires the l10n.yaml file for the settings.
