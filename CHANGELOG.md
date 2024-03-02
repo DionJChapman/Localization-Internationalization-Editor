@@ -2,6 +2,11 @@
 
 All notable changes to the "i18n-l10n-editor" extension will be documented in this file.
 
+## [3.4.2]
+
+- Updated modules axios and glob to latest versions.
+- Fixed code due to updated modules.
+
 ## [3.4.1]
 
 Release Date: 28/02/2024

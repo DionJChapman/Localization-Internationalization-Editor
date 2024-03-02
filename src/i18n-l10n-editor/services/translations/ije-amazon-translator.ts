@@ -112,12 +112,12 @@ export class IJEAmazonTranslator implements IJETranslation {
                 if (data === undefined) {
                     return { [language]: text };
                 }
-
+                
                 languages
                     .filter(l => l !== language)
                     .forEach(l => {
-                        if (l.endsWith(data.TargetLanguageCode) || l.endsWith(data.TargetLanguageCode.replace('_', '-').split('-')[0]) || l.startsWith(data.TargetLanguageCode) || l.startsWith(data.TargetLanguageCode.replace('_', '-').split('-')[0])) {
-                            let _text = data.TranslatedText;
+                        if (l.endsWith(data['TargetLanguageCode']) || l.endsWith(data['TargetLanguageCode'].replace('_', '-').split('-')[0]) || l.startsWith(data['TargetLanguageCode']) || l.startsWith(data['TargetLanguageCode'].replace('_', '-').split('-')[0])) {
+                            let _text = data['TranslatedText'];
                             if (_text) {
                                 place = 0;
                                 _substitutes.forEach(s => {

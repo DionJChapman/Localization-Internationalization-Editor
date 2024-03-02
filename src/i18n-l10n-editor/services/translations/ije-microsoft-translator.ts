@@ -94,7 +94,7 @@ export class IJEMicrosoftTranslator implements IJETranslation {
 
                 const data = response.data;
 
-                if (data.length === 0) {
+                if (data === undefined) {
                     return { [language]: text };
                 }
 
